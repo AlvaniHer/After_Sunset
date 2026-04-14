@@ -1,58 +1,72 @@
 package com.example.aftersunset.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+data class AfterSunsetColors(
+    val background: Color,
+    val surface: Color,
+    val primary: Color,
+    val secondary: Color,
+    val accent1: Color,
+    val accent2: Color,
+    val onBackground: Color = Color.White
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+val LocalAfterSunsetColors = staticCompositionLocalOf {
+    AfterSunsetColors(
+        background = InkBlack,
+        surface = InkBlackLight,
+        primary = IndigoBloom,
+        secondary = PacificCyanGlow,
+        accent1 = Dragonfruit,
+        accent2 = PumpkinSpice
+    )
+}
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+class AfterSunsetGradients(
+    val actionGradient: Brush,
+    val borderGradient: Brush
 )
+
+object AfterSunsetTheme {
+    val colors: AfterSunsetColors
+        @Composable
+        get() = LocalAfterSunsetColors.current
+
+    val gradients = AfterSunsetGradients(
+        actionGradient = Brush.horizontalGradient(listOf(Dragonfruit, PumpkinSpice)),
+        borderGradient = Brush.linearGradient(listOf(IndigoBloom, Dragonfruit))
+    )
+}
 
 @Composable
 fun AfterSunsetTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    CompositionLocalProvider(LocalAfterSunsetColors provides AfterSunsetColors(
+        background = InkBlack,
+        surface = InkBlackLight,
+        primary = IndigoBloom,
+        secondary = PacificCyan,
+        accent1 = Dragonfruit,
+        accent2 = PumpkinSpice
+    )) {
+        MaterialTheme(
+            colorScheme = darkColorScheme(
+                background = AfterSunsetTheme.colors.background,
+                surface = AfterSunsetTheme.colors.surface,
+                primary = AfterSunsetTheme.colors.primary,
+                secondary = AfterSunsetTheme.colors.secondary
+            ),
+            typography = AfterSunsetTypography,
+            shapes = AfterSunsetShapes,
+            content = content
+        )
     }
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
 }
