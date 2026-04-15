@@ -9,7 +9,7 @@
 
 -   **UI:** [Jetpack Compose](https://developer.android.com/jetpack/compose) (Arquitectura declarativa).
 
--   **Navegación:** [Type-Safe Navigation](https://developer.android.com/guide/navigation/design/type-safety) (Novedad de 2024/25).
+-   **Navegación:** [Type-Safe Navigation](https://developer.android.com/guide/navigation/design/type-safety).
 
 -   **Imágenes:** [Coil 3](https://coil-kt.github.io/coil/) (Modular & Network Support).
 
