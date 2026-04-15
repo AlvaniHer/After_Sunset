@@ -40,28 +40,27 @@ android {
 }
 
 dependencies {
-    // --- NAVEGACIÓN (Type-Safe) ---
+    // --- NAVEGACIÓN ---
     implementation("androidx.navigation:navigation-compose:2.8.0-beta01")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
-    // --- VIDEO (ExoPlayer para el fondo del Login) ---
+    // --- VIDEO ---
     val media3Version = "1.3.1"
     implementation("androidx.media3:media3-exoplayer:$media3Version")
     implementation("androidx.media3:media3-ui:$media3Version")
     implementation("androidx.media3:media3-common:$media3Version")
 
-    // --- TIPOGRAFÍA (Google Fonts para Syne y Lexend) ---
+    // --- TIPOGRAFÍA ---
     implementation("androidx.compose.ui:ui-text-google-fonts:1.6.7")
 
-    // --- ANIMACIONES (Lottie) ---
+    // --- ANIMACIONES ---
     implementation("com.airbnb.android:lottie-compose:6.4.0")
 
-    // --- MAPAS (Google Maps) ---
+    // --- MAPAS ---
     implementation("com.google.maps.android:maps-compose:4.3.3")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
-    // --- FIREBASE (Base de datos y Auth) ---
-    // Recuerda que para Firebase debes añadir también el archivo google-services.json
+    // --- FIREBASE ---
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")

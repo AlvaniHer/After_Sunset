@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aftersunset.R
-import com.example.aftersunset.ui.components.CustomLoginField
+import com.example.aftersunset.ui.components.CustomField
 import com.example.aftersunset.ui.components.SunsetActionButton
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PumpkinSpice
@@ -67,11 +67,11 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            CustomLoginField(label = stringResource(R.string.email_label), icon = Icons.Default.Email)
+            CustomField(label = stringResource(R.string.email_label), icon = Icons.Default.Email)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            CustomLoginField(label = stringResource(R.string.password_label), icon = Icons.Default.Lock, isPassword = true)
+            CustomField(label = stringResource(R.string.password_label), icon = Icons.Default.Lock, isPassword = true)
 
             Spacer(modifier = Modifier.height(32.dp))
 
