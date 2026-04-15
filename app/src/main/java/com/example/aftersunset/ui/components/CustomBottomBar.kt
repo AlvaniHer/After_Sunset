@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -50,9 +51,10 @@ fun CustomBottomBar(
     Surface(
         modifier = Modifier
             .padding(16.dp)
+            .navigationBarsPadding()
             .fillMaxWidth()
             .height(72.dp),
-        shape = RoundedCornerShape(32.dp),
+        shape = MaterialTheme.shapes.large,
         color = AfterSunsetTheme.colors.surface.copy(alpha = 0.85f),
         border = BorderStroke(1.dp, AfterSunsetTheme.gradients.borderGradient)
     ) {
