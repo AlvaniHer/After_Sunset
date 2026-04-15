@@ -36,7 +36,12 @@ fun CustomField(
         onValueChange = {},
         modifier = Modifier.fillMaxWidth(),
         label = { Text(label) },
-        leadingIcon = { Icon(icon, contentDescription = null, tint = Color.White.copy(alpha = 0.5f)) },
+        leadingIcon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color.White.copy(alpha = 0.5f)
+            ) },
         shape = RoundedCornerShape(20.dp),
         visualTransformation = if (isPassword) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
         colors = OutlinedTextFieldDefaults.colors(

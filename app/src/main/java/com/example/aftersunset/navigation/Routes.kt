@@ -3,6 +3,11 @@ package com.example.aftersunset.navigation
 import kotlinx.serialization.Serializable
 
 /**
+ * Pantalla de carga inicial.
+ */
+@Serializable object Splash
+
+/**
  * Grafo de navegación para el flujo de autenticación (Login y Registro).
  */
 @Serializable object AuthGraph
@@ -11,6 +16,11 @@ import kotlinx.serialization.Serializable
  * Grafo de navegación principal para la experiencia de usuario logueado.
  */
 @Serializable object MainGraph
+
+/**
+ * Destino raíz para el grafo principal que contiene el Scaffold con BottomBar.
+ */
+@Serializable object Main
 
 /**
  * Destino para la pantalla de inicio de sesión.
