@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">After Sunset</string>
+
+    <!-- Pantalla Login -->
+    <string name="login_title">AFTER SUNSET</string>
+    <string name="login_slogan">Conecta con la noche de Málaga</string>
+    <string name="login_button_text">ENTRAR</string>
+    <string name="login_register_text1">¿Sin cuenta?</string>
+    <string name="login_register_text2">&#160;Regístrate</string>
+
+    <!-- Campos de texto -->
+    <string name="email_label">Email</string>
+    <string name="password_label">Contraseña</string>
 </resources>

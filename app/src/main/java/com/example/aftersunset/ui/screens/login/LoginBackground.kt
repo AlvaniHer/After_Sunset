@@ -41,7 +41,7 @@ fun VideoBackground(videoResId: Int) {
             playWhenReady = true
             repeatMode = Player.REPEAT_MODE_ALL
             volume = 0f
-            playbackParameters = PlaybackParameters(0.8f)
+            playbackParameters = PlaybackParameters(0.6f)
         }
     }
 
