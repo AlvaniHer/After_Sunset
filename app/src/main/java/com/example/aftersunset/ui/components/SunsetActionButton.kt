@@ -9,9 +9,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.aftersunset.R
+import com.example.aftersunset.ui.theme.AfterSunsetTheme
 
 /**
  * Componente de botón principal con el degradado de la marca.
@@ -51,5 +55,16 @@ fun SunsetActionButton(
                 )
             )
         }
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF0B0B1E)
+@Composable
+fun SunsetActionButtonPreview(){
+    AfterSunsetTheme{
+        SunsetActionButton(
+            text = stringResource(R.string.login_button_text),
+            onClick = {}
+        )
     }
 }

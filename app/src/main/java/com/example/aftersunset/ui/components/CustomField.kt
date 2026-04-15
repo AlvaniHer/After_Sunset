@@ -2,13 +2,19 @@ package com.example.aftersunset.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.aftersunset.R
+import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PumpkinSpice
 
@@ -20,7 +26,7 @@ import com.example.aftersunset.ui.theme.PumpkinSpice
  * @param isPassword Determina si el campo debe aplicar una transformación visual de contraseña para ocultar el texto.
  */
 @Composable
-fun CustomLoginField(
+fun CustomField(
     label: String,
     icon: ImageVector,
     isPassword: Boolean = false
@@ -45,4 +51,16 @@ fun CustomLoginField(
             cursorColor = PumpkinSpice
         )
     )
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF0B0B1E)
+@Composable
+fun CustomFieldPreview(){
+    AfterSunsetTheme{
+        CustomField(
+            label = stringResource(R.string.email_label),
+            icon = Icons.Default.Email,
+            isPassword = false
+        )
+    }
 }
