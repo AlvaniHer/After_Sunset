@@ -23,7 +23,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 
