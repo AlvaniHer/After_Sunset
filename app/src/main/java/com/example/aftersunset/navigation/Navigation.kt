@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.aftersunset.ui.screens.login.LoginScreen
 import com.example.aftersunset.ui.screens.main.MainScreen
+import com.example.aftersunset.ui.screens.splash.SplashScreen
 
 /**
  * Componente central de navegación que orquesta todos los destinos de la app.
@@ -23,8 +24,11 @@ fun Navigation() {
 
     NavHost(
         navController = navController,
-        startDestination = AuthGraph
+        startDestination = Splash
     ) {
+        composable<Splash> {
+            SplashScreen(navController = navController)
+        }
         /**
          * Grafo de Autenticación.
          * Se encarga del flujo inicial antes de que el usuario acceda al contenido.
@@ -50,8 +54,8 @@ fun Navigation() {
          * Grafo Principal.
          * Contiene la lógica de las secciones principales accesibles mediante el Bottom Nav.
          */
-        navigation<MainGraph>(startDestination = "main_root") {
-            composable("main_root") {
+        navigation<MainGraph>(startDestination = Main) {
+            composable<Main> {
                 MainScreen(rootNavController = navController)
             }
 
@@ -71,10 +75,6 @@ fun Navigation() {
             ) { backStackEntry ->
                 val detail: EventDetail = backStackEntry.toRoute()
                 //EventDetailScreen(eventId = detail.id)
-            }
-
-            composable<Checkout> {
-                //CheckoutScreen(onSuccess = { navController.navigate(Tickets) })
             }
 
             composable<Checkout> { backStackEntry ->

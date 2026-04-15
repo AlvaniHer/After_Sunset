@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.aftersunset.domain.model.Event
@@ -28,7 +29,7 @@ import com.example.aftersunset.ui.theme.AfterSunsetTheme
 
 /**
  * Tarjeta visual para mostrar un evento en el feed.
- * * @param event Objeto con los datos del evento.
+ * @param event Objeto con los datos del evento.
  * @param onClick Acción al pulsar la tarjeta para ver detalles.
  */
 @Composable
@@ -111,5 +112,26 @@ fun EventCard(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun EventCardPreview(){
+    AfterSunsetTheme {
+        val event = Event(
+            "1",
+            "Sunset Beats",
+            "Opium",
+            "15 Mayo",
+            30.0,
+            "https://youbarcelona.com/uploads/images/c/opium%20barcelona%20gente%2020/original.jpg ",
+            "Barcelona",
+            "House"
+        )
+        EventCard(
+            event = event,
+            onClick = { }
+        )
     }
 }
