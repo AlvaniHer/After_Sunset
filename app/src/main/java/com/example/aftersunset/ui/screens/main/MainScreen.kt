@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.aftersunset.navigation.*
 import com.example.aftersunset.ui.components.CustomBottomBar
+import com.example.aftersunset.ui.screens.home.HomeScreen
 
 /**
  * Pantalla raíz para el flujo autenticado de la aplicación.
@@ -37,11 +38,11 @@ fun MainScreen(rootNavController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<Home> {
-//                HomeScreen(
-//                    onEventClick = { id ->
-//                        rootNavController.navigate(EventDetail(id))
-//                    }
-//                )
+                HomeScreen(
+                    onEventClick = { id ->
+                        rootNavController.navigate(EventDetail(id))
+                    }
+                )
             }
             composable<Maps> { }
             composable<Tickets> { }

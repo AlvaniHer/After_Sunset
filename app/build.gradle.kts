@@ -44,6 +44,10 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.0-beta01")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
+    // --- IMÁGENES ---
+    implementation("io.coil-kt.coil3:coil-compose:3.0.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.0")
+
     // --- VIDEO ---
     val media3Version = "1.3.1"
     implementation("androidx.media3:media3-exoplayer:$media3Version")
