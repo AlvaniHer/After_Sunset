@@ -61,6 +61,8 @@ Para mantener la estética "Cyber-Night", utiliza los tokens de color definidos 
 
 -   **PumpkinSpice** (`#FF6B00`): Este naranja vibrante representa la luz del atardecer. Úsalo siempre en combinación con *Dragonfruit* para crear el degradado de los botones de acción principal.
 
+![Paleta de colores](./images/color_palette.png)  
+
 📦 Instalación
 --------------
 
