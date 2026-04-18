@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "702181025188",
+    "project_id": "after-sunset-a5ceb",
+    "storage_bucket": "after-sunset-a5ceb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702181025188:android:a72b868620a42c67e54d31",
+        "android_client_info": {
+          "package_name": "com.example.aftersunset"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2bzU4To5qa9wb1C69PMs0etj67nljMKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
