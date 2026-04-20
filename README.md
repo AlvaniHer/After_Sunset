@@ -75,3 +75,5 @@ Para mantener la estética "Cyber-Night", utiliza los tokens de color definidos 
 3.  Sincroniza el proyecto con Gradle.
 
 4.  Pide el archivo `google-services.json` para conectar con Firebase.
+
+5. Pide el valor de `MAPS_API_KEY` que necesitas colocar en **local.properties**
