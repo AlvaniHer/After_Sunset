@@ -10,6 +10,11 @@ data class Event(
     val date: String,
     val price: Double,
     val imageUrl: String,
-    val location: String,
-    val tag: String
+    val genre: String,
+    val tags: List<String>,
+    val zone: String,
+    val fullAddress: String,
+    val latitude: Double,
+    val longitude: Double,
+    val description: String
 )
