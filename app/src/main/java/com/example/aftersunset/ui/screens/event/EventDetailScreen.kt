@@ -30,8 +30,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.aftersunset.domain.model.Event
-import com.example.aftersunset.ui.components.DetailInfoCard
-import com.example.aftersunset.ui.components.SunsetActionButton
+import com.example.aftersunset.ui.components.event.DetailInfoCard
+import com.example.aftersunset.ui.components.common.SunsetActionButton
+import com.example.aftersunset.ui.components.event.EventStatsRow
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 
@@ -54,7 +55,11 @@ fun EventDetailScreen(
         fullAddress = "C. Luis de Velázquez, 5, 29008 Málaga",
         latitude = 36.7218,
         longitude = -4.4185,
-        description = "Vive la experiencia techno más exclusiva en el corazón de Málaga. Sonido Funktion-One y el mejor ambiente."
+        description = "Vive la experiencia techno más exclusiva en el corazón de Málaga. Sonido Funktion-One y el mejor ambiente.",
+        minAge = 21,
+        avgAge = 26,
+        capacity = 500,
+        isSoldOut = false
     )
 
     Box(
@@ -108,6 +113,10 @@ fun EventDetailScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 DetailInfoCard(event)
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                EventStatsRow(event)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
