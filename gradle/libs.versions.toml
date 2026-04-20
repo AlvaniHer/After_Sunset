@@ -15,6 +15,7 @@ foundationLayout = "1.10.6"
 media3CommonKtx = "1.10.0"
 media3Exoplayer = "1.10.0"
 media3Ui = "1.10.0"
+secretsGradlePlugin = "2.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,4 +43,4 @@ androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.re
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
