@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.components
+package com.example.aftersunset.ui.components.event
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -84,7 +84,11 @@ fun DetailInfoCardPreview(){
                 fullAddress = "C. Luis de Velázquez, 5, 29008 Málaga",
                 latitude = 36.7218,
                 longitude = -4.4185,
-                description = "Vive la experiencia techno más exclusiva en el corazón de Málaga. Sonido Funktion-One y el mejor ambiente."
+                description = "Vive la experiencia techno más exclusiva en el corazón de Málaga. Sonido Funktion-One y el mejor ambiente.",
+                minAge = 21,
+                avgAge = 26,
+                capacity = 500,
+                isSoldOut = false
             )
         )
     }

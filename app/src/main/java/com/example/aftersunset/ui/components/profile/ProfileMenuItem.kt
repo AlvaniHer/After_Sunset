@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.components
+package com.example.aftersunset.ui.components.profile
 
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons

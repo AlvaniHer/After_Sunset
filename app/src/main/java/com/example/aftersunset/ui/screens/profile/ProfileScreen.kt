@@ -16,9 +16,9 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.Alignment
-import com.example.aftersunset.ui.components.ProfileHeader
-import com.example.aftersunset.ui.components.ProfileMenuItem
-import com.example.aftersunset.ui.components.StatItem
+import com.example.aftersunset.ui.components.profile.ProfileHeader
+import com.example.aftersunset.ui.components.profile.ProfileMenuItem
+import com.example.aftersunset.ui.components.profile.StatItem
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
 

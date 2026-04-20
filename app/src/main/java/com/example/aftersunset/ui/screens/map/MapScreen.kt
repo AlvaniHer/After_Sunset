@@ -30,8 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.aftersunset.domain.model.Event
-import com.example.aftersunset.ui.components.EventMapCard
-import com.example.aftersunset.ui.components.ZoneSelector
+import com.example.aftersunset.ui.components.map.EventMapCard
+import com.example.aftersunset.ui.components.map.ZoneSelector
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLngBounds
 
