@@ -8,8 +8,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.aftersunset.ui.screens.event.EventDetailScreen
 import com.example.aftersunset.ui.screens.login.LoginScreen
 import com.example.aftersunset.ui.screens.main.MainScreen
+import com.example.aftersunset.ui.screens.register.RegisterScreen
 import com.example.aftersunset.ui.screens.splash.SplashScreen
 
 /**
@@ -45,9 +47,16 @@ fun Navigation() {
                 )
             }
 
-//            composable<Register> {
-//                RegisterScreen(onBack = { navController.popBackStack() })
-//            }
+            composable<Register> {
+                RegisterScreen(
+                    onRegisterSuccess = {
+                        navController.navigate(MainGraph) {
+                            popUpTo(AuthGraph) { inclusive = true }
+                        }
+                    },
+                    onNavigateToLogin = { navController.popBackStack() }
+                )
+            }
         }
 
         /**
@@ -74,7 +83,10 @@ fun Navigation() {
                 }
             ) { backStackEntry ->
                 val detail: EventDetail = backStackEntry.toRoute()
-                //EventDetailScreen(eventId = detail.id)
+                EventDetailScreen(
+                    eventId = detail.id,
+                    onBackClick = { navController.popBackStack() }
+                )
             }
 
             composable<Checkout> { backStackEntry ->

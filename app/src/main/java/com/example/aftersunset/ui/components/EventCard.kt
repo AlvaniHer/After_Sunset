@@ -75,7 +75,7 @@ fun EventCard(
                     shape = MaterialTheme.shapes.extraSmall
                 ) {
                     Text(
-                        text = event.tag.uppercase(),
+                        text = event.genre.uppercase(),
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = AfterSunsetTheme.colors.secondary
@@ -91,7 +91,7 @@ fun EventCard(
                 )
 
                 Text(
-                    text = "${event.clubName} • ${event.location}",
+                    text = "${event.clubName} • ${event.zone}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White.copy(alpha = 0.7f)
                 )
@@ -120,14 +120,19 @@ fun EventCard(
 fun EventCardPreview(){
     AfterSunsetTheme {
         val event = Event(
-            "1",
-            "Sunset Beats",
-            "Opium",
-            "15 Mayo",
-            30.0,
-            "https://youbarcelona.com/uploads/images/c/opium%20barcelona%20gente%2020/original.jpg ",
-            "Barcelona",
-            "House"
+            id = "1",
+            title = "Neon Ritual",
+            clubName = "Sala Gold",
+            date = "Viernes, 24 Mayo",
+            price = 15.0,
+            imageUrl = "https://picsum.photos/id/123/800/600",
+            genre = "Techno / Melodic",
+            tags = listOf("Centro", "VIP", "Luces LED"),
+            zone = "Málaga Centro",
+            fullAddress = "C. Luis de Velázquez, 5, 29008 Málaga",
+            latitude = 36.7218,
+            longitude = -4.4185,
+            description = "Vive la experiencia techno más exclusiva en el corazón de Málaga. Sonido Funktion-One y el mejor ambiente."
         )
         EventCard(
             event = event,
