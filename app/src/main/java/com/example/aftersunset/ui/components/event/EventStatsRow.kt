@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.aftersunset.domain.model.Event
-import com.example.aftersunset.ui.theme.PacificCyan
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PumpkinSpice
 
