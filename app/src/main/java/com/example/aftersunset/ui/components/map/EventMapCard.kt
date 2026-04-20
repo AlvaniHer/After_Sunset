@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.components
+package com.example.aftersunset.ui.components.map
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

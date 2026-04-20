@@ -23,8 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aftersunset.R
-import com.example.aftersunset.ui.components.CustomField
-import com.example.aftersunset.ui.components.SunsetActionButton
+import com.example.aftersunset.ui.components.auth.CustomField
+import com.example.aftersunset.ui.components.auth.VideoBackground
+import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PumpkinSpice
 

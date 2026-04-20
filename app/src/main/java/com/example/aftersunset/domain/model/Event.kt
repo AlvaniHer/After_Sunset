@@ -16,5 +16,9 @@ data class Event(
     val fullAddress: String,
     val latitude: Double,
     val longitude: Double,
-    val description: String
+    val description: String,
+    val minAge: Int,
+    val avgAge: Int,
+    val capacity: Int,
+    val isSoldOut: Boolean = false
 )

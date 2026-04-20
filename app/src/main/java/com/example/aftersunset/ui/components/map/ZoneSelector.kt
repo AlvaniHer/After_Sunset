@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.components
+package com.example.aftersunset.ui.components.map
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*

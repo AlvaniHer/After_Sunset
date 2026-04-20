@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.navigation.*
-import com.example.aftersunset.ui.components.CustomBottomBar
+import com.example.aftersunset.ui.components.main.CustomBottomBar
 import com.example.aftersunset.ui.screens.home.HomeScreen
 import com.example.aftersunset.ui.screens.map.MapScreen
 import com.example.aftersunset.ui.screens.profile.ProfileScreen
@@ -65,7 +65,11 @@ fun MainScreen(rootNavController: NavHostController) {
                             fullAddress = "C. Luis de Velázquez, 5, 29008 Málaga",
                             latitude = 36.7218,
                             longitude = -4.4185,
-                            description = "Vive la experiencia techno más exclusiva en el corazón de Málaga. Sonido Funktion-One y el mejor ambiente."
+                            description = "Vive la experiencia techno más exclusiva en el corazón de Málaga. Sonido Funktion-One y el mejor ambiente.",
+                            minAge = 21,
+                            avgAge = 26,
+                            capacity = 500,
+                            isSoldOut = false
                         ),
                         Event(
                             id = "2",
@@ -80,7 +84,11 @@ fun MainScreen(rootNavController: NavHostController) {
                             fullAddress = "Paseo Marítimo Los Álamos, s/n, 29620 Torremolinos",
                             latitude = 36.6436,
                             longitude = -4.4674,
-                            description = "Baila bajo las estrellas frente al Mediterráneo. La fiesta comienza al atardecer y no para hasta el amanecer."
+                            description = "Baila bajo las estrellas frente al Mediterráneo. La fiesta comienza al atardecer y no para hasta el amanecer.",
+                            minAge = 21,
+                            avgAge = 26,
+                            capacity = 500,
+                            isSoldOut = false
                         ),
                         Event(
                             id = "3",
@@ -95,7 +103,11 @@ fun MainScreen(rootNavController: NavHostController) {
                             fullAddress = "C. Plutarco, 58, 29010 Málaga",
                             latitude = 36.7165,
                             longitude = -4.4712,
-                            description = "La noche de los jueves en Teatinos tiene un nombre. Música urbana y los mejores cócteles de la zona."
+                            description = "La noche de los jueves en Teatinos tiene un nombre. Música urbana y los mejores cócteles de la zona.",
+                            minAge = 21,
+                            avgAge = 26,
+                            capacity = 500,
+                            isSoldOut = false
                         ),
                         Event(
                             id = "4",
@@ -110,7 +122,11 @@ fun MainScreen(rootNavController: NavHostController) {
                             fullAddress = "C. la Orotava, 27, 29006 Málaga",
                             latitude = 36.7032,
                             longitude = -4.4563,
-                            description = "El templo de la electrónica en el sur de España. Un despliegue de luces y sonido que te dejará sin aliento."
+                            description = "El templo de la electrónica en el sur de España. Un despliegue de luces y sonido que te dejará sin aliento.",
+                            minAge = 21,
+                            avgAge = 26,
+                            capacity = 500,
+                            isSoldOut = false
                         )
                     ),
                     onEventClick = { id ->
