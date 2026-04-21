@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
@@ -106,25 +107,7 @@ fun EventMapCard(
 fun EventMapCardPreview() {
     AfterSunsetTheme {
         EventMapCard(
-            Event(
-                id = "1",
-                title = "Neon Ritual",
-                clubName = "Sala Gold",
-                date = "Viernes, 24 Mayo",
-                price = 15.0,
-                imageUrl = "https://picsum.photos/id/123/800/600",
-                genre = "Techno / Melodic",
-                tags = listOf("Centro", "VIP", "Luces LED"),
-                zone = "Málaga Centro",
-                fullAddress = "C. Luis de Velázquez, 5, 29008 Málaga",
-                latitude = 36.7218,
-                longitude = -4.4185,
-                description = "Vive la experiencia techno más exclusiva en el corazón de Málaga. Sonido Funktion-One y el mejor ambiente.",
-                minAge = 21,
-                avgAge = 26,
-                capacity = 500,
-                isSoldOut = false
-            ),
+            event = sampleEvents[0],
             onDetailClick = {}
         )
     }

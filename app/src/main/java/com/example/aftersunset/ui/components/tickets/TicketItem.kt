@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.R
+import com.example.aftersunset.data.SampleData.sampleTickets
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.PacificCyan
 
@@ -92,17 +93,7 @@ fun TicketDetail(label: String, value: String) {
 fun TicketItemPreview() {
     AfterSunsetTheme {
         TicketItem(
-            ticket = Ticket(
-                id = "TKT-001",
-                eventTitle = "Neon Ritual",
-                clubName = "Sala Gold",
-                date = "24 Mayo 2024",
-                time = "23:30",
-                entryType = "VIP Pass",
-                price = 25.0,
-                qrCodeData = "AS-GOLD-NEON-2024-VIP-001",
-                imageUrl = "https://picsum.photos/id/123/400/400"
-            )
+            ticket = sampleTickets[0]
         )
     }
 }

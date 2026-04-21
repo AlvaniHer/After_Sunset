@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.Dragonfruit
@@ -52,25 +53,7 @@ fun EventStatsRow(event: Event) {
 fun EventStatsRowPreview() {
     AfterSunsetTheme {
         EventStatsRow(
-            Event(
-                id = "4",
-                title = "Electronic Culture",
-                clubName = "París 15",
-                date = "Sábado, 1 Junio",
-                price = 25.0,
-                imageUrl = "https://picsum.photos/id/321/800/600",
-                genre = "Hard Techno",
-                tags = listOf("Concierto", "Aforo +3000", "Sonido Pro"),
-                zone = "Polígono San Luis",
-                fullAddress = "C. la Orotava, 27, 29006 Málaga",
-                latitude = 36.7032,
-                longitude = -4.4563,
-                description = "El templo de la electrónica en el sur de España. Un despliegue de luces y sonido que te dejará sin aliento.",
-                minAge = 21,
-                avgAge = 26,
-                capacity = 500,
-                isSoldOut = false
-            )
+            event = sampleEvents[0]
         )
     }
 }

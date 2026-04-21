@@ -8,6 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.aftersunset.data.SampleData.sampleEvents
+import com.example.aftersunset.ui.screens.checkout.CheckoutScreen
 import com.example.aftersunset.ui.screens.event.EventDetailScreen
 import com.example.aftersunset.ui.screens.login.LoginScreen
 import com.example.aftersunset.ui.screens.main.MainScreen
@@ -85,20 +87,26 @@ fun Navigation() {
                 val detail: EventDetail = backStackEntry.toRoute()
                 EventDetailScreen(
                     eventId = detail.id,
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
                 )
             }
 
             composable<Checkout> { backStackEntry ->
                 val route: Checkout = backStackEntry.toRoute()
-//                CheckoutScreen(
-//                    eventId = route.eventId,
-//                    onPaymentSuccess = {
-//                        navController.navigate(Tickets) {
-//                            popUpTo(Home) { saveState = true }
-//                        }
-//                    }
-//                )
+                val event = sampleEvents.find { it.id == route.eventId }
+
+                if (event != null) {
+                    CheckoutScreen(
+                        event = event,
+                        ticketType = route.ticketType,
+                        price = route.price,
+                        onPaymentSuccess = {
+                            navController.navigate(Tickets) {
+                                popUpTo<Home> { inclusive = false }
+                            }
+                        }
+                    )
+                }
             }
         }
     }
