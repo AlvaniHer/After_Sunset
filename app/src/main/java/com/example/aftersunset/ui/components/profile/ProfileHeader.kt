@@ -27,8 +27,6 @@ import com.example.aftersunset.data.SampleData.sampleUser
 import com.example.aftersunset.domain.model.UserLevel
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
-import com.example.aftersunset.ui.theme.PacificCyan
-import com.example.aftersunset.ui.theme.Dragonfruit
 
 @Composable
 fun ProfileHeader(name: String, location: String, userLevel: UserLevel) {

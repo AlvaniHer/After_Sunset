@@ -6,13 +6,13 @@ import com.example.aftersunset.domain.model.User
 import com.example.aftersunset.domain.model.UserLevel
 
 object SampleData {
-    val sampleUser = User(
+    var sampleUser = User(
         id = "USER-001",
         name = "Álvaro Pérez",
         email = "alvaro.perez@email.com",
         location = "Málaga, ES",
         level = UserLevel.GOLD,
-        points = 450,
+        points = 950,
         eventsAttended = 12,
         followingCount = 8,
         profileImageUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=Alvaro"
@@ -97,7 +97,7 @@ object SampleData {
         )
     )
 
-    val sampleTickets = listOf(
+    var sampleTickets = mutableListOf(
         Ticket(
             id = "TKT-001",
             eventTitle = "Neon Ritual",

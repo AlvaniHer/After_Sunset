@@ -1,5 +1,7 @@
 package com.example.aftersunset.ui.screens.main
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import com.example.aftersunset.ui.screens.tickets.TicketsScreen
  * @param rootNavController NavController del grafo principal para permitir 
  * la navegación hacia pantallas fuera del BottomBar.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(rootNavController: NavHostController) {
     val navController = rememberNavController()

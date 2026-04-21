@@ -1,10 +1,12 @@
 package com.example.aftersunset.ui.screens.profile
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -17,16 +19,20 @@ import androidx.compose.ui.Alignment
 import com.example.aftersunset.ui.components.profile.ProfileHeader
 import com.example.aftersunset.ui.components.profile.ProfileMenuItem
 import com.example.aftersunset.ui.components.profile.StatItem
+import com.example.aftersunset.ui.components.checkout.SuccessDialog
 import com.example.aftersunset.R
-import com.example.aftersunset.data.SampleData.sampleUser
-import com.example.aftersunset.domain.model.UserLevel
+import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
 ) {
+    val user = SampleData.sampleUser
+    var showLevelUpDialog by remember { mutableStateOf(user.pendingLevelUp) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,9 +41,9 @@ fun ProfileScreen(
             .padding(top = 60.dp)
     ) {
         ProfileHeader(
-            name = sampleUser.name,
-            location = sampleUser.location,
-            userLevel = sampleUser.level
+            name = user.name,
+            location = user.location,
+            userLevel = user.level
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -48,9 +54,9 @@ fun ProfileScreen(
                 .padding(horizontal = 24.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            StatItem("Eventos", "12")
-            StatItem("Puntos", "450")
-            StatItem("Siguiendo", "8")
+            StatItem("Eventos", user.eventsAttended.toString())
+            StatItem("Puntos", user.points.toString())
+            StatItem("Siguiendo", user.followingCount.toString())
         }
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -92,5 +98,17 @@ fun ProfileScreen(
                 fontWeight = FontWeight.Bold
             )
         }
+    }
+
+    if (showLevelUpDialog) {
+        SuccessDialog(
+            onDismiss = { 
+                showLevelUpDialog = false
+                SampleData.sampleUser = user.copy(pendingLevelUp = false)
+            },
+            title = "¡NUEVO RANGO DESBLOQUEADO!",
+            message = "Felicidades ${user.name}, has alcanzado el nivel ${user.level}. Tu estatus en After Sunset ha subido de categoría.",
+            isLevelUp = true
+        )
     }
 }

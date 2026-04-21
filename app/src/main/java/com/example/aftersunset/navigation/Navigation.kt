@@ -1,5 +1,7 @@
 package com.example.aftersunset.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
@@ -22,6 +24,7 @@ import com.example.aftersunset.ui.screens.splash.SplashScreen
  * 1. [AuthGraph]: Maneja el acceso y registro.
  * 2. [MainGraph]: Maneja las pestañas principales y detalles de eventos.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
@@ -103,9 +106,10 @@ fun Navigation() {
                         event = event,
                         ticketType = route.ticketType,
                         price = route.price,
+                        onBackClick = { navController.popBackStack() },
                         onPaymentSuccess = {
-                            navController.navigate(Tickets) {
-                                popUpTo<Home> { inclusive = false }
+                            navController.navigate(Main) {
+                                popUpTo<Main> { inclusive = true }
                             }
                         }
                     )

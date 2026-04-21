@@ -13,5 +13,6 @@ data class User(
     val points: Int,
     val eventsAttended: Int,
     val followingCount: Int,
-    val profileImageUrl: String
+    val profileImageUrl: String,
+    val pendingLevelUp: Boolean = false
 )
