@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aftersunset.data.SampleData.sampleEvents
-import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.components.home.EventCard
 import com.example.aftersunset.ui.components.home.HomeHeader
 import com.example.aftersunset.ui.theme.AfterSunsetTheme

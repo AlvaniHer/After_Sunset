@@ -11,9 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -71,9 +72,13 @@ fun CheckoutScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        PriceRow("Entrada ${ticketType}", "${price}€")
+        PriceRow("Entrada $ticketType", "${price}€")
         PriceRow("Gastos de gestión", "1.50€")
-        Divider(modifier = Modifier.padding(vertical = 16.dp), color = Color.White.copy(alpha = 0.1f))
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = DividerDefaults.Thickness,
+            color = Color.White.copy(alpha = 0.1f)
+        )
         PriceRow("TOTAL", "${price + 1.5}€", isTotal = true)
 
         Spacer(modifier = Modifier.weight(1f))
