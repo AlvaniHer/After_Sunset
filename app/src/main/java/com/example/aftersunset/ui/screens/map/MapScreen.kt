@@ -22,6 +22,7 @@ import com.example.aftersunset.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,14 +54,24 @@ fun MapScreen(
     )
 
     var selectedEvent by remember { mutableStateOf<Event?>(null) }
+    var currentSelectedZone by remember { mutableStateOf("Todos") }
+
+    val filteredEvents by remember(currentSelectedZone, events) {
+        derivedStateOf {
+            if (currentSelectedZone == "Todos") {
+                events
+            } else {
+                events.filter { it.zone.contains(currentSelectedZone, ignoreCase = true) }
+            }
+        }
+    }
 
     var eventToDisplay by remember { mutableStateOf<Event?>(null) }
-        if (selectedEvent != null) {
-            eventToDisplay = selectedEvent
+    if (selectedEvent != null) {
+        eventToDisplay = selectedEvent
     }
 
     val malagaCenter = LatLng(36.7213, -4.4214)
-
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(malagaCenter, 13f)
     }
@@ -73,11 +84,11 @@ fun MapScreen(
             onMapClick = { selectedEvent = null },
             uiSettings = MapUiSettings(zoomControlsEnabled = false)
         ) {
-            events.forEach { event ->
-                val markerColor = when (event.genre) {
-                    "Techno" -> BitmapDescriptorFactory.HUE_VIOLET
-                    "Reggaeton" -> BitmapDescriptorFactory.HUE_MAGENTA
-                    "House" -> BitmapDescriptorFactory.HUE_CYAN
+            filteredEvents.forEach { event ->
+                val markerColor = when {
+                    event.genre.contains("Techno", true) -> BitmapDescriptorFactory.HUE_VIOLET
+                    event.genre.contains("Reggaeton", true) -> BitmapDescriptorFactory.HUE_MAGENTA
+                    event.genre.contains("House", true) -> BitmapDescriptorFactory.HUE_CYAN
                     else -> BitmapDescriptorFactory.HUE_GREEN
                 }
                 Marker(
@@ -97,7 +108,10 @@ fun MapScreen(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 60.dp),
-            onZoneSelected = { }
+            onZoneSelected = { zone ->
+                currentSelectedZone = zone
+                selectedEvent = null
+            }
         )
 
         AnimatedVisibility(

@@ -15,6 +15,9 @@ data class AfterSunsetColors(
     val secondary: Color,
     val accent1: Color,
     val accent2: Color,
+    val neonGold: Color,
+    val electricYellow: Color,
+    val deepViolet: Color,
     val onBackground: Color = Color.White
 )
 
@@ -25,13 +28,17 @@ val LocalAfterSunsetColors = staticCompositionLocalOf {
         primary = IndigoBloom,
         secondary = PacificCyanGlow,
         accent1 = Dragonfruit,
-        accent2 = PumpkinSpice
+        accent2 = PumpkinSpice,
+        neonGold = NeonGold,
+        electricYellow = ElectricYellow,
+        deepViolet = DeepViolet
     )
 }
 
 class AfterSunsetGradients(
     val actionGradient: Brush,
-    val borderGradient: Brush
+    val borderGradient: Brush,
+    val legendaryGradient: Brush
 )
 
 object AfterSunsetTheme {
@@ -39,10 +46,13 @@ object AfterSunsetTheme {
         @Composable
         get() = LocalAfterSunsetColors.current
 
-    val gradients = AfterSunsetGradients(
-        actionGradient = Brush.horizontalGradient(listOf(Dragonfruit, PumpkinSpice)),
-        borderGradient = Brush.linearGradient(listOf(IndigoBloom, Dragonfruit))
-    )
+    val gradients: AfterSunsetGradients
+        @Composable
+        get() = AfterSunsetGradients(
+            actionGradient = Brush.horizontalGradient(listOf(Dragonfruit, PumpkinSpice)),
+            borderGradient = Brush.linearGradient(listOf(IndigoBloom, Dragonfruit)),
+            legendaryGradient = Brush.sweepGradient(listOf(Dragonfruit, NeonGold, ElectricYellow, Dragonfruit))
+        )
 }
 
 @Composable
@@ -55,7 +65,10 @@ fun AfterSunsetTheme(
         primary = IndigoBloom,
         secondary = PacificCyan,
         accent1 = Dragonfruit,
-        accent2 = PumpkinSpice
+        accent2 = PumpkinSpice,
+        neonGold = NeonGold,
+        electricYellow = ElectricYellow,
+        deepViolet = DeepViolet
     )) {
         MaterialTheme(
             colorScheme = darkColorScheme(
