@@ -21,8 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.domain.model.Event
+import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 import com.example.aftersunset.ui.theme.Dragonfruit
@@ -96,5 +99,16 @@ fun EventMapCard(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun EventMapCardPreview() {
+    AfterSunsetTheme {
+        EventMapCard(
+            event = sampleEvents[0],
+            onDetailClick = {}
+        )
     }
 }

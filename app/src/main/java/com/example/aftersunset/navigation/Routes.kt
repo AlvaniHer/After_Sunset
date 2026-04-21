@@ -68,4 +68,8 @@ import kotlinx.serialization.Serializable
  * Pantalla de pasarela de pago y confirmación de compra.
  * @param eventId ID del evento que el usuario está adquiriendo.
  */
-@Serializable data class Checkout(val eventId: String)
+@Serializable data class Checkout(
+    val eventId: String,
+    val ticketType: String,
+    val price: Double
+)

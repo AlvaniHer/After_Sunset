@@ -11,21 +11,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.Alignment
 import com.example.aftersunset.ui.components.profile.ProfileHeader
 import com.example.aftersunset.ui.components.profile.ProfileMenuItem
 import com.example.aftersunset.ui.components.profile.StatItem
+import com.example.aftersunset.R
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
 
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
-    onNavigateToTickets: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -63,20 +61,17 @@ fun ProfileScreen(
         )
 
         ProfileMenuItem(
-            icon = Icons.Default.Star,
-            label = "Mis Entradas",
-            onClick = onNavigateToTickets
-        )
-        ProfileMenuItem(
             icon = Icons.Default.Favorite,
             label = "Clubes Favoritos",
             onClick = {}
         )
+
         ProfileMenuItem(
-            icon = Icons.AutoMirrored.Filled.List,
+            painter = R.drawable.ic_history,
             label = "Historial de Noches",
             onClick = {}
         )
+
         ProfileMenuItem(
             icon = Icons.Default.Settings,
             label = "Ajustes",

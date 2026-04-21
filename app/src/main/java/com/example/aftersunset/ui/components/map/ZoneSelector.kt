@@ -13,7 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.PacificCyan
 
 @Composable
@@ -58,5 +60,17 @@ fun ZoneSelector(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun ZoneSelectorPreview(){
+    AfterSunsetTheme {
+        ZoneSelector(
+            modifier = Modifier
+                .padding(top = 60.dp),
+            onZoneSelected = { }
+        )
     }
 }

@@ -17,9 +17,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 import com.example.aftersunset.ui.theme.Dragonfruit
@@ -40,7 +42,7 @@ fun ProfileHeader(name: String, location: String, level: String) {
                     )
             )
             AsyncImage(
-                model = "https://api.dicebear.com/7.x/avataaars/svg?seed=Alvaro", // Avatar de ejemplo
+                model = "https://api.dicebear.com/7.x/avataaars/svg?seed=Alvaro",
                 contentDescription = null,
                 modifier = Modifier
                     .size(100.dp)
@@ -53,6 +55,7 @@ fun ProfileHeader(name: String, location: String, level: String) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(text = name, color = Color.White, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+
         Text(text = location, color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.bodyMedium)
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -70,5 +73,17 @@ fun ProfileHeader(name: String, location: String, level: String) {
                 letterSpacing = 1.sp
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun ProfileHeaderPreview(){
+    AfterSunsetTheme {
+        ProfileHeader(
+            name = "Álvaro Pérez",
+            location = "Málaga, ES",
+            level = "VIP Gold"
+        )
     }
 }
