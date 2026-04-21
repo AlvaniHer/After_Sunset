@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.navigation.*
 import com.example.aftersunset.ui.components.main.CustomBottomBar
@@ -52,17 +53,21 @@ fun MainScreen(rootNavController: NavHostController) {
                     }
                 )
             }
-            composable<Maps> {
+            composable<Maps> { backStackEntry ->
+                val route: Maps = backStackEntry.toRoute()
                 MapScreen(
                     events = SampleData.sampleEvents,
                     onEventClick = { id ->
                         rootNavController.navigate(EventDetail(id))
-                    }
+                    },
+                    initialLat = route.lat,
+                    initialLng = route.lng
                 )
             }
             composable<Tickets> {
                 TicketsScreen(
-                    tickets = SampleData.sampleTickets
+                    tickets = SampleData.sampleTickets,
+                    navController = navController
                 )
             }
             composable<Profile> {

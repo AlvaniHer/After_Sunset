@@ -7,39 +7,28 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
-import com.example.aftersunset.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.aftersunset.R
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.components.map.EventMapCard
 import com.example.aftersunset.ui.components.map.ZoneSelector
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.*
+import com.google.maps.android.compose.*
 
 @Composable
 fun MapScreen(
     events: List<Event>,
-    onEventClick: (String) -> Unit
+    onEventClick: (String) -> Unit,
+    initialLat: Double? = null,
+    initialLng: Double? = null
 ) {
     val malagaBounds = LatLngBounds(
         LatLng(36.60, -4.60),
@@ -74,6 +63,15 @@ fun MapScreen(
     val malagaCenter = LatLng(36.7213, -4.4214)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(malagaCenter, 13f)
+    }
+
+    LaunchedEffect(initialLat, initialLng) {
+        if (initialLat != null && initialLng != null) {
+            cameraPositionState.animate(
+                update = CameraUpdateFactory.newLatLngZoom(LatLng(initialLat, initialLng), 16f),
+                durationMs = 1000
+            )
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

@@ -69,7 +69,7 @@ fun CustomBottomBar(
                 icon = Icons.Default.Place,
                 isSelected = currentDestination?.hasRoute<Maps>() == true
             ) {
-                navigateToTab(navController, Maps)
+                navigateToTab(navController, Maps())
             }
 
             BottomNavItem(

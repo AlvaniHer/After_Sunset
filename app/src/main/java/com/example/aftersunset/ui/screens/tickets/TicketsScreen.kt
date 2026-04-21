@@ -11,14 +11,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.domain.model.Ticket
+import com.example.aftersunset.navigation.Maps
 import com.example.aftersunset.ui.components.tickets.EmptyTicketsState
 import com.example.aftersunset.ui.components.tickets.TicketItem
 import com.example.aftersunset.ui.theme.InkBlack
 
 @Composable
 fun TicketsScreen(
-    tickets: List<Ticket>
+    tickets: List<Ticket>,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -43,7 +48,24 @@ fun TicketsScreen(
                 contentPadding = PaddingValues(bottom = 100.dp)
             ) {
                 items(tickets) { ticket ->
-                    TicketItem(ticket)
+                    TicketItem(
+                        ticket = ticket,
+                        onLocationClick = {
+                            val relatedEvent = SampleData.sampleEvents.find { it.id == ticket.eventId }
+
+                            navController.navigate(
+                                Maps(
+                                    lat = relatedEvent?.latitude, 
+                                    lng = relatedEvent?.longitude
+                                )
+                            ) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
                 }
             }
         }
