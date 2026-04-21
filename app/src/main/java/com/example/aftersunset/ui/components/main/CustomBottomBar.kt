@@ -25,12 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.aftersunset.R
 import com.example.aftersunset.navigation.Home
 import com.example.aftersunset.navigation.Maps
 import com.example.aftersunset.navigation.Tickets
@@ -78,7 +80,7 @@ fun CustomBottomBar(
             }
 
             BottomNavItem(
-                icon = Icons.Default.Favorite,
+                painter = R.drawable.ic_confirmation_number,
                 isSelected = currentDestination?.hasRoute<Tickets>() == true,
                 onClick = {
                     navigateToTab(navController, Tickets)
@@ -101,17 +103,27 @@ fun CustomBottomBar(
  */
 @Composable
 private fun BottomNavItem(
-    icon: ImageVector,
+    icon: ImageVector? = null,
+    painter: Int? = null,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
     IconButton(onClick = onClick) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = if (isSelected) AfterSunsetTheme.colors.secondary else Color.White.copy(alpha = 0.5f),
-            modifier = Modifier.size(if (isSelected) 30.dp else 24.dp)
-        )
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = if (isSelected) AfterSunsetTheme.colors.secondary else Color.White.copy(alpha = 0.5f),
+                modifier = Modifier.size(if (isSelected) 30.dp else 24.dp)
+            )
+        } else if (painter != null) {
+            Icon(
+                painter = painterResource(id = painter),
+                contentDescription = null,
+                tint = if (isSelected) AfterSunsetTheme.colors.secondary else Color.White.copy(alpha = 0.5f),
+                modifier = Modifier.size(if (isSelected) 30.dp else 24.dp)
+            )
+        }
     }
 }
 

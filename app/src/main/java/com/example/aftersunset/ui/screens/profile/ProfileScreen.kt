@@ -25,7 +25,6 @@ import com.example.aftersunset.ui.theme.Dragonfruit
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
-    onNavigateToTickets: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -62,11 +61,6 @@ fun ProfileScreen(
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
         )
 
-        ProfileMenuItem(
-            icon = Icons.Default.Star,
-            label = "Mis Entradas",
-            onClick = onNavigateToTickets
-        )
         ProfileMenuItem(
             icon = Icons.Default.Favorite,
             label = "Clubes Favoritos",

@@ -9,13 +9,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.aftersunset.domain.model.Event
+import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.navigation.*
 import com.example.aftersunset.ui.components.main.CustomBottomBar
 import com.example.aftersunset.ui.screens.home.HomeScreen
 import com.example.aftersunset.ui.screens.map.MapScreen
 import com.example.aftersunset.ui.screens.profile.ProfileScreen
+import com.example.aftersunset.ui.screens.tickets.TicketsScreen
 
-//TODO: Borrar la lista manual
+//TODO: Borrar listas manuales
 /**
  * Pantalla raíz para el flujo autenticado de la aplicación.
  * Este componente centraliza el [Scaffold] que contiene la barra de navegación 
@@ -134,13 +136,61 @@ fun MainScreen(rootNavController: NavHostController) {
                     }
                 )
             }
-            composable<Tickets> { }
+            composable<Tickets> {
+                TicketsScreen(
+                    tickets = listOf(
+                        Ticket(
+                            id = "TKT-001",
+                            eventTitle = "Neon Ritual",
+                            clubName = "Sala Gold",
+                            date = "24 Mayo 2024",
+                            time = "23:30",
+                            entryType = "VIP Pass",
+                            price = 25.0,
+                            qrCodeData = "AS-GOLD-NEON-2024-VIP-001",
+                            imageUrl = "https://picsum.photos/id/123/400/400"
+                        ),
+                        Ticket(
+                            id = "TKT-002",
+                            eventTitle = "Sunset Beats",
+                            clubName = "Moliere Playa",
+                            date = "25 Mayo 2024",
+                            time = "18:00",
+                            entryType = "General + 1 Consumición",
+                            price = 20.0,
+                            qrCodeData = "AS-MOLIERE-SUNSET-2024-GEN-002",
+                            imageUrl = "https://picsum.photos/id/158/400/400"
+                        ),
+                        Ticket(
+                            id = "TKT-003",
+                            eventTitle = "Urban Jungle",
+                            clubName = "The Sound",
+                            date = "23 Mayo 2024",
+                            time = "23:00",
+                            entryType = "Anticipada",
+                            price = 12.0,
+                            qrCodeData = "AS-SOUND-URBAN-2024-EARLY-003",
+                            imageUrl = "https://picsum.photos/id/249/400/400"
+                        ),
+                        Ticket(
+                            id = "TKT-004",
+                            eventTitle = "Electronic Culture",
+                            clubName = "París 15",
+                            date = "01 Junio 2024",
+                            time = "22:00",
+                            entryType = "Entrada General",
+                            price = 25.0,
+                            qrCodeData = "AS-P15-ELEC-2024-GEN-004",
+                            imageUrl = "https://picsum.photos/id/321/400/400"
+                        )
+                    )
+                )
+            }
             composable<Profile> {
                 ProfileScreen(
                     onLogout = {
                         rootNavController.navigate(AuthGraph)
-                    },
-                    onNavigateToTickets = { }
+                    }
                 )
             }
         }
