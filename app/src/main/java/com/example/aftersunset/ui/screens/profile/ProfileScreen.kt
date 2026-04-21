@@ -11,14 +11,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.Alignment
 import com.example.aftersunset.ui.components.profile.ProfileHeader
 import com.example.aftersunset.ui.components.profile.ProfileMenuItem
 import com.example.aftersunset.ui.components.profile.StatItem
+import com.example.aftersunset.R
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
 
@@ -66,11 +65,13 @@ fun ProfileScreen(
             label = "Clubes Favoritos",
             onClick = {}
         )
+
         ProfileMenuItem(
-            icon = Icons.AutoMirrored.Filled.List,
+            painter = R.drawable.ic_history,
             label = "Historial de Noches",
             onClick = {}
         )
+
         ProfileMenuItem(
             icon = Icons.Default.Settings,
             label = "Ajustes",

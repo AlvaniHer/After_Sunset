@@ -13,10 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.R
+import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.PacificCyan
 
 @Composable
@@ -82,5 +84,25 @@ fun TicketDetail(label: String, value: String) {
     Column {
         Text(label, color = Color.White.copy(alpha = 0.4f), style = MaterialTheme.typography.labelSmall)
         Text(value, color = Color.White, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Preview
+@Composable
+fun TicketItemPreview() {
+    AfterSunsetTheme {
+        TicketItem(
+            ticket = Ticket(
+                id = "TKT-001",
+                eventTitle = "Neon Ritual",
+                clubName = "Sala Gold",
+                date = "24 Mayo 2024",
+                time = "23:30",
+                entryType = "VIP Pass",
+                price = 25.0,
+                qrCodeData = "AS-GOLD-NEON-2024-VIP-001",
+                imageUrl = "https://picsum.photos/id/123/400/400"
+            )
+        )
     }
 }

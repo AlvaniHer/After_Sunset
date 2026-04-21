@@ -7,7 +7,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.aftersunset.ui.theme.AfterSunsetTheme
 
 @Composable
 fun DashedDivider() {
@@ -20,5 +22,13 @@ fun DashedDivider() {
             pathEffect = pathEffect,
             strokeWidth = 2f
         )
+    }
+}
+
+@Preview
+@Composable
+fun DashedDividerPreview() {
+    AfterSunsetTheme {
+        DashedDivider()
     }
 }

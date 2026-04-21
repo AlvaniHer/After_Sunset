@@ -7,8 +7,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aftersunset.R
+import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.PacificCyan
 
 @Composable
@@ -35,5 +37,13 @@ fun EmptyTicketsState() {
             color = PacificCyan,
             style = MaterialTheme.typography.labelMedium
         )
+    }
+}
+
+@Preview
+@Composable
+fun EmptyTicketsStatePreview() {
+    AfterSunsetTheme {
+        EmptyTicketsState()
     }
 }
