@@ -40,7 +40,8 @@ import com.example.aftersunset.ui.theme.PacificCyan
 @Composable
 fun EventContent(
     event: Event,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onBuyClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -123,7 +124,7 @@ fun EventContent(
                 .padding(24.dp)
                 .navigationBarsPadding()
             ,
-            onClick = {} // Navegar a pagar
+            onClick = onBuyClick
         )
 
         IconButton(
@@ -143,7 +144,8 @@ fun EventContentPreview(){
     AfterSunsetTheme {
         EventContent(
             event = sampleEvents[0],
-            onBackClick = {}
+            onBackClick = {},
+            onBuyClick = {}
         )
     }
 }

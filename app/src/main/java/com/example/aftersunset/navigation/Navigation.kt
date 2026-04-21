@@ -88,6 +88,9 @@ fun Navigation() {
                 EventDetailScreen(
                     eventId = detail.id,
                     onBackClick = { navController.popBackStack() },
+                    onBuyClick = { eventId, ticketType, price ->
+                        navController.navigate(Checkout(eventId, ticketType, price))
+                    }
                 )
             }
 

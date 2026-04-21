@@ -9,12 +9,19 @@ import com.example.aftersunset.ui.components.event.EventContent
 @Composable
 fun EventDetailScreen(
     eventId: String,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onBuyClick: (String, String, Double) -> Unit
 ) {
     val event = sampleEvents.find { it.id == eventId }
     if (event == null)
         Text(text = "Evento no encontrado") // TODO: Hacer una pantalla de error para este caso
     else {
-        EventContent(event, onBackClick)
+        EventContent(
+            event = event,
+            onBackClick = onBackClick,
+            onBuyClick = {
+                onBuyClick(event.id, "Entrada General", event.price)
+            }
+        )
     }
 }
