@@ -18,6 +18,8 @@ import com.example.aftersunset.ui.components.profile.ProfileHeader
 import com.example.aftersunset.ui.components.profile.ProfileMenuItem
 import com.example.aftersunset.ui.components.profile.StatItem
 import com.example.aftersunset.R
+import com.example.aftersunset.data.SampleData.sampleUser
+import com.example.aftersunset.domain.model.UserLevel
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
 
@@ -33,9 +35,9 @@ fun ProfileScreen(
             .padding(top = 60.dp)
     ) {
         ProfileHeader(
-            name = "Álvaro Pérez",
-            location = "Málaga, ES",
-            level = "VIP Gold"
+            name = sampleUser.name,
+            location = sampleUser.location,
+            userLevel = sampleUser.level
         )
 
         Spacer(modifier = Modifier.height(32.dp))

@@ -2,8 +2,22 @@ package com.example.aftersunset.data
 
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.domain.model.Ticket
+import com.example.aftersunset.domain.model.User
+import com.example.aftersunset.domain.model.UserLevel
 
 object SampleData {
+    val sampleUser = User(
+        id = "USER-001",
+        name = "Álvaro Pérez",
+        email = "alvaro.perez@email.com",
+        location = "Málaga, ES",
+        level = UserLevel.GOLD,
+        points = 450,
+        eventsAttended = 12,
+        followingCount = 8,
+        profileImageUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=Alvaro"
+    )
+
     val sampleEvents = listOf(
         Event(
             id = "1",
