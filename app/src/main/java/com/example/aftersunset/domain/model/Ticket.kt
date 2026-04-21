@@ -2,6 +2,7 @@ package com.example.aftersunset.domain.model
 
 data class Ticket(
     val id: String,
+    val eventId: String,
     val eventTitle: String,
     val clubName: String,
     val date: String,

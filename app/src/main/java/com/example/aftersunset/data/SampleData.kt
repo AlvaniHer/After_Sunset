@@ -1,12 +1,15 @@
 package com.example.aftersunset.data
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.domain.model.User
 import com.example.aftersunset.domain.model.UserLevel
 
 object SampleData {
-    var sampleUser = User(
+    var sampleUser by mutableStateOf(User(
         id = "USER-001",
         name = "Álvaro Pérez",
         email = "alvaro.perez@email.com",
@@ -16,7 +19,7 @@ object SampleData {
         eventsAttended = 12,
         followingCount = 8,
         profileImageUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=Alvaro"
-    )
+    ))
 
     val sampleEvents = listOf(
         Event(
@@ -100,6 +103,7 @@ object SampleData {
     var sampleTickets = mutableListOf(
         Ticket(
             id = "TKT-001",
+            eventId = "1",
             eventTitle = "Neon Ritual",
             clubName = "Sala Gold",
             date = "24 Mayo 2024",
@@ -111,6 +115,7 @@ object SampleData {
         ),
         Ticket(
             id = "TKT-002",
+            eventId = "2",
             eventTitle = "Sunset Beats",
             clubName = "Moliere Playa",
             date = "25 Mayo 2024",
@@ -122,6 +127,7 @@ object SampleData {
         ),
         Ticket(
             id = "TKT-003",
+            eventId = "3",
             eventTitle = "Urban Jungle",
             clubName = "The Sound",
             date = "23 Mayo 2024",
@@ -133,6 +139,7 @@ object SampleData {
         ),
         Ticket(
             id = "TKT-004",
+            eventId = "4",
             eventTitle = "Electronic Culture",
             clubName = "París 15",
             date = "01 Junio 2024",

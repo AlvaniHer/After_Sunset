@@ -124,6 +124,7 @@ fun CheckoutScreen(
 
                     val newTicket = Ticket(
                         id = "TKT-${System.currentTimeMillis()}",
+                        eventId = event.id,
                         eventTitle = event.title,
                         clubName = event.clubName,
                         date = event.date,
