@@ -19,8 +19,14 @@ import kotlinx.serialization.Serializable
 
 /**
  * Punto de entrada principal para el flujo autenticado.
+ * 
+ * @param lat Latitud opcional para forzar la navegación inicial al mapa.
+ * @param lng Longitud opcional para forzar la navegación inicial al mapa.
  */
-@Serializable object Main
+@Serializable data class Main(
+    val lat: Double? = null,
+    val lng: Double? = null
+)
 
 /**
  * Destino para la pantalla de inicio de sesión.
@@ -33,7 +39,7 @@ import kotlinx.serialization.Serializable
 @Serializable object Register
 
 /**
- * Destino para el Feed principal de recomendaciones y eventos.
+ * Pestaña principal de la aplicación que muestra el feed de eventos destacados.
  */
 @Serializable object Home
 

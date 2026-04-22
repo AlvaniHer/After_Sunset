@@ -30,21 +30,26 @@ import com.example.aftersunset.ui.screens.venue.VenueProfileScreen
  *
  * @param rootNavController NavController del grafo principal para permitir 
  * la navegación hacia pantallas fuera del BottomBar.
+ * @param initialLat Latitud inicial para forzar la navegación al mapa si no es nula.
+ * @param initialLng Longitud inicial para forzar la navegación al mapa si no es nula.
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainScreen(rootNavController: NavHostController) {
+fun MainScreen(
+    rootNavController: NavHostController,
+    initialLat: Double? = null,
+    initialLng: Double? = null
+) {
     val navController = rememberNavController()
 
-    LaunchedEffect(SampleData.pendingMapFocus) {
-        SampleData.pendingMapFocus?.let { focus ->
-            navController.navigate(Maps(focus.lat, focus.lng)) {
+    LaunchedEffect(initialLat, initialLng) {
+        if (initialLat != null && initialLng != null) {
+            navController.navigate(Maps(initialLat, initialLng)) {
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
                 }
                 launchSingleTop = true
             }
-            SampleData.pendingMapFocus = null
         }
     }
 
@@ -92,7 +97,7 @@ fun MainScreen(rootNavController: NavHostController) {
                     }
                 )
             }
-
+            
             composable<VenueProfile> { backStackEntry ->
                 val route: VenueProfile = backStackEntry.toRoute()
                 VenueProfileScreen(
@@ -100,6 +105,14 @@ fun MainScreen(rootNavController: NavHostController) {
                     onBackClick = { navController.popBackStack() },
                     onEventClick = { eventId ->
                         rootNavController.navigate(EventDetail(eventId))
+                    },
+                    onLocationClick = { lat, lng ->
+                        navController.navigate(Maps(lat, lng)) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                        }
                     }
                 )
             }

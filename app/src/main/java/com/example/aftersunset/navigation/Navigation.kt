@@ -10,8 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.aftersunset.data.MapFocus
-import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.ui.screens.checkout.CheckoutScreen
 import com.example.aftersunset.ui.screens.event.EventDetailScreen
@@ -71,9 +69,14 @@ fun Navigation() {
          * Grafo Principal.
          * Contiene la lógica de las secciones principales accesibles mediante el Bottom Nav.
          */
-        navigation<MainGraph>(startDestination = Main) {
-            composable<Main> {
-                MainScreen(rootNavController = navController)
+        navigation<MainGraph>(startDestination = Main()) {
+            composable<Main> { backStackEntry ->
+                val route: Main = backStackEntry.toRoute()
+                MainScreen(
+                    rootNavController = navController,
+                    initialLat = route.lat,
+                    initialLng = route.lng
+                )
             }
 
             composable<EventDetail>(
@@ -101,8 +104,10 @@ fun Navigation() {
                         navController.navigate(Checkout(eventId, ticketType, price))
                     },
                     onLocationClick = { lat, lng ->
-                        SampleData.pendingMapFocus = MapFocus(lat, lng)
-                        navController.popBackStack()
+                        navController.navigate(Main(lat, lng)) {
+                            popUpTo<Main> { inclusive = true }
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -114,6 +119,12 @@ fun Navigation() {
                     onBackClick = { navController.popBackStack() },
                     onEventClick = { eventId ->
                         navController.navigate(EventDetail(eventId))
+                    },
+                    onLocationClick = { lat, lng ->
+                        navController.navigate(Main(lat, lng)) {
+                            popUpTo<Main> { inclusive = true }
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -129,7 +140,7 @@ fun Navigation() {
                         price = route.price,
                         onBackClick = { navController.popBackStack() },
                         onPaymentSuccess = {
-                            navController.navigate(Main) {
+                            navController.navigate(Main()) {
                                 popUpTo<Main> { inclusive = true }
                             }
                         }

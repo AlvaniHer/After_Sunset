@@ -3,15 +3,7 @@ package com.example.aftersunset.data
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.aftersunset.domain.model.Event
-import com.example.aftersunset.domain.model.Ticket
-import com.example.aftersunset.domain.model.User
-import com.example.aftersunset.domain.model.UserLevel
-
-/**
- * Clase auxiliar para transportar coordenadas entre grafos de navegación.
- */
-data class MapFocus(val lat: Double, val lng: Double)
+import com.example.aftersunset.domain.model.*
 
 object SampleData {
     var sampleUser by mutableStateOf(User(
@@ -26,11 +18,64 @@ object SampleData {
         profileImageUrl = "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Sawyer"
     ))
 
-    /** 
-     * Propiedad para coordinar la navegación desde pantallas globales
-     * hacia la pestaña de Mapas con coordenadas específicas.
-     */
-    var pendingMapFocus by mutableStateOf<MapFocus?>(null)
+    val sampleVenues = listOf(
+        Venue(
+            id = 1,
+            name = "SALA GOLD",
+            zone = "Málaga Centro",
+            address = "C. Luis de Velázquez, 5, 29008 Málaga",
+            latitude = 36.7218,
+            longitude = -4.4185,
+            capacity = 500,
+            minAge = 21,
+            mainPhoto = "https://picsum.photos/id/123/800/600",
+            description = "El templo del ocio nocturno en el corazón de Málaga. Sonido Funktion-One, iluminación LED de última generación y los mejores reservados de la ciudad."
+        ),
+        Venue(
+            id = 2,
+            name = "MOLIERE PLAYA",
+            zone = "Torremolinos / Los Álamos",
+            address = "Paseo Marítimo Los Álamos, s/n, 29620 Torremolinos",
+            latitude = 36.6436,
+            longitude = -4.4674,
+            capacity = 800,
+            minAge = 21,
+            mainPhoto = "https://picsum.photos/id/158/800/600",
+            description = "El beach club de referencia en la Costa del Sol. Ambiente inmejorable frente al mar con la mejor música comercial y house."
+        ),
+        Venue(
+            id = 3,
+            name = "THE SOUND",
+            zone = "Teatinos",
+            address = "C. Plutarco, 58, 29010 Málaga",
+            latitude = 36.7165,
+            longitude = -4.4712,
+            capacity = 300,
+            minAge = 18,
+            mainPhoto = "https://picsum.photos/id/249/800/600",
+            description = "La sala más cañera de Teatinos. Urban music, reggaeton y el mejor ambiente universitario de la zona."
+        ),
+        Venue(
+            id = 4,
+            name = "PARÍS 15",
+            zone = "Polígono San Luis",
+            address = "C. la Orotava, 27, 29006 Málaga",
+            latitude = 36.7032,
+            longitude = -4.4563,
+            capacity = 3000,
+            minAge = 18,
+            mainPhoto = "https://picsum.photos/id/321/800/600",
+            description = "Uno de los espacios para eventos y conciertos más grandes de Andalucía. Sonido e iluminación profesional para experiencias inolvidables."
+        )
+    )
+
+    val sampleReviews = listOf(
+        Review("Lucía García", 5, "Increíble ambiente y el sonido es de otro planeta. La mejor noche en Málaga sin duda."),
+        Review("Marcos Ruiz", 4, "Los reservados están genial, muy buena atención por parte del staff. Repetiremos."),
+        Review("Elena Sanz", 5, "Música variada y la decoración neón es espectacular. ¡Muy recomendable!"),
+        Review("Juan M.", 4, "Buena sala, aunque a veces se llena demasiado. Pero en general de 10."),
+        Review("Sara P.", 5, "Mi club favorito de Málaga, siempre que vengo me lo paso increíble.")
+    )
 
     val sampleEvents = listOf(
         Event(
