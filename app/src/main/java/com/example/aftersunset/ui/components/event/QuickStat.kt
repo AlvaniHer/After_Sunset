@@ -10,6 +10,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 
+/**
+ * Muestra una métrica rápida del evento.
+ * Diseñado para ser utilizado dentro de una fila de estadísticas.
+ *
+ * @param label Título de la estadística.
+ * @param value Valor de la estadística.
+ */
 @Composable
 fun QuickStat(label: String, value: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {

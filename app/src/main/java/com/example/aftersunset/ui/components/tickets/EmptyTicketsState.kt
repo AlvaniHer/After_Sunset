@@ -13,6 +13,11 @@ import com.example.aftersunset.R
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Representa el estado vacío de la pantalla de tickets.
+ * Se muestra cuando el usuario no tiene ninguna entrada comprada, 
+ * animándole a explorar eventos en el mapa.
+ */
 @Composable
 fun EmptyTicketsState() {
     Column(

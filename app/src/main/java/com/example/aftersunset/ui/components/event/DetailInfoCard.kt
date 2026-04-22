@@ -8,30 +8,28 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
-import com.example.aftersunset.ui.theme.PacificCyan
 
-//TODO: Documentar la funcionalidad de este componente
+/**
+ * Tarjeta que agrupa la información logística principal de un evento.
+ * Incluye la fecha, el nombre del club y la dirección completa.
+ *
+ * @param event Objeto [Event] que contiene los datos a mostrar.
+ */
 @Composable
 fun DetailInfoCard(event: Event) {
     Surface(
@@ -55,15 +53,6 @@ fun DetailInfoCard(event: Event) {
                 InfoItem(Icons.Default.LocationOn, event.fullAddress)
             }
         }
-    }
-}
-
-@Composable
-fun InfoItem(icon: ImageVector, text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(icon, null, tint = PacificCyan, modifier = Modifier.size(20.dp))
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text, color = Color.White, style = MaterialTheme.typography.bodyMedium)
     }
 }
 

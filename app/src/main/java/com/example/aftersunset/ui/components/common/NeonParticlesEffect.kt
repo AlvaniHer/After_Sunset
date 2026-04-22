@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.components.checkout
+package com.example.aftersunset.ui.components.common
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -16,6 +16,10 @@ import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PacificCyan
 import kotlin.random.Random
 
+/**
+ * Efecto visual de partículas neón que flotan y se desvanecen.
+ * Se utiliza principalmente como celebración durante la subida de nivel del usuario.
+ */
 @Composable
 fun NeonParticlesEffect() {
     val particles = remember { List(30) { ParticleData() } }
@@ -60,6 +64,9 @@ fun NeonParticlesEffect() {
     }
 }
 
+/**
+ * Define las propiedades físicas y visuales de una partícula individual.
+ */
 class ParticleData {
     val startX = Random.nextInt(-200, 200).toFloat()
     val startY = Random.nextInt(-300, 300).toFloat()

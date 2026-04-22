@@ -33,6 +33,13 @@ import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Representa la cara frontal del ticket físico digital.
+ * Presenta un diseño estilizado que incluye la imagen del evento, título, club, fecha,
+ * tipo de entrada y un código QR de acceso.
+ *
+ * @param ticket Objeto [Ticket] con la información principal para mostrar en el anverso.
+ */
 @Composable
 fun TicketFront(ticket: Ticket) {
     Surface(

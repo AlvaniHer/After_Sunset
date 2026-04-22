@@ -19,6 +19,13 @@ import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PacificCyan
 import kotlinx.coroutines.delay
 
+/**
+ * Pantalla de presentación.
+ * Muestra una animación personalizada con los colores corporativos neón
+ * antes de redirigir al usuario al flujo de autenticación.
+ *
+ * @param navController Controlador de navegación para redirigir tras finalizar la animación.
+ */
 @Composable
 fun SplashScreen(navController: NavHostController) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash))

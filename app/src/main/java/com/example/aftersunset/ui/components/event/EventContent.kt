@@ -37,6 +37,14 @@ import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Componente principal que define la estructura visual del detalle de un evento.
+ * Gestiona el scroll vertical, la imagen de cabecera con gradiente y las secciones de información técnica.
+ *
+ * @param event Objeto [Event] con toda la información técnica del evento.
+ * @param onBackClick Callback para gestionar el retroceso en la navegación.
+ * @param onBuyClick Callback para iniciar el flujo de compra de entradas.
+ */
 @Composable
 fun EventContent(
     event: Event,

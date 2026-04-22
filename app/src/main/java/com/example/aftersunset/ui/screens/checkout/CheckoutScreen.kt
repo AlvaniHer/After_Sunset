@@ -24,11 +24,22 @@ import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.domain.model.UserLevel
 import com.example.aftersunset.ui.components.checkout.PriceRow
-import com.example.aftersunset.ui.components.checkout.SuccessDialog
+import com.example.aftersunset.ui.components.common.SuccessDialog
 import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Pantalla de pasarela de pago.
+ * Muestra un resumen del evento seleccionado, el desglose de precios y permite confirmar la compra.
+ * Gestiona la lógica de generación de tickets y actualización de puntos/nivel del usuario.
+ *
+ * @param event El objeto [Event] que el usuario desea adquirir.
+ * @param ticketType Tipo de entrada seleccionada.
+ * @param price Precio base de la entrada.
+ * @param onBackClick Callback para regresar a la pantalla anterior.
+ * @param onPaymentSuccess Callback que se ejecuta tras un pago exitoso para navegar a la siguiente sección.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

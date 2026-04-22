@@ -28,6 +28,15 @@ import com.example.aftersunset.domain.model.UserLevel
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 
+/**
+ * Cabecera del perfil de usuario.
+ * Muestra el avatar del usuario rodeado por un anillo de gradiente neón animado
+ * que cambia de color y velocidad según el nivel alcanzado.
+ *
+ * @param name Nombre del usuario a mostrar.
+ * @param location Ubicación geográfica del usuario.
+ * @param userLevel Rango actual del usuario que determina la estética del anillo y el badge.
+ */
 @Composable
 fun ProfileHeader(name: String, location: String, userLevel: UserLevel) {
     val colors = AfterSunsetTheme.colors

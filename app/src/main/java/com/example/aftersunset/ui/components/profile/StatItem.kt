@@ -9,6 +9,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 
+/**
+ * Representa un indicador estadístico individual en el perfil del usuario.
+ * Muestra un valor destacado y una etiqueta descriptiva debajo.
+ *
+ * @param label Texto descriptivo de la estadística.
+ * @param value Valor numérico o textual a destacar.
+ */
 @Composable
 fun StatItem(label: String, value: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {

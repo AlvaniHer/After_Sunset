@@ -20,6 +20,14 @@ import com.example.aftersunset.ui.components.tickets.EmptyTicketsState
 import com.example.aftersunset.ui.components.tickets.TicketItem
 import com.example.aftersunset.ui.theme.InkBlack
 
+/**
+ * Pantalla de gestión de entradas adquiridas por el usuario.
+ * Muestra una lista de tickets interactivos (físico-digitales) o un estado vacío
+ * si no hay planes próximos. Permite la navegación geolocalizada desde cada ticket.
+ *
+ * @param tickets Lista de objetos [Ticket] asociados a la cuenta del usuario.
+ * @param navController Controlador de navegación para permitir saltar a la pestaña de Mapas.
+ */
 @Composable
 fun TicketsScreen(
     tickets: List<Ticket>,

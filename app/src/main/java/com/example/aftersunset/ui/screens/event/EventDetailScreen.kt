@@ -5,7 +5,14 @@ import androidx.compose.runtime.Composable
 import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.ui.components.event.EventContent
 
-//TODO: Documentar la funcionalidad de esta pantalla y meter texto en strings
+/**
+ * Pantalla de detalle de un evento.
+ * Recupera la información del evento seleccionado y la delega al componente visual [EventContent].
+ *
+ * @param eventId Identificador único del evento que se desea visualizar.
+ * @param onBackClick Callback para gestionar la navegación hacia atrás.
+ * @param onBuyClick Callback que inicia el flujo de compra de entradas, pasando los datos básicos del ticket.
+ */
 @Composable
 fun EventDetailScreen(
     eventId: String,
@@ -14,7 +21,7 @@ fun EventDetailScreen(
 ) {
     val event = sampleEvents.find { it.id == eventId }
     if (event == null)
-        Text(text = "Evento no encontrado") // TODO: Hacer una pantalla de error para este caso
+        Text(text = "Evento no encontrado") // TODO: Implementar una pantalla de error visualmente acorde al tema
     else {
         EventContent(
             event = event,

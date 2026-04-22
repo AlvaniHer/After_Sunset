@@ -15,6 +15,10 @@ import androidx.compose.ui.unit.dp
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 
+/**
+ * Divisor decorativo con efecto de línea discontinua y muescas laterales.
+ * Se utiliza dentro del diseño de los tickets para simular el precorte de una entrada física tradicional.
+ */
 @Composable
 fun DashedDivider() {
     Box(

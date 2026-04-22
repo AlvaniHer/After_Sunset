@@ -20,6 +20,12 @@ import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PumpkinSpice
 
+/**
+ * Fila horizontal que muestra las estadísticas técnicas y el estado actual de un evento.
+ * Incluye edad mínima, edad media, aforo y disponibilidad.
+ *
+ * @param event Objeto [Event] del cual extraer las métricas.
+ */
 @Composable
 fun EventStatsRow(event: Event) {
     Row(

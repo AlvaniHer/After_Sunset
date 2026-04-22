@@ -16,6 +16,14 @@ import androidx.compose.ui.unit.dp
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.Dragonfruit
 
+/**
+ * Representa una fila de desglose de precios en el resumen de compra.
+ * Permite diferenciar visualmente entre conceptos individuales y el importe total.
+ *
+ * @param label Descripción del concepto.
+ * @param value Valor monetario formateado.
+ * @param isTotal Si es true, aplica un estilo destacado con mayor tamaño y peso de fuente.
+ */
 @Composable
 fun PriceRow(
     label: String,
