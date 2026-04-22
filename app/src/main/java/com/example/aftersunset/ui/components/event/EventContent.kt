@@ -1,27 +1,23 @@
 package com.example.aftersunset.ui.components.event
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -37,19 +33,13 @@ import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 
-/**
- * Componente principal que define la estructura visual del detalle de un evento.
- * Gestiona el scroll vertical, la imagen de cabecera con gradiente y las secciones de información técnica.
- *
- * @param event Objeto [Event] con toda la información técnica del evento.
- * @param onBackClick Callback para gestionar el retroceso en la navegación.
- * @param onBuyClick Callback para iniciar el flujo de compra de entradas.
- */
 @Composable
 fun EventContent(
     event: Event,
     onBackClick: () -> Unit,
-    onBuyClick: () -> Unit
+    onVenueClick: () -> Unit,
+    onBuyClick: () -> Unit,
+    onLocationClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -99,29 +89,86 @@ fun EventContent(
                     fontWeight = FontWeight.Black
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                DetailInfoCard(event)
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                EventStatsRow(event)
-
-                Spacer(modifier = Modifier.height(24.dp))
-
+                Text("Información", color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "Sobre este evento",
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = "Prepárate para una noche inolvidable en ${event.clubName}. El mejor ambiente de la ciudad con un despliegue visual sin precedentes. No te quedes sin tu entrada para el evento más esperado de la temporada.",
-                    color = Color.White.copy(alpha = 0.7f),
+                    text = event.description,
+                    color = Color.White.copy(alpha = 0.8f),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    lineHeight = 24.sp
                 )
+                
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                InfoItem(Icons.Default.Info, "Para mayores de ${event.minAge} años (necesario traer DNI).")
+                Spacer(modifier = Modifier.height(16.dp))
+                InfoItem(Icons.Default.Notifications, "Organizado por ${event.clubName}")
+                Spacer(modifier = Modifier.height(16.dp))
+                InfoItem(Icons.Default.Refresh, "Puedes obtener un reembolso si es dentro de las 24 horas posteriores a la compra.")
 
-                Spacer(modifier = Modifier.height(100.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 32.dp), color = Color.White.copy(alpha = 0.1f))
+
+                Text("Sala", color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.labelLarge)
+                Text(event.clubName, color = Color.White, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Text(event.fullAddress, color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.bodyMedium)
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Button(
+                    onClick = onLocationClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.1f)),
+                    shape = RoundedCornerShape(12.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Icon(Icons.Default.LocationOn, null, tint = Color.White, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("ABRIR EN EL MAPA", color = Color.White, fontWeight = FontWeight.Bold)
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                InfoItem(Icons.Default.Info, "Apertura de puertas: 23:59")
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 32.dp), color = Color.White.copy(alpha = 0.1f))
+
+                Text("Promotor", color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.labelLarge)
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        modifier = Modifier.size(56.dp).clickable { onVenueClick() },
+                        shape = CircleShape,
+                        color = Color.White.copy(alpha = 0.1f)
+                    ) {
+                        AsyncImage(
+                            model = event.imageUrl,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize().clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = event.clubName,
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f).clickable { onVenueClick() }
+                    )
+                    Button(
+                        onClick = { /* Lógica de seguir */ },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier.height(36.dp)
+                    ) {
+                        Text("SEGUIR", color = Color.Black, fontWeight = FontWeight.Black, fontSize = 12.sp)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(150.dp))
             }
         }
 
@@ -153,7 +200,9 @@ fun EventContentPreview(){
         EventContent(
             event = sampleEvents[0],
             onBackClick = {},
-            onBuyClick = {}
+            onVenueClick = {},
+            onBuyClick = {},
+            onLocationClick = {}
         )
     }
 }

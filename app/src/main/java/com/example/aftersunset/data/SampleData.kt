@@ -8,6 +8,11 @@ import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.domain.model.User
 import com.example.aftersunset.domain.model.UserLevel
 
+/**
+ * Clase auxiliar para transportar coordenadas entre grafos de navegación.
+ */
+data class MapFocus(val lat: Double, val lng: Double)
+
 object SampleData {
     var sampleUser by mutableStateOf(User(
         id = "USER-001",
@@ -18,12 +23,19 @@ object SampleData {
         points = 950,
         eventsAttended = 12,
         followingCount = 8,
-        profileImageUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=Alvaro"
+        profileImageUrl = "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Sawyer"
     ))
+
+    /** 
+     * Propiedad para coordinar la navegación desde pantallas globales
+     * hacia la pestaña de Mapas con coordenadas específicas.
+     */
+    var pendingMapFocus by mutableStateOf<MapFocus?>(null)
 
     val sampleEvents = listOf(
         Event(
             id = "1",
+            venueId = "1",
             title = "Neon Ritual",
             clubName = "Sala Gold",
             date = "Viernes, 24 Mayo",
@@ -43,6 +55,7 @@ object SampleData {
         ),
         Event(
             id = "2",
+            venueId = "2",
             title = "Sunset Beats",
             clubName = "Moliere Playa",
             date = "Sábado, 25 Mayo",
@@ -62,6 +75,7 @@ object SampleData {
         ),
         Event(
             id = "3",
+            venueId = "3",
             title = "Urban Jungle",
             clubName = "The Sound",
             date = "Jueves, 23 Mayo",
@@ -81,6 +95,7 @@ object SampleData {
         ),
         Event(
             id = "4",
+            venueId = "4",
             title = "Electronic Culture",
             clubName = "París 15",
             date = "Sábado, 1 Junio",

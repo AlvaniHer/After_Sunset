@@ -87,7 +87,7 @@ fun ProfileHeader(name: String, location: String, userLevel: UserLevel) {
             )
             
             AsyncImage(
-                model = "https://api.dicebear.com/7.x/avataaars/svg?seed=$name",
+                model = sampleUser.profileImageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .size(96.dp)

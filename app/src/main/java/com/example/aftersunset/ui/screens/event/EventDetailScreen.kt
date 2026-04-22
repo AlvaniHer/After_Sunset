@@ -11,13 +11,17 @@ import com.example.aftersunset.ui.components.event.EventContent
  *
  * @param eventId Identificador único del evento que se desea visualizar.
  * @param onBackClick Callback para gestionar la navegación hacia atrás.
- * @param onBuyClick Callback que inicia el flujo de compra de entradas, pasando los datos básicos del ticket.
+ * @param onVenueClick Callback para navegar al perfil del local/empresa.
+ * @param onBuyClick Callback que inicia el flujo de compra de entradas.
+ * @param onLocationClick Callback para navegar al mapa centrado en el local del evento.
  */
 @Composable
 fun EventDetailScreen(
     eventId: String,
     onBackClick: () -> Unit,
-    onBuyClick: (String, String, Double) -> Unit
+    onVenueClick: (String) -> Unit,
+    onBuyClick: (String, String, Double) -> Unit,
+    onLocationClick: (Double, Double) -> Unit
 ) {
     val event = sampleEvents.find { it.id == eventId }
     if (event == null)
@@ -26,8 +30,12 @@ fun EventDetailScreen(
         EventContent(
             event = event,
             onBackClick = onBackClick,
+            onVenueClick = { onVenueClick(event.venueId) },
             onBuyClick = {
                 onBuyClick(event.id, "Entrada General", event.price)
+            },
+            onLocationClick = {
+                onLocationClick(event.latitude, event.longitude)
             }
         )
     }

@@ -21,10 +21,18 @@ import com.example.aftersunset.ui.theme.PacificCyan
  *
  * @param icon Icono descriptivo de la información.
  * @param text Texto informativo a mostrar.
+ * @param modifier Modificador opcional para personalizar el comportamiento o apariencia.
  */
 @Composable
-fun InfoItem(icon: ImageVector, text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+fun InfoItem(
+    icon: ImageVector,
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Icon(icon, null, tint = PacificCyan, modifier = Modifier.size(20.dp))
         Spacer(modifier = Modifier.width(8.dp))
         Text(text, color = Color.White, style = MaterialTheme.typography.bodyMedium)
