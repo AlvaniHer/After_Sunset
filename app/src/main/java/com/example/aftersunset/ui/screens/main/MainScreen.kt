@@ -103,9 +103,7 @@ fun MainScreen(
                 VenueProfileScreen(
                     venueId = route.id,
                     onBackClick = { navController.popBackStack() },
-                    onEventClick = { eventId ->
-                        rootNavController.navigate(EventDetail(eventId))
-                    },
+                    onEventClick = { navController.popBackStack() },
                     onLocationClick = { lat, lng ->
                         navController.navigate(Maps(lat, lng)) {
                             popUpTo(navController.graph.findStartDestination().id) {

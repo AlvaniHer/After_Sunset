@@ -117,9 +117,7 @@ fun Navigation() {
                 VenueProfileScreen(
                     venueId = route.id,
                     onBackClick = { navController.popBackStack() },
-                    onEventClick = { eventId ->
-                        navController.navigate(EventDetail(eventId))
-                    },
+                    onEventClick = { navController.popBackStack() },
                     onLocationClick = { lat, lng ->
                         navController.navigate(Main(lat, lng)) {
                             popUpTo<Main> { inclusive = true }
