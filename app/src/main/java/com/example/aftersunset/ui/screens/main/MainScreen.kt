@@ -5,7 +5,9 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,12 +20,13 @@ import com.example.aftersunset.ui.screens.home.HomeScreen
 import com.example.aftersunset.ui.screens.map.MapScreen
 import com.example.aftersunset.ui.screens.profile.ProfileScreen
 import com.example.aftersunset.ui.screens.tickets.TicketsScreen
+import com.example.aftersunset.ui.screens.venue.VenueProfileScreen
 
 /**
  * Pantalla raíz para el flujo autenticado de la aplicación.
  * Este componente centraliza el [Scaffold] que contiene la barra de navegación 
  * inferior y gestiona un [NavHost] interno para las secciones principales:
- * Home, Mapa, Tickets y Perfil.
+ * Home, Mapa, Tickets y Perfil, además de rutas secundarias como el perfil del local.
  *
  * @param rootNavController NavController del grafo principal para permitir 
  * la navegación hacia pantallas fuera del BottomBar.
@@ -32,6 +35,18 @@ import com.example.aftersunset.ui.screens.tickets.TicketsScreen
 @Composable
 fun MainScreen(rootNavController: NavHostController) {
     val navController = rememberNavController()
+
+    LaunchedEffect(SampleData.pendingMapFocus) {
+        SampleData.pendingMapFocus?.let { focus ->
+            navController.navigate(Maps(focus.lat, focus.lng)) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+            }
+            SampleData.pendingMapFocus = null
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -74,6 +89,17 @@ fun MainScreen(rootNavController: NavHostController) {
                 ProfileScreen(
                     onLogout = {
                         rootNavController.navigate(AuthGraph)
+                    }
+                )
+            }
+
+            composable<VenueProfile> { backStackEntry ->
+                val route: VenueProfile = backStackEntry.toRoute()
+                VenueProfileScreen(
+                    venueId = route.id,
+                    onBackClick = { navController.popBackStack() },
+                    onEventClick = { eventId ->
+                        rootNavController.navigate(EventDetail(eventId))
                     }
                 )
             }

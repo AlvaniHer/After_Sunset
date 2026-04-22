@@ -17,10 +17,19 @@ import com.example.aftersunset.data.SampleData.sampleTickets
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 
+/**
+ * Componente contenedor del ticket que gestiona la animación de rotación 3D.
+ * Alterna entre [TicketFront] y [TicketBack] al ser pulsado.
+ *
+ * @param ticket Objeto [Ticket] con la información a mostrar.
+ * @param onLocationClick Acción a ejecutar al pulsar el botón de ubicación en el reverso.
+ * @param onVenueClick Acción a ejecutar al pulsar el nombre del local en el frontal.
+ */
 @Composable
 fun TicketItem(
     ticket: Ticket,
-    onLocationClick: () -> Unit
+    onLocationClick: () -> Unit,
+    onVenueClick: () -> Unit
 ) {
     var rotated by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
@@ -46,7 +55,10 @@ fun TicketItem(
             }
     ) {
         if (rotation <= 90f) {
-            TicketFront(ticket)
+            TicketFront(
+                ticket = ticket,
+                onVenueClick = onVenueClick
+            )
         } else {
             Box(
                 Modifier
@@ -66,7 +78,8 @@ fun TicketItemPreview() {
         Box(modifier = Modifier.background(InkBlack).padding(16.dp)) {
             TicketItem(
                 ticket = sampleTickets[0],
-                onLocationClick = {}
+                onLocationClick = {},
+                onVenueClick = {}
             )
         }
     }

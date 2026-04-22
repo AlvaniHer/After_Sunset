@@ -16,6 +16,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.navigation.Maps
+import com.example.aftersunset.navigation.VenueProfile
 import com.example.aftersunset.ui.components.tickets.EmptyTicketsState
 import com.example.aftersunset.ui.components.tickets.TicketItem
 import com.example.aftersunset.ui.theme.InkBlack
@@ -26,7 +27,7 @@ import com.example.aftersunset.ui.theme.InkBlack
  * si no hay planes próximos. Permite la navegación geolocalizada desde cada ticket.
  *
  * @param tickets Lista de objetos [Ticket] asociados a la cuenta del usuario.
- * @param navController Controlador de navegación para permitir saltar a la pestaña de Mapas.
+ * @param navController Controlador de navegación para permitir saltar a la pestaña de Mapas o Perfil del Local.
  */
 @Composable
 fun TicketsScreen(
@@ -56,11 +57,11 @@ fun TicketsScreen(
                 contentPadding = PaddingValues(bottom = 100.dp)
             ) {
                 items(tickets) { ticket ->
+                    val relatedEvent = SampleData.sampleEvents.find { it.id == ticket.eventId }
+                    
                     TicketItem(
                         ticket = ticket,
                         onLocationClick = {
-                            val relatedEvent = SampleData.sampleEvents.find { it.id == ticket.eventId }
-
                             navController.navigate(
                                 Maps(
                                     lat = relatedEvent?.latitude, 
@@ -71,6 +72,11 @@ fun TicketsScreen(
                                     saveState = true
                                 }
                                 launchSingleTop = true
+                            }
+                        },
+                        onVenueClick = {
+                            relatedEvent?.let { event ->
+                                navController.navigate(VenueProfile(event.venueId))
                             }
                         }
                     )

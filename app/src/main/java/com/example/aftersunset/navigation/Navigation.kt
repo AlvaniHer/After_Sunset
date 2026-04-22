@@ -10,6 +10,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.aftersunset.data.MapFocus
+import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.ui.screens.checkout.CheckoutScreen
 import com.example.aftersunset.ui.screens.event.EventDetailScreen
@@ -17,6 +19,7 @@ import com.example.aftersunset.ui.screens.login.LoginScreen
 import com.example.aftersunset.ui.screens.main.MainScreen
 import com.example.aftersunset.ui.screens.register.RegisterScreen
 import com.example.aftersunset.ui.screens.splash.SplashScreen
+import com.example.aftersunset.ui.screens.venue.VenueProfileScreen
 
 /**
  * Componente central de navegación que orquesta todos los destinos de la app.
@@ -91,8 +94,26 @@ fun Navigation() {
                 EventDetailScreen(
                     eventId = detail.id,
                     onBackClick = { navController.popBackStack() },
+                    onVenueClick = { venueId ->
+                        navController.navigate(VenueProfile(venueId))
+                    },
                     onBuyClick = { eventId, ticketType, price ->
                         navController.navigate(Checkout(eventId, ticketType, price))
+                    },
+                    onLocationClick = { lat, lng ->
+                        SampleData.pendingMapFocus = MapFocus(lat, lng)
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable<VenueProfile> { backStackEntry ->
+                val route: VenueProfile = backStackEntry.toRoute()
+                VenueProfileScreen(
+                    venueId = route.id,
+                    onBackClick = { navController.popBackStack() },
+                    onEventClick = { eventId ->
+                        navController.navigate(EventDetail(eventId))
                     }
                 )
             }
