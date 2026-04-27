@@ -16,6 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,23 +29,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aftersunset.R
 import com.example.aftersunset.ui.components.auth.CustomField
-import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.components.auth.VideoBackground
+import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.theme.Dragonfruit
+import com.google.firebase.auth.FirebaseAuth
 
-//TODO: Meter texto en strings.xml
-
-/**
- * Pantalla de registro de usuario de la aplicación.
- * Contiene los campos de credenciales y el acceso al login.
- * @param onRegisterSuccess Función para navegar al feed tras un registro exitoso.
- * @param onNavigateToLogin Función para redirigir a la pantalla de inicio de sesión.
- */
 @Composable
 fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
+    var nombre by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var repetirPassword by remember { mutableStateOf("") }
+
     Box(modifier = Modifier.fillMaxSize()) {
         VideoBackground(videoResId = R.raw.auth_bg)
 
@@ -69,26 +71,65 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(35.dp))
 
-            CustomField(label = "Nombre Completo", icon = Icons.Default.Person)
+            CustomField(
+                value = nombre,
+                onValueChange = { nombre = it },
+                label = "Nombre Completo",
+                icon = Icons.Default.Person
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            CustomField(label = stringResource(R.string.email_label), icon = Icons.Default.Email)
+            CustomField(
+                value = email,
+                onValueChange = { email = it },
+                label = stringResource(R.string.email_label),
+                icon = Icons.Default.Email
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            CustomField(label = stringResource(R.string.password_label), icon = Icons.Default.Lock, isPassword = true)
+            CustomField(
+                value = password,
+                onValueChange = { password = it },
+                label = stringResource(R.string.password_label),
+                icon = Icons.Default.Lock,
+                isPassword = true
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            CustomField(label = "Repetir Contraseña", icon = Icons.Default.Lock, isPassword = true)
+            CustomField(
+                value = repetirPassword,
+                onValueChange = { repetirPassword = it },
+                label = "Repetir Contraseña",
+                icon = Icons.Default.Lock,
+                isPassword = true
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             SunsetActionButton(
                 text = "REGISTRARSE",
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onRegisterSuccess
+                onClick = {
+                    if (email.isBlank() || password.isBlank() || repetirPassword.isBlank()) {
+                        return@SunsetActionButton
+                    }
+
+                    if (password != repetirPassword) {
+                        return@SunsetActionButton
+                    }
+
+                    FirebaseAuth.getInstance()
+                        .createUserWithEmailAndPassword(email, password)
+                        .addOnSuccessListener {
+                            onRegisterSuccess()
+                        }
+                        .addOnFailureListener {
+
+                        }
+                }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
