@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.screens.login
+package com.example.aftersunset.ui.screens.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,17 +32,17 @@ import com.example.aftersunset.ui.components.auth.CustomField
 import com.example.aftersunset.ui.components.auth.VideoBackground
 import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.theme.Dragonfruit
-import com.example.aftersunset.ui.theme.PumpkinSpice
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
+fun RegisterScreen(
+    onRegisterSuccess: () -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
+    var nombre by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }
+    var repetirPassword by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize()) {
         VideoBackground(videoResId = R.raw.auth_bg)
@@ -54,8 +55,8 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = stringResource(R.string.login_title),
-                style = MaterialTheme.typography.displayMedium.copy(
+                text = "ÚNETE A LA NOCHE",
+                style = MaterialTheme.typography.displaySmall.copy(
                     fontWeight = FontWeight.Black,
                     letterSpacing = (-1).sp
                 ),
@@ -63,13 +64,21 @@ fun LoginScreen(
             )
 
             Text(
-                text = stringResource(R.string.login_slogan),
+                text = "Crea tu cuenta en After Sunset",
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = Dragonfruit
+                color = Color.White.copy(alpha = 0.7f),
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(35.dp))
+
+            CustomField(
+                value = nombre,
+                onValueChange = { nombre = it },
+                label = "Nombre Completo",
+                icon = Icons.Default.Person
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             CustomField(
                 value = email,
@@ -88,47 +97,51 @@ fun LoginScreen(
                 isPassword = true
             )
 
-            if (errorMessage.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = errorMessage,
-                    color = Color.Red,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CustomField(
+                value = repetirPassword,
+                onValueChange = { repetirPassword = it },
+                label = "Repetir Contraseña",
+                icon = Icons.Default.Lock,
+                isPassword = true
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             SunsetActionButton(
-                text = stringResource(R.string.login_button_text),
+                text = "REGISTRARSE",
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    if (email.isBlank() || password.isBlank()) {
-                        errorMessage = "Introduce email y contraseña"
-                    } else {
-                        FirebaseAuth.getInstance()
-                            .signInWithEmailAndPassword(email, password)
-                            .addOnSuccessListener {
-                                errorMessage = ""
-                                onLoginSuccess()
-                            }
-                            .addOnFailureListener {
-                                errorMessage = "Email o contraseña incorrectos"
-                            }
+                    if (email.isBlank() || password.isBlank() || repetirPassword.isBlank()) {
+                        return@SunsetActionButton
                     }
+
+                    if (password != repetirPassword) {
+                        return@SunsetActionButton
+                    }
+
+                    FirebaseAuth.getInstance()
+                        .createUserWithEmailAndPassword(email, password)
+                        .addOnSuccessListener {
+                            onRegisterSuccess()
+                        }
+                        .addOnFailureListener {
+
+                        }
                 }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            TextButton(onClick = onNavigateToRegister) {
+            TextButton(onClick = onNavigateToLogin) {
                 Text(
-                    stringResource(R.string.login_register_text1),
+                    text = "¿Ya tienes cuenta?",
                     color = Color.White
                 )
                 Text(
-                    stringResource(R.string.login_register_text2),
-                    color = PumpkinSpice,
+                    text = " Inicia sesión",
+                    color = Dragonfruit,
                     fontWeight = FontWeight.Bold
                 )
             }

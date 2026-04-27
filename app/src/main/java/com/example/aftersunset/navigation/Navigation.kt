@@ -1,5 +1,7 @@
 package com.example.aftersunset.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
@@ -8,8 +10,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.aftersunset.data.SampleData.sampleEvents
+import com.example.aftersunset.ui.screens.checkout.CheckoutScreen
+import com.example.aftersunset.ui.screens.event.EventDetailScreen
 import com.example.aftersunset.ui.screens.login.LoginScreen
 import com.example.aftersunset.ui.screens.main.MainScreen
+import com.example.aftersunset.ui.screens.register.RegisterScreen
 import com.example.aftersunset.ui.screens.splash.SplashScreen
 
 /**
@@ -18,6 +24,7 @@ import com.example.aftersunset.ui.screens.splash.SplashScreen
  * 1. [AuthGraph]: Maneja el acceso y registro.
  * 2. [MainGraph]: Maneja las pestañas principales y detalles de eventos.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
@@ -45,9 +52,16 @@ fun Navigation() {
                 )
             }
 
-//            composable<Register> {
-//                RegisterScreen(onBack = { navController.popBackStack() })
-//            }
+            composable<Register> {
+                RegisterScreen(
+                    onRegisterSuccess = {
+                        navController.navigate(MainGraph) {
+                            popUpTo(AuthGraph) { inclusive = true }
+                        }
+                    },
+                    onNavigateToLogin = { navController.popBackStack() }
+                )
+            }
         }
 
         /**
@@ -74,19 +88,32 @@ fun Navigation() {
                 }
             ) { backStackEntry ->
                 val detail: EventDetail = backStackEntry.toRoute()
-                //EventDetailScreen(eventId = detail.id)
+                EventDetailScreen(
+                    eventId = detail.id,
+                    onBackClick = { navController.popBackStack() },
+                    onBuyClick = { eventId, ticketType, price ->
+                        navController.navigate(Checkout(eventId, ticketType, price))
+                    }
+                )
             }
 
             composable<Checkout> { backStackEntry ->
                 val route: Checkout = backStackEntry.toRoute()
-//                CheckoutScreen(
-//                    eventId = route.eventId,
-//                    onPaymentSuccess = {
-//                        navController.navigate(Tickets) {
-//                            popUpTo(Home) { saveState = true }
-//                        }
-//                    }
-//                )
+                val event = sampleEvents.find { it.id == route.eventId }
+
+                if (event != null) {
+                    CheckoutScreen(
+                        event = event,
+                        ticketType = route.ticketType,
+                        price = route.price,
+                        onBackClick = { navController.popBackStack() },
+                        onPaymentSuccess = {
+                            navController.navigate(Main) {
+                                popUpTo<Main> { inclusive = true }
+                            }
+                        }
+                    )
+                }
             }
         }
     }
