@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -22,11 +23,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.aftersunset.R
-import com.example.aftersunset.ui.components.CustomField
+import com.example.aftersunset.ui.components.AuthField
 import com.example.aftersunset.ui.components.SunsetActionButton
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PumpkinSpice
+import com.example.aftersunset.viewmodel.AuthViewModel
 
 /**
  * Pantalla de inicio de sesión de la aplicación.
@@ -37,7 +40,8 @@ import com.example.aftersunset.ui.theme.PumpkinSpice
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    authViewModel: AuthViewModel = viewModel()
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         VideoBackground(videoResId = R.raw.login_bg)
@@ -67,18 +71,49 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            CustomField(label = stringResource(R.string.email_label), icon = Icons.Default.Email)
+            AuthField(
+                value = authViewModel.email,
+                onValueChange = authViewModel::onEmailChange,
+                label = stringResource(R.string.email_label),
+                icon = Icons.Default.Email
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            CustomField(label = stringResource(R.string.password_label), icon = Icons.Default.Lock, isPassword = true)
+            AuthField(
+                value = authViewModel.password,
+                onValueChange = authViewModel::onPasswordChange,
+                label = stringResource(R.string.password_label),
+                icon = Icons.Default.Lock,
+                isPassword = true
+            )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+
+            authViewModel.errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = PumpkinSpice,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            if (authViewModel.isLoading) {
+                CircularProgressIndicator(color = Dragonfruit)
+                Spacer(modifier = Modifier.height(24.dp))
+            }
 
             SunsetActionButton(
                 text = stringResource(R.string.login_button_text),
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onLoginSuccess
+                onClick = {
+                    authViewModel.login(
+                        onSuccess = onLoginSuccess
+                    )
+                }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
