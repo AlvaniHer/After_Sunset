@@ -15,6 +15,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Representa una opción interactiva dentro del menú de la pantalla de perfil.
+ * Permite mostrar un icono, una etiqueta descriptiva y una flecha indicadora de navegación.
+ *
+ * @param icon Icono opcional de tipo [ImageVector].
+ * @param painter ID de recurso opcional para iconos de tipo drawable.
+ * @param label Texto descriptivo de la opción del menú.
+ * @param onClick Acción a ejecutar cuando el usuario pulsa sobre la opción.
+ */
 @Composable
 fun ProfileMenuItem(
     icon: ImageVector? = null,

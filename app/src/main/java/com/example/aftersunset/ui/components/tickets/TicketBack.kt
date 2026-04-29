@@ -30,6 +30,14 @@ import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Representa el reverso del ticket físico digital.
+ * Muestra información adicional sobre el evento y proporciona
+ * un acceso directo para localizar el club en el mapa.
+ *
+ * @param ticket Objeto [Ticket] que contiene los datos informativos.
+ * @param onLocationClick Callback para navegar a la ubicación del local en el mapa.
+ */
 @Composable
 fun TicketBack(
     ticket: Ticket,

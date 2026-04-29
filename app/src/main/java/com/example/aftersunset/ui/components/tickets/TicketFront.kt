@@ -1,5 +1,6 @@
 package com.example.aftersunset.ui.components.tickets
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,8 +34,19 @@ import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Representa la cara frontal del ticket físico digital.
+ * Presenta un diseño estilizado que incluye la imagen del evento, título, club, fecha,
+ * tipo de entrada y un código QR de acceso.
+ *
+ * @param ticket Objeto [Ticket] con la información principal para mostrar en el anverso.
+ * @param onVenueClick Callback para navegar al perfil del local.
+ */
 @Composable
-fun TicketFront(ticket: Ticket) {
+fun TicketFront(
+    ticket: Ticket,
+    onVenueClick: () -> Unit
+) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White.copy(alpha = 0.05f),
@@ -71,8 +83,11 @@ fun TicketFront(ticket: Ticket) {
                     Text(
                         text = ticket.clubName,
                         color = PacificCyan,
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clickable { onVenueClick() },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = ticket.date,

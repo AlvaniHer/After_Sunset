@@ -18,6 +18,14 @@ import androidx.compose.ui.unit.dp
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Selector de zonas geográficas para filtrar eventos en el mapa.
+ * Permite al usuario elegir entre diferentes áreas geográficas
+ * mediante una lista horizontal de chips interactivos.
+ *
+ * @param modifier El [Modifier] que se aplicará a este layout.
+ * @param onZoneSelected Callback que se dispara cuando el usuario selecciona una nueva zona.
+ */
 @Composable
 fun ZoneSelector(
     modifier: Modifier = Modifier,

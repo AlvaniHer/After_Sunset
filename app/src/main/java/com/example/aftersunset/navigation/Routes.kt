@@ -3,7 +3,7 @@ package com.example.aftersunset.navigation
 import kotlinx.serialization.Serializable
 
 /**
- * Pantalla de carga inicial.
+ * Pantalla de carga inicial que se muestra al abrir la aplicación.
  */
 @Serializable object Splash
 
@@ -13,14 +13,20 @@ import kotlinx.serialization.Serializable
 @Serializable object AuthGraph
 
 /**
- * Grafo de navegación principal para la experiencia de usuario logueado.
+ * Grafo de navegación principal para la experiencia de usuario autenticado.
  */
 @Serializable object MainGraph
 
 /**
- * Destino raíz para el grafo principal que contiene el Scaffold con BottomBar.
+ * Punto de entrada principal para el flujo autenticado.
+ * 
+ * @param lat Latitud opcional para forzar la navegación inicial al mapa.
+ * @param lng Longitud opcional para forzar la navegación inicial al mapa.
  */
-@Serializable object Main
+@Serializable data class Main(
+    val lat: Double? = null,
+    val lng: Double? = null
+)
 
 /**
  * Destino para la pantalla de inicio de sesión.
@@ -33,13 +39,15 @@ import kotlinx.serialization.Serializable
 @Serializable object Register
 
 /**
- * Destino para el Feed principal de recomendaciones y eventos.
+ * Pestaña principal de la aplicación que muestra el feed de eventos destacados.
  */
 @Serializable object Home
 
 /**
- * Destino para la vista de mapa interactivo.
- * Se permiten coordenadas opcionales para centrar el mapa en un local específico.
+ * Pestaña de mapa interactivo para la geolocalización de eventos y salas.
+ *
+ * @param lat Latitud opcional para centrar la cámara en una ubicación específica.
+ * @param lng Longitud opcional para centrar la cámara en una ubicación específica.
  */
 @Serializable data class Maps(
     val lat: Double? = null,
@@ -47,7 +55,7 @@ import kotlinx.serialization.Serializable
 )
 
 /**
- * Destino para la gestión de entradas compradas.
+ * Pestaña de gestión de entradas, donde el usuario visualiza sus pases activos.
  */
 @Serializable object Tickets
 
@@ -69,9 +77,12 @@ import kotlinx.serialization.Serializable
 @Serializable data class VenueProfile(val id: String)
 
 /**
- * Pantalla de pasarela de pago y confirmación de compra.
- * @param eventId ID del evento que el usuario está adquiriendo.
- */
+ * Pantalla de pasarela de pago y confirmación de compra de entradas.
+ *
+ * @param eventId Identificador del evento relacionado con la transacción.
+ * @param ticketType Categoría de la entrada seleccionada.
+ * @param price Importe de la entrada antes de gastos de gestión.
+*/
 @Serializable data class Checkout(
     val eventId: String,
     val ticketType: String,
