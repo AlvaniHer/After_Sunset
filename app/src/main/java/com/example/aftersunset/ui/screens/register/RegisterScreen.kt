@@ -33,7 +33,8 @@ import com.example.aftersunset.ui.components.auth.VideoBackground
 import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.google.firebase.auth.FirebaseAuth
-
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.Timestamp
 @Composable
 fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
@@ -113,7 +114,7 @@ fun RegisterScreen(
                 text = "REGISTRARSE",
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    if (email.isBlank() || password.isBlank() || repetirPassword.isBlank()) {
+                    if (nombre.isBlank() || email.isBlank() || password.isBlank() || repetirPassword.isBlank()) {
                         return@SunsetActionButton
                     }
 
@@ -121,13 +122,30 @@ fun RegisterScreen(
                         return@SunsetActionButton
                     }
 
-                    FirebaseAuth.getInstance()
-                        .createUserWithEmailAndPassword(email, password)
-                        .addOnSuccessListener {
-                            onRegisterSuccess()
-                        }
-                        .addOnFailureListener {
+                    val auth = FirebaseAuth.getInstance()
+                    val db = FirebaseFirestore.getInstance()
 
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .addOnSuccessListener { result ->
+                            val uid = result.user?.uid ?: return@addOnSuccessListener
+
+                            val usuario = hashMapOf(
+                                "nombre" to nombre,
+                                "apellidos" to "",
+                                "username" to email.substringBefore("@"),
+                                "email" to email,
+                                "estado_cuenta" to "activa",
+                                "fecha_nacimiento" to null,
+                                "fecha_registro" to Timestamp.now(),
+                                "foto_perfil" to ""
+                            )
+
+                            db.collection("usuarios")
+                                .document(uid)
+                                .set(usuario)
+                                .addOnSuccessListener {
+                                    onRegisterSuccess()
+                                }
                         }
                 }
             )

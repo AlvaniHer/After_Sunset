@@ -28,6 +28,10 @@ import com.example.aftersunset.ui.components.checkout.SuccessDialog
 import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import java.util.UUID
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,18 +44,24 @@ fun CheckoutScreen(
     onPaymentSuccess: () -> Unit
 ) {
     var showSuccessDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 48.dp).padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 48.dp)
+                    .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
-            ){
-                IconButton(
-                    onClick = onBackClick,
-                ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color.White)
+            ) {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
                 }
 
                 Text(
@@ -76,7 +86,10 @@ fun CheckoutScreen(
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     AsyncImage(
                         model = event.imageUrl,
                         contentDescription = null,
@@ -85,17 +98,20 @@ fun CheckoutScreen(
                             .clip(RoundedCornerShape(12.dp)),
                         contentScale = ContentScale.Crop
                     )
+
                     Spacer(modifier = Modifier.width(16.dp))
+
                     Column {
                         Text(
-                            event.title, 
-                            color = Color.White, 
+                            event.title,
+                            color = Color.White,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
+
                         Text(
-                            event.clubName, 
-                            color = Color.White.copy(alpha = 0.6f), 
+                            event.clubName,
+                            color = Color.White.copy(alpha = 0.6f),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -106,21 +122,38 @@ fun CheckoutScreen(
 
             PriceRow("Entrada $ticketType", "${price}€")
             PriceRow("Gastos de gestión", "1.50€")
-            
+
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 24.dp),
                 thickness = 1.dp,
                 color = Color.White.copy(alpha = 0.1f)
             )
-            
+
             PriceRow("TOTAL", "${price + 1.5}€", isTotal = true)
+
+            if (errorMessage.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
             Spacer(modifier = Modifier.height(48.dp))
 
             SunsetActionButton(
                 text = "CONFIRMAR Y PAGAR",
                 onClick = {
+                    val uid = FirebaseAuth.getInstance().currentUser?.uid
+
+                    if (uid == null) {
+                        errorMessage = "Debes iniciar sesión para comprar una entrada"
+                        return@SunsetActionButton
+                    }
+
                     val user = SampleData.sampleUser
+                    val qrCode = UUID.randomUUID().toString()
 
                     val newTicket = Ticket(
                         id = "TKT-${System.currentTimeMillis()}",
@@ -131,36 +164,65 @@ fun CheckoutScreen(
                         time = "23:30",
                         entryType = ticketType,
                         price = price,
-                        qrCodeData = "AS-${event.clubName.uppercase()}-${event.id}-QR",
+                        qrCodeData = qrCode,
                         imageUrl = event.imageUrl
                     )
 
-                    val updatedPoints = user.points + 50
-                    val updatedEvents = user.eventsAttended + 1
+                    val entrada = hashMapOf(
+                        "id_usuario" to uid,
+                        "id_evento" to event.id,
+                        "tipo_entrada" to ticketType,
+                        "precio_pagado" to price,
+                        "fecha_compra" to Timestamp.now(),
+                        "codigo_qr" to qrCode,
+                        "estado_entrada" to "pagada",
+                        "fecha_uso" to null,
 
-                    val newLevel = when {
-                        updatedPoints >= 1000 -> UserLevel.LEGENDARY
-                        updatedPoints >= 500 -> UserLevel.GOLD
-                        updatedPoints >= 200 -> UserLevel.VIP
-                        else -> UserLevel.STANDARD
-                    }
-
-                    SampleData.sampleTickets.add(newTicket)
-
-                    SampleData.sampleUser = user.copy(
-                        points = updatedPoints,
-                        eventsAttended = updatedEvents,
-                        level = newLevel,
-                        pendingLevelUp = newLevel != user.level
+                        // Datos extra para que TicketsScreen se vea bien
+                        "eventTitle" to event.title,
+                        "clubName" to event.clubName,
+                        "date" to event.date,
+                        "time" to "23:30",
+                        "imageUrl" to event.imageUrl,
+                        "latitud" to event.latitude,
+                        "longitud" to event.longitude
                     )
 
-                    showSuccessDialog = true
+                    FirebaseFirestore.getInstance()
+                        .collection("entradas")
+                        .add(entrada)
+                        .addOnSuccessListener {
+                            val updatedPoints = user.points + 50
+                            val updatedEvents = user.eventsAttended + 1
+
+                            val newLevel = when {
+                                updatedPoints >= 1000 -> UserLevel.LEGENDARY
+                                updatedPoints >= 500 -> UserLevel.GOLD
+                                updatedPoints >= 200 -> UserLevel.VIP
+                                else -> UserLevel.STANDARD
+                            }
+
+                            SampleData.sampleTickets.add(newTicket)
+
+                            SampleData.sampleUser = user.copy(
+                                points = updatedPoints,
+                                eventsAttended = updatedEvents,
+                                level = newLevel,
+                                pendingLevelUp = newLevel != user.level
+                            )
+
+                            errorMessage = ""
+                            showSuccessDialog = true
+                        }
+                        .addOnFailureListener {
+                            errorMessage = "Error al guardar la entrada"
+                        }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
             )
-            
+
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
