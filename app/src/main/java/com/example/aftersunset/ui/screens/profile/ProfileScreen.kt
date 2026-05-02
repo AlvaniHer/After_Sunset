@@ -24,6 +24,7 @@ import com.example.aftersunset.R
 import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
+import com.google.firebase.auth.FirebaseAuth
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -31,6 +32,10 @@ fun ProfileScreen(
     onLogout: () -> Unit,
 ) {
     val user = SampleData.sampleUser
+
+    val firebaseUser = FirebaseAuth.getInstance().currentUser
+    val userName = firebaseUser?.displayName ?: firebaseUser?.email ?: "Usuario"
+
     var showLevelUpDialog by remember { mutableStateOf(user.pendingLevelUp) }
 
     Column(
@@ -41,7 +46,7 @@ fun ProfileScreen(
             .padding(top = 60.dp)
     ) {
         ProfileHeader(
-            name = user.name,
+            name = userName,
             location = user.location,
             userLevel = user.level
         )
@@ -90,7 +95,9 @@ fun ProfileScreen(
 
         TextButton(
             onClick = onLogout,
-            modifier = Modifier.padding(horizontal = 12.dp).align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .align(Alignment.CenterHorizontally)
         ) {
             Text(
                 "Cerrar Sesión",
@@ -102,12 +109,12 @@ fun ProfileScreen(
 
     if (showLevelUpDialog) {
         SuccessDialog(
-            onDismiss = { 
+            onDismiss = {
                 showLevelUpDialog = false
                 SampleData.sampleUser = user.copy(pendingLevelUp = false)
             },
             title = "¡NUEVO RANGO DESBLOQUEADO!",
-            message = "Felicidades ${user.name}, has alcanzado el nivel ${user.level}. Tu estatus en After Sunset ha subido de categoría.",
+            message = "Felicidades $userName, has alcanzado el nivel ${user.level}. Tu estatus en After Sunset ha subido de categoría.",
             isLevelUp = true
         )
     }
