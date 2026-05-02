@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.components
+package com.example.aftersunset.ui.components.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

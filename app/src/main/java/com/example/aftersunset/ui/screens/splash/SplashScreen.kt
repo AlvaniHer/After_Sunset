@@ -21,7 +21,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavHostController) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.beach))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash))
 
     val progress by animateLottieCompositionAsState(
         composition = composition,

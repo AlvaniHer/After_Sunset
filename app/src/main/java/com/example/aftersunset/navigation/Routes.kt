@@ -39,8 +39,12 @@ import kotlinx.serialization.Serializable
 
 /**
  * Destino para la vista de mapa interactivo.
+ * Se permiten coordenadas opcionales para centrar el mapa en un local específico.
  */
-@Serializable object Maps
+@Serializable data class Maps(
+    val lat: Double? = null,
+    val lng: Double? = null
+)
 
 /**
  * Destino para la gestión de entradas compradas.
@@ -54,13 +58,13 @@ import kotlinx.serialization.Serializable
 
 /**
  * Destino para el detalle de un evento específico.
- * @param id Identificador único del evento en Firebase.
+ * @param id Identificador único del evento.
  */
 @Serializable data class EventDetail(val id: String)
 
 /**
  * Pantalla de perfil de una discoteca u organizador.
- * @param id Identificador de la discoteca para mostrar sus reseñas y eventos propios.
+ * @param id Identificador de la discoteca.
  */
 @Serializable data class VenueProfile(val id: String)
 
@@ -68,4 +72,8 @@ import kotlinx.serialization.Serializable
  * Pantalla de pasarela de pago y confirmación de compra.
  * @param eventId ID del evento que el usuario está adquiriendo.
  */
-@Serializable data class Checkout(val eventId: String)
+@Serializable data class Checkout(
+    val eventId: String,
+    val ticketType: String,
+    val price: Double
+)

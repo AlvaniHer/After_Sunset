@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.screens.login
+package com.example.aftersunset.ui.components.auth
 
 import android.view.ViewGroup
 import android.widget.FrameLayout

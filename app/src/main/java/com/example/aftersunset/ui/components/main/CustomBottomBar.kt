@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.components
+package com.example.aftersunset.ui.components.main
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -8,22 +8,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +25,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.aftersunset.R
 import com.example.aftersunset.navigation.Home
 import com.example.aftersunset.navigation.Maps
 import com.example.aftersunset.navigation.Tickets
@@ -74,11 +69,11 @@ fun CustomBottomBar(
                 icon = Icons.Default.Place,
                 isSelected = currentDestination?.hasRoute<Maps>() == true
             ) {
-                navigateToTab(navController, Maps)
+                navigateToTab(navController, Maps())
             }
 
             BottomNavItem(
-                icon = Icons.Default.Favorite,
+                painter = R.drawable.ic_confirmation_number,
                 isSelected = currentDestination?.hasRoute<Tickets>() == true,
                 onClick = {
                     navigateToTab(navController, Tickets)
@@ -93,25 +88,6 @@ fun CustomBottomBar(
                 }
             )
         }
-    }
-}
-
-/**
- * Elemento individual de la barra de navegación.
- */
-@Composable
-private fun BottomNavItem(
-    icon: ImageVector,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    IconButton(onClick = onClick) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = if (isSelected) AfterSunsetTheme.colors.secondary else Color.White.copy(alpha = 0.5f),
-            modifier = Modifier.size(if (isSelected) 30.dp else 24.dp)
-        )
     }
 }
 

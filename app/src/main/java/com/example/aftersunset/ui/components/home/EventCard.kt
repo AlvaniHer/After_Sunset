@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.components
+package com.example.aftersunset.ui.components.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 
@@ -75,7 +76,7 @@ fun EventCard(
                     shape = MaterialTheme.shapes.extraSmall
                 ) {
                     Text(
-                        text = event.tag.uppercase(),
+                        text = event.genre.uppercase(),
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = AfterSunsetTheme.colors.secondary
@@ -91,7 +92,7 @@ fun EventCard(
                 )
 
                 Text(
-                    text = "${event.clubName} • ${event.location}",
+                    text = "${event.clubName} • ${event.zone}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White.copy(alpha = 0.7f)
                 )
@@ -119,18 +120,8 @@ fun EventCard(
 @Composable
 fun EventCardPreview(){
     AfterSunsetTheme {
-        val event = Event(
-            "1",
-            "Sunset Beats",
-            "Opium",
-            "15 Mayo",
-            30.0,
-            "https://youbarcelona.com/uploads/images/c/opium%20barcelona%20gente%2020/original.jpg ",
-            "Barcelona",
-            "House"
-        )
         EventCard(
-            event = event,
+            event = sampleEvents[0],
             onClick = { }
         )
     }
