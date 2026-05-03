@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
+    onFriendsClick: () -> Unit = {},
 ) {
     val user = SampleData.sampleUser
 
@@ -83,6 +84,12 @@ fun ProfileScreen(
             painter = R.drawable.ic_history,
             label = "Historial de Noches",
             onClick = {}
+        )
+
+        ProfileMenuItem(
+            painter = R.drawable.ic_history,
+            label = "Amigos",
+            onClick = onFriendsClick
         )
 
         ProfileMenuItem(

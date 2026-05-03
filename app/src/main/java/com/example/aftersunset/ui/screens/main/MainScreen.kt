@@ -12,7 +12,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.aftersunset.data.SampleData
-import com.example.aftersunset.navigation.*
+import com.example.aftersunset.navigation.AuthGraph
+import com.example.aftersunset.navigation.EventDetail
+import com.example.aftersunset.navigation.Friends
+import com.example.aftersunset.navigation.Home
+import com.example.aftersunset.navigation.Maps
+import com.example.aftersunset.navigation.Profile
+import com.example.aftersunset.navigation.Tickets
 import com.example.aftersunset.ui.components.main.CustomBottomBar
 import com.example.aftersunset.ui.screens.home.HomeScreen
 import com.example.aftersunset.ui.screens.map.MapScreen
@@ -21,11 +27,11 @@ import com.example.aftersunset.ui.screens.tickets.TicketsScreen
 
 /**
  * Pantalla raíz para el flujo autenticado de la aplicación.
- * Este componente centraliza el [Scaffold] que contiene la barra de navegación 
+ * Este componente centraliza el [Scaffold] que contiene la barra de navegación
  * inferior y gestiona un [NavHost] interno para las secciones principales:
  * Home, Mapa, Tickets y Perfil.
  *
- * @param rootNavController NavController del grafo principal para permitir 
+ * @param rootNavController NavController del grafo principal para permitir
  * la navegación hacia pantallas fuera del BottomBar.
  */
 @RequiresApi(Build.VERSION_CODES.O)
@@ -53,6 +59,7 @@ fun MainScreen(rootNavController: NavHostController) {
                     }
                 )
             }
+
             composable<Maps> { backStackEntry ->
                 val route: Maps = backStackEntry.toRoute()
                 MapScreen(
@@ -64,16 +71,21 @@ fun MainScreen(rootNavController: NavHostController) {
                     initialLng = route.lng
                 )
             }
+
             composable<Tickets> {
                 TicketsScreen(
                     tickets = SampleData.sampleTickets,
                     navController = navController
                 )
             }
+
             composable<Profile> {
                 ProfileScreen(
                     onLogout = {
                         rootNavController.navigate(AuthGraph)
+                    },
+                    onFriendsClick = {
+                        rootNavController.navigate(Friends)
                     }
                 )
             }
