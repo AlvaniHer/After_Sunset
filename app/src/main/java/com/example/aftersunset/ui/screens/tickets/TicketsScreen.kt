@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -20,6 +20,8 @@ import com.example.aftersunset.navigation.VenueProfile
 import com.example.aftersunset.ui.components.tickets.EmptyTicketsState
 import com.example.aftersunset.ui.components.tickets.TicketItem
 import com.example.aftersunset.ui.theme.InkBlack
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Pantalla de gestión de entradas adquiridas por el usuario.
@@ -34,6 +36,35 @@ fun TicketsScreen(
     tickets: List<Ticket>,
     navController: NavController
 ) {
+    var userTickets by remember { mutableStateOf<List<Ticket>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        val db = FirebaseFirestore.getInstance()
+
+        if (uid != null) {
+            db.collection("entradas")
+                .whereEqualTo("id_usuario", uid)
+                .get()
+                .addOnSuccessListener { result ->
+                    userTickets = result.documents.map { doc ->
+                        Ticket(
+                            id = doc.id,
+                            eventId = doc.getString("id_evento") ?: "",
+                            eventTitle = doc.getString("eventTitle") ?: "Entrada",
+                            clubName = doc.getString("clubName") ?: "",
+                            date = doc.getString("date") ?: "",
+                            time = doc.getString("time") ?: "",
+                            entryType = doc.getString("tipo_entrada") ?: "",
+                            price = doc.getDouble("precio_pagado") ?: 0.0,
+                            qrCodeData = doc.getString("codigo_qr") ?: "",
+                            imageUrl = doc.getString("imageUrl") ?: ""
+                        )
+                    }
+                }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +80,7 @@ fun TicketsScreen(
             letterSpacing = 2.sp
         )
 
-        if (tickets.isEmpty()) {
+        if (userTickets.isEmpty()) {
             EmptyTicketsState()
         } else {
             LazyColumn(
@@ -64,7 +95,7 @@ fun TicketsScreen(
                         onLocationClick = {
                             navController.navigate(
                                 Maps(
-                                    lat = relatedEvent?.latitude, 
+                                    lat = relatedEvent?.latitude,
                                     lng = relatedEvent?.longitude
                                 )
                             ) {

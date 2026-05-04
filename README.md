@@ -3,6 +3,8 @@
 
 **After Sunset** es una propuesta disruptiva en el ecosistema de aplicaciones de ocio nocturno. No es solo una ticketera; es una ventana inmersiva a la vida de la ciudad cuando cae el sol. Diseñada con un enfoque Mobile-First y una estética Cyber-Night, After Sunset redefine la forma en que los usuarios descubren, viven y comparten la noche.
 
+![Banner](./images/banner.png)  
+
 🛠️ Stack Tecnológico
 --------------------
 -   **Lenguaje:** [Kotlin](https://kotlinlang.org/)
@@ -73,3 +75,5 @@ Para mantener la estética "Cyber-Night", utiliza los tokens de color definidos 
 3.  Sincroniza el proyecto con Gradle.
 
 4.  Pide el archivo `google-services.json` para conectar con Firebase.
+
+5. Pide el valor de `MAPS_API_KEY` que necesitas colocar en **local.properties**
