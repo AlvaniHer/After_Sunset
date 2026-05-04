@@ -1,4 +1,4 @@
-package com.example.aftersunset.ui.components.checkout
+package com.example.aftersunset.ui.components.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,6 +19,16 @@ import androidx.compose.ui.unit.sp
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Contenido visual del diálogo de éxito.
+ * Muestra el icono, el título decorado, el mensaje descriptivo y el botón de acción.
+ *
+ * @param title Título principal.
+ * @param message Mensaje descriptivo.
+ * @param isLevelUp Define si se debe usar el estilo de "Level Up".
+ * @param glowAlpha Nivel de opacidad para el efecto de brillo animado en el icono.
+ * @param onConfirm Acción a ejecutar al pulsar el botón principal.
+ */
 @Composable
 fun SuccessDialogContent(
     title: String,

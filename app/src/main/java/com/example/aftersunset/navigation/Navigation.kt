@@ -16,6 +16,7 @@ import com.example.aftersunset.ui.screens.login.LoginScreen
 import com.example.aftersunset.ui.screens.main.MainScreen
 import com.example.aftersunset.ui.screens.register.RegisterScreen
 import com.example.aftersunset.ui.screens.splash.SplashScreen
+import com.example.aftersunset.ui.screens.venue.VenueProfileScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -54,9 +55,18 @@ fun Navigation() {
             }
         }
 
-        navigation<MainGraph>(startDestination = Main) {
-            composable<Main> {
-                MainScreen(rootNavController = navController)
+        /**
+         * Grafo Principal.
+         * Contiene la lógica de las secciones principales accesibles mediante el Bottom Nav.
+         */
+        navigation<MainGraph>(startDestination = Main()) {
+            composable<Main> { backStackEntry ->
+                val route: Main = backStackEntry.toRoute()
+                MainScreen(
+                    rootNavController = navController,
+                    initialLat = route.lat,
+                    initialLng = route.lng
+                )
             }
 
             composable<Friends> {
@@ -70,8 +80,32 @@ fun Navigation() {
                 EventDetailScreen(
                     eventId = detail.id,
                     onBackClick = { navController.popBackStack() },
+                    onVenueClick = { venueId ->
+                        navController.navigate(VenueProfile(venueId))
+                    },
                     onBuyClick = { eventId, ticketType, price ->
                         navController.navigate(Checkout(eventId, ticketType, price))
+                    },
+                    onLocationClick = { lat, lng ->
+                        navController.navigate(Main(lat, lng)) {
+                            popUpTo<Main> { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+
+            composable<VenueProfile> { backStackEntry ->
+                val route: VenueProfile = backStackEntry.toRoute()
+                VenueProfileScreen(
+                    venueId = route.id,
+                    onBackClick = { navController.popBackStack() },
+                    onEventClick = { navController.popBackStack() },
+                    onLocationClick = { lat, lng ->
+                        navController.navigate(Main(lat, lng)) {
+                            popUpTo<Main> { inclusive = true }
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -87,7 +121,7 @@ fun Navigation() {
                         price = route.price,
                         onBackClick = { navController.popBackStack() },
                         onPaymentSuccess = {
-                            navController.navigate(Main) {
+                            navController.navigate(Main()) {
                                 popUpTo<Main> { inclusive = true }
                             }
                         }

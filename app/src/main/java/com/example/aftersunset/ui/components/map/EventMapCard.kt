@@ -30,6 +30,13 @@ import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 import com.example.aftersunset.ui.theme.Dragonfruit
 
+/**
+ * Tarjeta informativa que aparece en el mapa al seleccionar un marcador de evento.
+ * Proporciona un resumen visual del evento y acceso rápido a su detalle.
+ *
+ * @param event El objeto [Event] que contiene la información a mostrar.
+ * @param onDetailClick Callback que se dispara al pulsar el botón de ir al detalle del evento.
+ */
 @Composable
 fun EventMapCard(
     event: Event,

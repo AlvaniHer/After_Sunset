@@ -1,8 +1,9 @@
-package com.example.aftersunset.ui.components.checkout
+package com.example.aftersunset.ui.components.common
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -19,6 +20,15 @@ import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Diálogo que se muestra tras una acción exitosa (compra o subida de nivel).
+ * Gestiona la estructura del [Dialog], las animaciones de escala y el efecto de brillo neón.
+ *
+ * @param onDismiss Acción a ejecutar cuando se cierra el diálogo.
+ * @param title Título principal del mensaje.
+ * @param message Cuerpo descriptivo del mensaje.
+ * @param isLevelUp Si es true, activa la estética especial de "Level Up" con partículas y mayor brillo.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SuccessDialog(
@@ -72,7 +82,7 @@ fun SuccessDialog(
                         .fillMaxWidth(),
                     shape = RoundedCornerShape(28.dp),
                     color = InkBlack.copy(alpha = 0.95f),
-                    border = androidx.compose.foundation.BorderStroke(
+                    border = BorderStroke(
                         width = 2.dp,
                         brush = if (isLevelUp) 
                             Brush.linearGradient(listOf(PacificCyan, Dragonfruit))

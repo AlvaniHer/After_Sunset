@@ -19,13 +19,20 @@ import androidx.compose.ui.Alignment
 import com.example.aftersunset.ui.components.profile.ProfileHeader
 import com.example.aftersunset.ui.components.profile.ProfileMenuItem
 import com.example.aftersunset.ui.components.profile.StatItem
-import com.example.aftersunset.ui.components.checkout.SuccessDialog
+import com.example.aftersunset.ui.components.common.SuccessDialog
 import com.example.aftersunset.R
 import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.google.firebase.auth.FirebaseAuth
 
+/**
+ * Pantalla de perfil de usuario.
+ * Visualiza la información del usuario, estadísticas de asistencia y menú de configuración.
+ * Gestiona la aparición del diálogo de celebración de subida de nivel.
+ *
+ * @param onLogout Callback para gestionar el cierre de sesión y navegación al flujo de autenticación.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(

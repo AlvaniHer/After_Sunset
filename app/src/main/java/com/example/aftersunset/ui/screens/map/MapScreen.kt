@@ -23,6 +23,16 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
 
+/**
+ * Pantalla de Mapa interactivo.
+ * Visualiza los eventos geolocalizados en Málaga, permitiendo filtrar por zonas
+ * y acceder al detalle de cada evento. Soporta el auto-centrado mediante coordenadas externas.
+ *
+ * @param events Lista de objetos [Event] a posicionar en el mapa.
+ * @param onEventClick Callback para navegar al detalle de un evento seleccionado.
+ * @param initialLat Latitud inicial opcional para centrar la cámara al abrir la pantalla.
+ * @param initialLng Longitud inicial opcional para centrar la cámara al abrir la pantalla.
+ */
 @Composable
 fun MapScreen(
     events: List<Event>,
