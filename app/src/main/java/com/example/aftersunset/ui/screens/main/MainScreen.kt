@@ -16,17 +16,20 @@ import androidx.navigation.toRoute
 import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.navigation.AuthGraph
 import com.example.aftersunset.navigation.EventDetail
+import com.example.aftersunset.navigation.FavoriteClubs
 import com.example.aftersunset.navigation.Friends
 import com.example.aftersunset.navigation.Home
 import com.example.aftersunset.navigation.Maps
 import com.example.aftersunset.navigation.Profile
 import com.example.aftersunset.navigation.Tickets
+import com.example.aftersunset.navigation.VenueProfile
 import com.example.aftersunset.ui.components.main.CustomBottomBar
 import com.example.aftersunset.ui.screens.home.HomeScreen
 import com.example.aftersunset.ui.screens.map.MapScreen
 import com.example.aftersunset.ui.screens.profile.ProfileScreen
 import com.example.aftersunset.ui.screens.tickets.TicketsScreen
 import com.example.aftersunset.ui.screens.venue.VenueProfileScreen
+
 
 /**
  * Pantalla raíz para el flujo autenticado de la aplicación.
@@ -93,10 +96,7 @@ fun MainScreen(
             }
 
             composable<Tickets> {
-                TicketsScreen(
-                    tickets = SampleData.sampleTickets,
-                    navController = navController
-                )
+                TicketsScreen(navController = navController)
             }
 
             composable<Profile> {
@@ -106,6 +106,9 @@ fun MainScreen(
                     },
                     onFriendsClick = {
                         rootNavController.navigate(Friends)
+                    },
+                    onFavoriteClubsClick = {
+                        rootNavController.navigate(FavoriteClubs)
                     }
                 )
             }
