@@ -26,18 +26,12 @@ import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.google.firebase.auth.FirebaseAuth
 
-/**
- * Pantalla de perfil de usuario.
- * Visualiza la información del usuario, estadísticas de asistencia y menú de configuración.
- * Gestiona la aparición del diálogo de celebración de subida de nivel.
- *
- * @param onLogout Callback para gestionar el cierre de sesión y navegación al flujo de autenticación.
- */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
     onFriendsClick: () -> Unit = {},
+    onFavoriteClubsClick: () -> Unit = {} // 👈 NUEVO
 ) {
     val user = SampleData.sampleUser
 
@@ -53,6 +47,8 @@ fun ProfileScreen(
             .verticalScroll(rememberScrollState())
             .padding(top = 60.dp)
     ) {
+
+        // HEADER
         ProfileHeader(
             name = userName,
             location = user.location,
@@ -61,6 +57,7 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // STATS
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -81,10 +78,11 @@ fun ProfileScreen(
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
         )
 
+        // 👉 CLUBES FAVORITOS (YA FUNCIONANDO)
         ProfileMenuItem(
             icon = Icons.Default.Favorite,
             label = "Clubes Favoritos",
-            onClick = {}
+            onClick = onFavoriteClubsClick
         )
 
         ProfileMenuItem(
@@ -114,13 +112,14 @@ fun ProfileScreen(
                 .align(Alignment.CenterHorizontally)
         ) {
             Text(
-                "Cerrar Sesión",
+                text = "Cerrar Sesión",
                 color = Dragonfruit,
                 fontWeight = FontWeight.Bold
             )
         }
     }
 
+    // DIALOGO LEVEL UP
     if (showLevelUpDialog) {
         SuccessDialog(
             onDismiss = {

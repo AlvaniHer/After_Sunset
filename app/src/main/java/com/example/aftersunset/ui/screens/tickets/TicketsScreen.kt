@@ -33,36 +33,46 @@ import com.google.firebase.firestore.FirebaseFirestore
  */
 @Composable
 fun TicketsScreen(
-    tickets: List<Ticket>,
     navController: NavController
 ) {
     var userTickets by remember { mutableStateOf<List<Ticket>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         val db = FirebaseFirestore.getInstance()
 
-        if (uid != null) {
-            db.collection("entradas")
-                .whereEqualTo("id_usuario", uid)
-                .get()
-                .addOnSuccessListener { result ->
-                    userTickets = result.documents.map { doc ->
-                        Ticket(
-                            id = doc.id,
-                            eventId = doc.getString("id_evento") ?: "",
-                            eventTitle = doc.getString("eventTitle") ?: "Entrada",
-                            clubName = doc.getString("clubName") ?: "",
-                            date = doc.getString("date") ?: "",
-                            time = doc.getString("time") ?: "",
-                            entryType = doc.getString("tipo_entrada") ?: "",
-                            price = doc.getDouble("precio_pagado") ?: 0.0,
-                            qrCodeData = doc.getString("codigo_qr") ?: "",
-                            imageUrl = doc.getString("imageUrl") ?: ""
-                        )
-                    }
-                }
+        if (uid == null) {
+            userTickets = emptyList()
+            isLoading = false
+            return@LaunchedEffect
         }
+
+        db.collection("entradas")
+            .whereEqualTo("id_usuario", uid)
+            .get()
+            .addOnSuccessListener { result ->
+                userTickets = result.documents.map { doc ->
+                    Ticket(
+                        id = doc.id,
+                        eventId = doc.getString("id_evento") ?: "",
+                        eventTitle = doc.getString("eventTitle") ?: "Entrada",
+                        clubName = doc.getString("clubName") ?: "",
+                        date = doc.getString("date") ?: "",
+                        time = doc.getString("time") ?: "",
+                        entryType = doc.getString("tipo_entrada") ?: "",
+                        price = doc.getDouble("precio_pagado") ?: 0.0,
+                        qrCodeData = doc.getString("codigo_qr") ?: "",
+                        imageUrl = doc.getString("imageUrl") ?: ""
+                    )
+                }
+
+                isLoading = false
+            }
+            .addOnFailureListener {
+                userTickets = emptyList()
+                isLoading = false
+            }
     }
 
     Column(
@@ -73,44 +83,67 @@ fun TicketsScreen(
     ) {
         Text(
             text = "MIS ENTRADAS",
-            modifier = Modifier.padding(top = 64.dp, bottom = 24.dp, start = 8.dp),
+            modifier = Modifier.padding(
+                top = 64.dp,
+                bottom = 24.dp,
+                start = 8.dp
+            ),
             style = MaterialTheme.typography.headlineLarge,
             color = Color.White,
             fontWeight = FontWeight.Black,
             letterSpacing = 2.sp
         )
 
-        if (userTickets.isEmpty()) {
-            EmptyTicketsState()
-        } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                contentPadding = PaddingValues(bottom = 100.dp)
-            ) {
-                items(tickets) { ticket ->
-                    val relatedEvent = SampleData.sampleEvents.find { it.id == ticket.eventId }
-                    
-                    TicketItem(
-                        ticket = ticket,
-                        onLocationClick = {
-                            navController.navigate(
-                                Maps(
-                                    lat = relatedEvent?.latitude,
-                                    lng = relatedEvent?.longitude
-                                )
-                            ) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                            }
-                        },
-                        onVenueClick = {
-                            relatedEvent?.let { event ->
-                                navController.navigate(VenueProfile(event.venueId))
-                            }
-                        }
+        when {
+            isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = androidx.compose.ui.Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = Color.White
                     )
+                }
+            }
+
+            userTickets.isEmpty() -> {
+                EmptyTicketsState()
+            }
+
+            else -> {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                    contentPadding = PaddingValues(bottom = 100.dp)
+                ) {
+                    items(userTickets) { ticket ->
+                        val relatedEvent = SampleData.sampleEvents.find {
+                            it.id == ticket.eventId
+                        }
+
+                        TicketItem(
+                            ticket = ticket,
+                            onLocationClick = {
+                                navController.navigate(
+                                    Maps(
+                                        lat = relatedEvent?.latitude,
+                                        lng = relatedEvent?.longitude
+                                    )
+                                ) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            },
+                            onVenueClick = {
+                                relatedEvent?.let { event ->
+                                    navController.navigate(
+                                        VenueProfile(event.venueId)
+                                    )
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
