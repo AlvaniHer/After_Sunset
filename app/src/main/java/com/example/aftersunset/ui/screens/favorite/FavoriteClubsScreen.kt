@@ -79,6 +79,7 @@ fun FavoriteClubsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .statusBarsPadding()
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(64.dp))
