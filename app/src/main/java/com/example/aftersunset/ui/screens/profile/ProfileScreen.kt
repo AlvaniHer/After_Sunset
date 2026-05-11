@@ -33,10 +33,16 @@ fun ProfileScreen(
     onFriendsClick: () -> Unit = {},
     onFavoriteClubsClick: () -> Unit = {}
 ) {
-    val user = SampleData.sampleUser //TODO: BORRAR Y MODIFICAR EL DIALOG CON EL NOMBRE REAL.
-
+    val user = SampleData.sampleUser  //TODO: BORRAR Y MODIFICAR EL DIALOG CON EL NOMBRE REAL.
     val firebaseUser = FirebaseAuth.getInstance().currentUser
     val userName = firebaseUser?.displayName ?: firebaseUser?.email ?: "Usuario"
+
+    val seed = userName.split(" ").firstOrNull() ?: "Usuario"
+    val diceBearUrl = "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=$seed"
+
+    val profilePhotoUrl = firebaseUser?.photoUrl?.toString() 
+        ?: user.profileImageUrl.takeIf { it.isNotBlank() } 
+        ?: diceBearUrl
 
     var showLevelUpDialog by remember { mutableStateOf(user.pendingLevelUp) }
 
@@ -51,7 +57,8 @@ fun ProfileScreen(
         ProfileHeader(
             name = userName,
             location = user.location,
-            userLevel = user.level
+            userLevel = user.level,
+            profileImageUrl = profilePhotoUrl
         )
 
         Spacer(modifier = Modifier.height(32.dp))
