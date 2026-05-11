@@ -31,12 +31,18 @@ import com.google.firebase.auth.FirebaseAuth
 fun ProfileScreen(
     onLogout: () -> Unit,
     onFriendsClick: () -> Unit = {},
-    onFavoriteClubsClick: () -> Unit = {} // 👈 NUEVO
+    onFavoriteClubsClick: () -> Unit = {}
 ) {
-    val user = SampleData.sampleUser
-
+    val user = SampleData.sampleUser  //TODO: BORRAR Y MODIFICAR EL DIALOG CON EL NOMBRE REAL.
     val firebaseUser = FirebaseAuth.getInstance().currentUser
     val userName = firebaseUser?.displayName ?: firebaseUser?.email ?: "Usuario"
+
+    val seed = userName.split(" ").firstOrNull() ?: "Usuario"
+    val diceBearUrl = "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=$seed"
+
+    val profilePhotoUrl = firebaseUser?.photoUrl?.toString() 
+        ?: user.profileImageUrl.takeIf { it.isNotBlank() } 
+        ?: diceBearUrl
 
     var showLevelUpDialog by remember { mutableStateOf(user.pendingLevelUp) }
 
@@ -48,16 +54,15 @@ fun ProfileScreen(
             .padding(top = 60.dp)
     ) {
 
-        // HEADER
         ProfileHeader(
             name = userName,
             location = user.location,
-            userLevel = user.level
+            userLevel = user.level,
+            profileImageUrl = profilePhotoUrl
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // STATS
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -78,7 +83,6 @@ fun ProfileScreen(
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
         )
 
-        // 👉 CLUBES FAVORITOS (YA FUNCIONANDO)
         ProfileMenuItem(
             icon = Icons.Default.Favorite,
             label = "Clubes Favoritos",
@@ -92,7 +96,7 @@ fun ProfileScreen(
         )
 
         ProfileMenuItem(
-            painter = R.drawable.ic_history,
+            painter = R.drawable.ic_friends,
             label = "Amigos",
             onClick = onFriendsClick
         )
@@ -119,7 +123,6 @@ fun ProfileScreen(
         }
     }
 
-    // DIALOGO LEVEL UP
     if (showLevelUpDialog) {
         SuccessDialog(
             onDismiss = {

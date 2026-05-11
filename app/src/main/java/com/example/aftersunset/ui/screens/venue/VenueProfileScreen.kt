@@ -17,6 +17,9 @@ import com.example.aftersunset.ui.components.home.EventCard
 import com.example.aftersunset.ui.components.venue.*
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Pantalla de perfil detallado de un local (Venue).
@@ -39,8 +42,26 @@ fun VenueProfileScreen(
         SampleData.sampleVenues.find { it.id.toString() == venueId } ?: SampleData.sampleVenues.first()
     }
 
+    val uid = FirebaseAuth.getInstance().currentUser?.uid
+    val db = FirebaseFirestore.getInstance()
     var isFavorite by remember { mutableStateOf(false) }
     var isFollowing by remember { mutableStateOf(false) }
+
+    val favoriteId = "${uid}_${venue.id}"
+
+    DisposableEffect(uid, venue.id) {
+        val registration = if (uid != null) {
+            db.collection("favoritos_clubes")
+                .document(favoriteId)
+                .addSnapshotListener { snapshot, _ ->
+                    isFavorite = snapshot?.exists() == true
+                }
+        } else null
+
+        onDispose {
+            registration?.remove()
+        }
+    }
 
     Scaffold(
         containerColor = InkBlack
@@ -55,7 +76,25 @@ fun VenueProfileScreen(
                     mainPhoto = venue.mainPhoto,
                     isFavorite = isFavorite,
                     onBackClick = onBackClick,
-                    onToggleFavorite = { isFavorite = !isFavorite }
+                    onToggleFavorite = {
+                        if (uid == null) return@VenueHeader
+
+                        val favoriteRef = db.collection("favoritos_clubes").document(favoriteId)
+
+                        if (isFavorite) {
+                            favoriteRef.delete()
+                        } else {
+                            val favoriteClub = hashMapOf(
+                                "id_usuario" to uid,
+                                "id_local" to venue.id.toString(),
+                                "nombre_local" to venue.name,
+                                "direccion" to venue.address,
+                                "imagenUrl" to venue.mainPhoto,
+                                "fecha_agregado" to Timestamp.now()
+                            )
+                            favoriteRef.set(favoriteClub)
+                        }
+                    }
                 )
             }
 
