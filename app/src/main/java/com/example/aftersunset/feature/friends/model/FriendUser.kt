@@ -10,5 +10,45 @@ data class FriendUser(
     val foto_perfil: String = "",
     val estado_cuenta: String = "",
     val fecha_nacimiento: Timestamp? = null,
-    val fecha_registro: Timestamp? = null
-)
+    val fecha_registro: Timestamp? = null,
+
+    val id: String = "",
+    val name: String = "",
+    val profileImageUrl: String = "",
+    val location: String = "",
+    val level: String = "",
+    val points: Int = 0,
+    val followingCount: Int = 0,
+    val eventsAttended: Int = 0,
+    val pendingLevelUp: Boolean = false
+) {
+    fun displayName(): String {
+        val legacyName = listOf(nombre, apellidos)
+            .filter { it.isNotBlank() }
+            .joinToString(" ")
+            .trim()
+
+        return when {
+            legacyName.isNotBlank() -> legacyName
+            name.isNotBlank() -> name
+            email.isNotBlank() -> email.substringBefore("@")
+            else -> "Usuario"
+        }
+    }
+
+    fun displayUsername(): String {
+        return when {
+            username.isNotBlank() -> "@$username"
+            email.isNotBlank() -> "@${email.substringBefore("@")}"
+            else -> "@sin_username"
+        }
+    }
+
+    fun displayAvatarUrl(): String {
+        return when {
+            foto_perfil.isNotBlank() -> foto_perfil
+            profileImageUrl.isNotBlank() -> profileImageUrl
+            else -> ""
+        }
+    }
+}

@@ -4,6 +4,7 @@ import com.example.aftersunset.feature.friends.model.FriendUser
 import com.example.aftersunset.feature.friends.model.Friendship
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
 class FriendsRepository(
@@ -110,18 +111,22 @@ class FriendsRepository(
         }
 
         db.collection("amistades")
-            .whereEqualTo("id_usuario_receptor", currentUserId)
-            .whereEqualTo("estado_amistad", "pendiente")
             .get()
             .addOnSuccessListener { result ->
                 val requests = result.documents.mapNotNull { document ->
-                    val friendship = document.toObject(Friendship::class.java)
-                    if (friendship != null) {
+                    val friendship = document.toFriendshipOrNull()
+
+                    if (
+                        friendship != null &&
+                        friendship.id_usuario_receptor == currentUserId &&
+                        friendship.estado_amistad.equals("pendiente", ignoreCase = true)
+                    ) {
                         document.id to friendship
                     } else {
                         null
                     }
                 }
+
                 onResult(requests)
             }
             .addOnFailureListener { exception ->
@@ -162,21 +167,25 @@ class FriendsRepository(
         }
 
         db.collection("amistades")
-            .whereEqualTo("estado_amistad", "aceptada")
             .get()
             .addOnSuccessListener { result ->
                 val friendships = result.documents.mapNotNull { document ->
-                    val friendship = document.toObject(Friendship::class.java)
+                    val friendship = document.toFriendshipOrNull()
+
                     if (
                         friendship != null &&
-                        (friendship.id_usuario_emisor == currentUserId ||
-                                friendship.id_usuario_receptor == currentUserId)
+                        friendship.estado_amistad.equals("aceptada", ignoreCase = true) &&
+                        (
+                                friendship.id_usuario_emisor == currentUserId ||
+                                        friendship.id_usuario_receptor == currentUserId
+                                )
                     ) {
                         document.id to friendship
                     } else {
                         null
                     }
                 }
+
                 onResult(friendships)
             }
             .addOnFailureListener { exception ->
@@ -207,5 +216,21 @@ class FriendsRepository(
 
     private fun buildFriendshipId(userId1: String, userId2: String): String {
         return listOf(userId1, userId2).sorted().joinToString("_")
+    }
+
+    private fun DocumentSnapshot.toFriendshipOrNull(): Friendship? {
+        val emisor = getString("id_usuario_emisor") ?: return null
+        val receptor = getString("id_usuario_receptor") ?: return null
+        val estado = getString("estado_amistad") ?: return null
+        val fechaSolicitud = getTimestamp("fecha_solicitud")
+        val fechaRespuesta = getTimestamp("fecha_respuesta")
+
+        return Friendship(
+            id_usuario_emisor = emisor,
+            id_usuario_receptor = receptor,
+            estado_amistad = estado,
+            fecha_solicitud = fechaSolicitud,
+            fecha_respuesta = fechaRespuesta
+        )
     }
 }
