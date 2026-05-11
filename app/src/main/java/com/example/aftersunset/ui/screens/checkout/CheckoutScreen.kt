@@ -189,7 +189,7 @@ fun CheckoutScreen(
                         "estado_entrada" to "pagada",
                         "fecha_uso" to null,
 
-                        // Datos extra para que TicketsScreen se vea bien
+
                         "eventTitle" to event.title,
                         "clubName" to event.clubName,
                         "date" to event.date,
