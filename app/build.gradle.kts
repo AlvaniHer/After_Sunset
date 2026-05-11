@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.secrets)
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
 }
 
 android {
@@ -56,6 +56,7 @@ dependencies {
     // --- IMÁGENES ---
     implementation("io.coil-kt.coil3:coil-compose:3.0.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.0")
+    implementation("io.coil-kt.coil3:coil-svg:3.0.0")
 
     // --- VIDEO ---
     val media3Version = "1.3.1"

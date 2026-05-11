@@ -19,6 +19,7 @@ import com.example.aftersunset.navigation.EventDetail
 import com.example.aftersunset.navigation.FavoriteClubs
 import com.example.aftersunset.navigation.Friends
 import com.example.aftersunset.navigation.Home
+import com.example.aftersunset.navigation.MainGraph
 import com.example.aftersunset.navigation.Maps
 import com.example.aftersunset.navigation.Profile
 import com.example.aftersunset.navigation.Tickets
@@ -29,6 +30,7 @@ import com.example.aftersunset.ui.screens.map.MapScreen
 import com.example.aftersunset.ui.screens.profile.ProfileScreen
 import com.example.aftersunset.ui.screens.tickets.TicketsScreen
 import com.example.aftersunset.ui.screens.venue.VenueProfileScreen
+import com.google.firebase.auth.FirebaseAuth
 
 
 /**
@@ -102,7 +104,10 @@ fun MainScreen(
             composable<Profile> {
                 ProfileScreen(
                     onLogout = {
-                        rootNavController.navigate(AuthGraph)
+                        FirebaseAuth.getInstance().signOut()
+                        rootNavController.navigate(AuthGraph) {
+                            popUpTo(MainGraph) { inclusive = true }
+                        }
                     },
                     onFriendsClick = {
                         rootNavController.navigate(Friends)
