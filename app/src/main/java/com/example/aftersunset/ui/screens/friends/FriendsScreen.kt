@@ -2,7 +2,6 @@ package com.example.aftersunset.ui.screens.friends
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -53,10 +52,10 @@ fun FriendsScreen(
     viewModel: FriendsViewModel = viewModel()
 ) {
     LaunchedEffect(Unit) {
-        viewModel.loadPendingRequests()
-        viewModel.loadAcceptedFriends()
+        viewModel.startObserving()
     }
 
+    val currentUserId = viewModel.getCurrentUserId()
     val searchText = viewModel.searchText
     val foundUser = viewModel.foundUser
     val pendingRequests = viewModel.pendingRequests
@@ -64,7 +63,6 @@ fun FriendsScreen(
     val friendUsers = viewModel.friendUsers
     val isLoading = viewModel.isLoading
     val message = viewModel.message
-    val currentUserId = viewModel.getCurrentUserId()
 
     Column(
         modifier = Modifier
@@ -173,14 +171,15 @@ fun FriendsScreen(
         } else {
             pendingRequests.forEach { (friendshipId, friendship) ->
                 val user = friendUsers[friendship.id_usuario_emisor]
-                if (user != null) {
-                    PendingRequestCard(
-                        user = user,
-                        onAcceptClick = { viewModel.acceptFriendRequest(friendshipId) },
-                        isLoading = isLoading
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                }
+
+                PendingRequestCard(
+                    user = user,
+                    fallbackUserId = friendship.id_usuario_emisor,
+                    onAcceptClick = { viewModel.acceptFriendRequest(friendshipId) },
+                    isLoading = isLoading
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
 
@@ -200,6 +199,7 @@ fun FriendsScreen(
                 }
 
                 val user = friendUsers[otherUserId]
+
                 if (user != null) {
                     FriendCard(user = user)
                     Spacer(modifier = Modifier.height(12.dp))
@@ -257,12 +257,17 @@ private fun UserResultCard(
 
 @Composable
 private fun PendingRequestCard(
-    user: FriendUser,
+    user: FriendUser?,
+    fallbackUserId: String,
     onAcceptClick: () -> Unit,
     isLoading: Boolean
 ) {
     CardContainer {
-        UserInfo(user = user)
+        if (user != null) {
+            UserInfo(user = user)
+        } else {
+            UserFallbackInfo(fallbackUserId)
+        }
 
         Spacer(modifier = Modifier.height(14.dp))
 
@@ -310,13 +315,49 @@ private fun UserInfo(user: FriendUser) {
             modifier = Modifier.padding(start = 14.dp)
         ) {
             Text(
-                text = "${user.nombre} ${user.apellidos}".trim(),
+                text = user.displayName(),
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold
             )
 
             Text(
-                text = "@${user.username}",
+                text = user.displayUsername(),
+                color = Color.White.copy(alpha = 0.60f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun UserFallbackInfo(fallbackUserId: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(52.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.06f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                tint = PacificCyan
+            )
+        }
+
+        Column(
+            modifier = Modifier.padding(start = 14.dp)
+        ) {
+            Text(
+                text = "Usuario",
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Text(
+                text = "@${fallbackUserId.take(8)}...",
                 color = Color.White.copy(alpha = 0.60f)
             )
         }

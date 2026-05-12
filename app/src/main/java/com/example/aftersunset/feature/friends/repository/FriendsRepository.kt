@@ -4,7 +4,10 @@ import com.example.aftersunset.feature.friends.model.FriendUser
 import com.example.aftersunset.feature.friends.model.Friendship
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Source
 
 class FriendsRepository(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
@@ -24,7 +27,7 @@ class FriendsRepository(
 
         db.collection("usuarios")
             .whereEqualTo("username", username)
-            .get()
+            .get(Source.SERVER)
             .addOnSuccessListener { result ->
                 val document = result.documents.firstOrNull()
 
@@ -38,7 +41,7 @@ class FriendsRepository(
                     return@addOnSuccessListener
                 }
 
-                val user = document.toObject(FriendUser::class.java)
+                val user = document.toFriendUserOrNull()
                 if (user != null) {
                     onResult(document.id to user)
                 } else {
@@ -70,7 +73,7 @@ class FriendsRepository(
         val friendshipId = buildFriendshipId(senderUserId, receiverUserId)
         val friendshipRef = db.collection("amistades").document(friendshipId)
 
-        friendshipRef.get()
+        friendshipRef.get(Source.SERVER)
             .addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
                     onError(IllegalStateException("Ya existe una solicitud o amistad entre estos usuarios"))
@@ -86,46 +89,85 @@ class FriendsRepository(
                 )
 
                 friendshipRef.set(friendship)
-                    .addOnSuccessListener {
-                        onSuccess()
-                    }
-                    .addOnFailureListener { exception ->
-                        onError(exception)
-                    }
+                    .addOnSuccessListener { onSuccess() }
+                    .addOnFailureListener { exception -> onError(exception) }
             }
             .addOnFailureListener { exception ->
                 onError(exception)
             }
     }
 
-    fun getPendingRequests(
+    fun observePendingRequests(
+        currentUserId: String,
         onResult: (List<Pair<String, Friendship>>) -> Unit,
         onError: (Exception) -> Unit
-    ) {
-        val currentUserId = getCurrentUserId()
+    ): ListenerRegistration {
+        return db.collection("amistades")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    onError(error)
+                    return@addSnapshotListener
+                }
 
-        if (currentUserId == null) {
-            onError(IllegalStateException("No hay usuario autenticado"))
-            return
-        }
+                val requests = snapshot?.documents.orEmpty().mapNotNull { document ->
+                    val friendship = document.toFriendshipOrNull()
 
-        db.collection("amistades")
-            .whereEqualTo("id_usuario_receptor", currentUserId)
-            .whereEqualTo("estado_amistad", "pendiente")
-            .get()
-            .addOnSuccessListener { result ->
-                val requests = result.documents.mapNotNull { document ->
-                    val friendship = document.toObject(Friendship::class.java)
-                    if (friendship != null) {
+                    if (
+                        friendship != null &&
+                        friendship.id_usuario_receptor == currentUserId &&
+                        friendship.estado_amistad.equals("pendiente", ignoreCase = true)
+                    ) {
                         document.id to friendship
                     } else {
                         null
                     }
                 }
+
                 onResult(requests)
             }
-            .addOnFailureListener { exception ->
-                onError(exception)
+    }
+
+    fun observeAcceptedFriendships(
+        currentUserId: String,
+        onResult: (List<Pair<String, Friendship>>) -> Unit,
+        onError: (Exception) -> Unit
+    ): ListenerRegistration {
+        return db.collection("amistades")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    onError(error)
+                    return@addSnapshotListener
+                }
+
+                val uniqueFriendIds = mutableSetOf<String>()
+
+                val friendships = snapshot?.documents.orEmpty().mapNotNull { document ->
+                    val friendship = document.toFriendshipOrNull() ?: return@mapNotNull null
+
+                    val isAccepted = friendship.estado_amistad.equals("aceptada", ignoreCase = true)
+                    val belongsToCurrentUser =
+                        friendship.id_usuario_emisor == currentUserId ||
+                                friendship.id_usuario_receptor == currentUserId
+
+                    if (!isAccepted || !belongsToCurrentUser) {
+                        return@mapNotNull null
+                    }
+
+                    val otherUserId = if (friendship.id_usuario_emisor == currentUserId) {
+                        friendship.id_usuario_receptor
+                    } else {
+                        friendship.id_usuario_emisor
+                    }
+
+                    if (uniqueFriendIds.contains(otherUserId)) {
+                        null
+                    } else {
+                        uniqueFriendIds.add(otherUserId)
+                        document.id to friendship
+                    }
+                }
+
+                onResult(friendships)
             }
     }
 
@@ -142,46 +184,8 @@ class FriendsRepository(
                     "fecha_respuesta" to Timestamp.now()
                 )
             )
-            .addOnSuccessListener {
-                onSuccess()
-            }
-            .addOnFailureListener { exception ->
-                onError(exception)
-            }
-    }
-
-    fun getAcceptedFriendships(
-        onResult: (List<Pair<String, Friendship>>) -> Unit,
-        onError: (Exception) -> Unit
-    ) {
-        val currentUserId = getCurrentUserId()
-
-        if (currentUserId == null) {
-            onError(IllegalStateException("No hay usuario autenticado"))
-            return
-        }
-
-        db.collection("amistades")
-            .whereEqualTo("estado_amistad", "aceptada")
-            .get()
-            .addOnSuccessListener { result ->
-                val friendships = result.documents.mapNotNull { document ->
-                    val friendship = document.toObject(Friendship::class.java)
-                    if (
-                        friendship != null &&
-                        (friendship.id_usuario_emisor == currentUserId ||
-                                friendship.id_usuario_receptor == currentUserId)
-                    ) {
-                        document.id to friendship
-                    } else {
-                        null
-                    }
-                }
-                onResult(friendships)
-            }
-            .addOnFailureListener { exception ->
-                onError(exception)
-            }
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onError(exception) }
     }
 
     fun getUserById(
@@ -191,9 +195,9 @@ class FriendsRepository(
     ) {
         db.collection("usuarios")
             .document(userId)
-            .get()
+            .get(Source.SERVER)
             .addOnSuccessListener { document ->
-                val user = document.toObject(FriendUser::class.java)
+                val user = document.toFriendUserOrNull()
                 if (user != null) {
                     onResult(document.id to user)
                 } else {
@@ -207,5 +211,61 @@ class FriendsRepository(
 
     private fun buildFriendshipId(userId1: String, userId2: String): String {
         return listOf(userId1, userId2).sorted().joinToString("_")
+    }
+
+    private fun DocumentSnapshot.toFriendshipOrNull(): Friendship? {
+        val emisor = getString("id_usuario_emisor") ?: return null
+        val receptor = getString("id_usuario_receptor") ?: return null
+        val estado = getString("estado_amistad") ?: return null
+        val fechaSolicitud = getTimestamp("fecha_solicitud")
+        val fechaRespuesta = getTimestamp("fecha_respuesta")
+
+        return Friendship(
+            id_usuario_emisor = emisor,
+            id_usuario_receptor = receptor,
+            estado_amistad = estado,
+            fecha_solicitud = fechaSolicitud,
+            fecha_respuesta = fechaRespuesta
+        )
+    }
+
+    private fun DocumentSnapshot.toFriendUserOrNull(): FriendUser? {
+        val email = getString("email") ?: ""
+        val username = getString("username") ?: ""
+        val nombre = getString("nombre") ?: ""
+        val apellidos = getString("apellidos") ?: ""
+        val fotoPerfil = getString("foto_perfil") ?: ""
+        val estadoCuenta = getString("estado_cuenta") ?: ""
+
+        val id = getString("id") ?: this.id
+        val name = getString("name") ?: ""
+        val profileImageUrl = getString("profileImageUrl") ?: ""
+        val location = getString("location") ?: ""
+        val level = getString("level") ?: ""
+        val pendingLevelUp = getBoolean("pendingLevelUp") ?: false
+
+        val points = (getLong("points") ?: 0L).toInt()
+        val followingCount = (getLong("followingCount") ?: 0L).toInt()
+        val eventsAttended = (getLong("eventsAttended") ?: 0L).toInt()
+
+        return FriendUser(
+            nombre = nombre,
+            apellidos = apellidos,
+            email = email,
+            username = username,
+            foto_perfil = fotoPerfil,
+            estado_cuenta = estadoCuenta,
+            fecha_nacimiento = getTimestamp("fecha_nacimiento"),
+            fecha_registro = getTimestamp("fecha_registro"),
+            id = id,
+            name = name,
+            profileImageUrl = profileImageUrl,
+            location = location,
+            level = level,
+            points = points,
+            followingCount = followingCount,
+            eventsAttended = eventsAttended,
+            pendingLevelUp = pendingLevelUp
+        )
     }
 }
