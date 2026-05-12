@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.aftersunset.feature.friends.model.FriendUser
 import com.example.aftersunset.feature.friends.model.Friendship
 import com.example.aftersunset.feature.friends.repository.FriendsRepository
+import com.google.firebase.firestore.ListenerRegistration
 
 class FriendsViewModel(
     private val repository: FriendsRepository = FriendsRepository()
@@ -33,6 +34,10 @@ class FriendsViewModel(
     var message by mutableStateOf<String?>(null)
         private set
 
+    private var pendingListener: ListenerRegistration? = null
+    private var acceptedListener: ListenerRegistration? = null
+    private var observedUserId: String? = null
+
     fun getCurrentUserId(): String? {
         return repository.getCurrentUserId()
     }
@@ -42,6 +47,57 @@ class FriendsViewModel(
     }
 
     fun clearMessage() {
+        message = null
+    }
+
+    fun startObserving() {
+        val currentUserId = repository.getCurrentUserId() ?: return
+
+        if (observedUserId == currentUserId && pendingListener != null && acceptedListener != null) {
+            return
+        }
+
+        stopObserving()
+        resetFriendsState()
+        observedUserId = currentUserId
+
+        pendingListener = repository.observePendingRequests(
+            currentUserId = currentUserId,
+            onResult = { requests ->
+                pendingRequests = requests
+                preloadUsersFromPendingRequests(requests)
+            },
+            onError = { exception ->
+                message = exception.message ?: "Error al cargar solicitudes"
+            }
+        )
+
+        acceptedListener = repository.observeAcceptedFriendships(
+            currentUserId = currentUserId,
+            onResult = { friendships ->
+                acceptedFriendships = friendships
+                preloadUsersFromAcceptedFriendships(friendships)
+            },
+            onError = { exception ->
+                message = exception.message ?: "Error al cargar amigos"
+            }
+        )
+    }
+
+    fun stopObserving() {
+        pendingListener?.remove()
+        acceptedListener?.remove()
+        pendingListener = null
+        acceptedListener = null
+        observedUserId = null
+    }
+
+    fun resetFriendsState() {
+        foundUser = null
+        pendingRequests = emptyList()
+        acceptedFriendships = emptyList()
+        friendUsers = emptyMap()
+        isLoading = false
         message = null
     }
 
@@ -90,24 +146,10 @@ class FriendsViewModel(
                 message = "Solicitud enviada correctamente"
                 foundUser = null
                 searchText = ""
-                loadPendingRequests()
-                loadAcceptedFriends()
             },
             onError = { exception ->
                 isLoading = false
                 message = exception.message ?: "Error al enviar solicitud"
-            }
-        )
-    }
-
-    fun loadPendingRequests() {
-        repository.getPendingRequests(
-            onResult = { requests ->
-                pendingRequests = requests
-                preloadUsersFromPendingRequests(requests)
-            },
-            onError = { exception ->
-                message = exception.message ?: "Error al cargar solicitudes"
             }
         )
     }
@@ -120,24 +162,10 @@ class FriendsViewModel(
             onSuccess = {
                 isLoading = false
                 message = "Solicitud aceptada"
-                loadPendingRequests()
-                loadAcceptedFriends()
             },
             onError = { exception ->
                 isLoading = false
                 message = exception.message ?: "Error al aceptar solicitud"
-            }
-        )
-    }
-
-    fun loadAcceptedFriends() {
-        repository.getAcceptedFriendships(
-            onResult = { friendships ->
-                acceptedFriendships = friendships
-                preloadUsersFromAcceptedFriendships(friendships)
-            },
-            onError = { exception ->
-                message = exception.message ?: "Error al cargar amigos"
             }
         )
     }
@@ -192,5 +220,10 @@ class FriendsViewModel(
                 )
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopObserving()
     }
 }

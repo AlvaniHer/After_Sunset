@@ -2,7 +2,6 @@ package com.example.aftersunset.ui.screens.friends
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -52,15 +51,11 @@ fun FriendsScreen(
     onBackClick: () -> Unit,
     viewModel: FriendsViewModel = viewModel()
 ) {
-    val currentUserId = viewModel.getCurrentUserId()
-
-    LaunchedEffect(currentUserId) {
-        if (currentUserId != null) {
-            viewModel.loadPendingRequests()
-            viewModel.loadAcceptedFriends()
-        }
+    LaunchedEffect(Unit) {
+        viewModel.startObserving()
     }
 
+    val currentUserId = viewModel.getCurrentUserId()
     val searchText = viewModel.searchText
     val foundUser = viewModel.foundUser
     val pendingRequests = viewModel.pendingRequests
@@ -103,13 +98,6 @@ fun FriendsScreen(
         Text(
             text = "Busca usuarios, revisa solicitudes y consulta tu lista de amigos.",
             color = Color.White.copy(alpha = 0.65f)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        DebugCard(
-            currentUserId = currentUserId,
-            pendingCount = pendingRequests.size
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -212,44 +200,11 @@ fun FriendsScreen(
 
                 val user = friendUsers[otherUserId]
 
-                FriendCard(
-                    user = user,
-                    fallbackUserId = otherUserId
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
+                if (user != null) {
+                    FriendCard(user = user)
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
             }
-        }
-    }
-}
-
-@Composable
-private fun DebugCard(
-    currentUserId: String?,
-    pendingCount: Int
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(18.dp))
-            .background(IndigoBloom.copy(alpha = 0.20f))
-            .border(
-                width = 1.dp,
-                color = PacificCyan.copy(alpha = 0.45f),
-                shape = RoundedCornerShape(18.dp)
-            )
-            .padding(14.dp)
-    ) {
-        Column {
-            Text(
-                text = "UID actual: ${currentUserId ?: "null"}",
-                color = Color.White.copy(alpha = 0.90f)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Pendientes detectadas: $pendingCount",
-                color = Color.White.copy(alpha = 0.90f)
-            )
         }
     }
 }
@@ -282,7 +237,7 @@ private fun UserResultCard(
     isLoading: Boolean
 ) {
     CardContainer {
-        UserInfo(user = user, fallbackUserId = null)
+        UserInfo(user = user)
 
         Spacer(modifier = Modifier.height(14.dp))
 
@@ -308,7 +263,11 @@ private fun PendingRequestCard(
     isLoading: Boolean
 ) {
     CardContainer {
-        UserInfo(user = user, fallbackUserId = fallbackUserId)
+        if (user != null) {
+            UserInfo(user = user)
+        } else {
+            UserFallbackInfo(fallbackUserId)
+        }
 
         Spacer(modifier = Modifier.height(14.dp))
 
@@ -327,32 +286,14 @@ private fun PendingRequestCard(
 }
 
 @Composable
-private fun FriendCard(
-    user: FriendUser?,
-    fallbackUserId: String
-) {
+private fun FriendCard(user: FriendUser) {
     CardContainer {
-        UserInfo(user = user, fallbackUserId = fallbackUserId)
+        UserInfo(user = user)
     }
 }
 
 @Composable
-private fun UserInfo(
-    user: FriendUser?,
-    fallbackUserId: String?
-) {
-    val displayName = when {
-        user != null -> user.displayName()
-        fallbackUserId != null -> "Usuario"
-        else -> "Usuario"
-    }
-
-    val displayUsername = when {
-        user != null -> user.displayUsername()
-        fallbackUserId != null -> "@${fallbackUserId.take(8)}..."
-        else -> "@sin_username"
-    }
-
+private fun UserInfo(user: FriendUser) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -374,13 +315,49 @@ private fun UserInfo(
             modifier = Modifier.padding(start = 14.dp)
         ) {
             Text(
-                text = displayName,
+                text = user.displayName(),
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold
             )
 
             Text(
-                text = displayUsername,
+                text = user.displayUsername(),
+                color = Color.White.copy(alpha = 0.60f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun UserFallbackInfo(fallbackUserId: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(52.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.06f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                tint = PacificCyan
+            )
+        }
+
+        Column(
+            modifier = Modifier.padding(start = 14.dp)
+        ) {
+            Text(
+                text = "Usuario",
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Text(
+                text = "@${fallbackUserId.take(8)}...",
                 color = Color.White.copy(alpha = 0.60f)
             )
         }

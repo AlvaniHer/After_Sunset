@@ -11,7 +11,6 @@ data class FriendUser(
     val estado_cuenta: String = "",
     val fecha_nacimiento: Timestamp? = null,
     val fecha_registro: Timestamp? = null,
-
     val id: String = "",
     val name: String = "",
     val profileImageUrl: String = "",
@@ -40,7 +39,9 @@ data class FriendUser(
         return when {
             username.isNotBlank() -> "@$username"
             email.isNotBlank() -> "@${email.substringBefore("@")}"
-            else -> "@sin_username"
+            name.isNotBlank() -> "@${name.lowercase().replace(" ", "")}"
+            nombre.isNotBlank() -> "@${nombre.lowercase().replace(" ", "")}"
+            else -> "@usuario"
         }
     }
 
