@@ -103,7 +103,7 @@ fun TicketFront(
                         modifier = Modifier.padding(start = 8.dp)
                     ) {
                         Text(
-                            text = ticket.entryType.uppercase(),
+                            text = ticket.ticketType.uppercase(),
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                             color = Dragonfruit,
                             style = MaterialTheme.typography.labelSmall,

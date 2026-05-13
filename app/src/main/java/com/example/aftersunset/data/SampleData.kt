@@ -4,9 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.aftersunset.domain.model.*
-
+/*
 object SampleData {
-    var sampleUser by mutableStateOf(User(
+   /* var sampleUser by mutableStateOf(User(
         id = "USER-001",
         name = "Álvaro Pérez",
         email = "alvaro.perez@email.com",
@@ -16,7 +16,7 @@ object SampleData {
         eventsAttended = 12,
         followingCount = 8,
         profileImageUrl = "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Sawyer"
-    ))
+    ))*/
 
     val sampleVenues = listOf(
         Venue(
@@ -77,7 +77,7 @@ object SampleData {
         Review("Sara P.", 5, "Mi club favorito de Málaga, siempre que vengo me lo paso increíble.")
     )
 
-    val sampleEvents = listOf(
+    /*val sampleEvents = listOf(
         Event(
             id = "1",
             venueId = "1",
@@ -158,7 +158,7 @@ object SampleData {
             capacity = 500,
             isSoldOut = false
         )
-    )
+    )*/
 
     var sampleTickets = mutableListOf(
         Ticket(
@@ -210,4 +210,4 @@ object SampleData {
             imageUrl = "https://picsum.photos/id/321/400/400"
         )
     )
-}
+}*/

@@ -1,8 +1,6 @@
 package com.example.aftersunset.ui.screens.event
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.ui.components.event.EventContent
 
 /**
@@ -23,20 +21,15 @@ fun EventDetailScreen(
     onBuyClick: (String, String, Double) -> Unit,
     onLocationClick: (Double, Double) -> Unit
 ) {
-    val event = sampleEvents.find { it.id == eventId }
-    if (event == null)
-        Text(text = "Evento no encontrado") // TODO: Implementar una pantalla de error visualmente acorde al tema
-    else {
-        EventContent(
-            event = event,
-            onBackClick = onBackClick,
-            onVenueClick = { onVenueClick(event.venueId) },
-            onBuyClick = {
-                onBuyClick(event.id, "Entrada General", event.price)
-            },
-            onLocationClick = {
-                onLocationClick(event.latitude, event.longitude)
-            }
-        )
-    }
+    EventContent(
+        eventId = eventId,
+        onBackClick = onBackClick,
+        onVenueClick = { venueId -> onVenueClick(venueId) },
+        onBuyClick = { event ->
+            onBuyClick(event.id, "General", event.price)
+        },
+        onLocationClick = { event ->
+            onLocationClick(event.latitude, event.longitude)
+        }
+    )
 }

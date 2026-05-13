@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.example.aftersunset.data.SampleData.sampleUser
 import com.example.aftersunset.domain.model.UserLevel
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
@@ -38,7 +37,7 @@ import com.example.aftersunset.ui.theme.InkBlack
  * @param userLevel Rango actual del usuario que determina la estética del anillo y el badge.
  */
 @Composable
-fun ProfileHeader(name: String, location: String, userLevel: UserLevel) {
+fun ProfileHeader(name: String, location: String, userLevel: UserLevel,profileImageUrl: String) {
     val colors = AfterSunsetTheme.colors
 
     val ringColors = when (userLevel) {
@@ -87,7 +86,7 @@ fun ProfileHeader(name: String, location: String, userLevel: UserLevel) {
             )
             
             AsyncImage(
-                model = sampleUser.profileImageUrl,
+                model = profileImageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .size(96.dp)
@@ -149,9 +148,10 @@ fun ProfileHeaderPreview(){
     AfterSunsetTheme {
         Box(modifier = Modifier.background(InkBlack).padding(20.dp)) {
             ProfileHeader(
-                name = sampleUser.name,
-                location = sampleUser.location,
-                userLevel = sampleUser.level
+                name = "Alvaro AfterSunset",
+                location = "Málaga, ES",
+                userLevel = UserLevel.LEGENDARY,
+                profileImageUrl = "https://picsum.photos/200"
             )
         }
     }

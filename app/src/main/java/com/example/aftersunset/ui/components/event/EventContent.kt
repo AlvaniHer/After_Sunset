@@ -26,15 +26,56 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.aftersunset.ui.screens.event.EventDetailViewModel
 
 @Composable
 fun EventContent(
+    eventId: String,
+    onBackClick: () -> Unit,
+    onVenueClick: (String) -> Unit,
+    onBuyClick: (Event) -> Unit,
+    onLocationClick: (Event) -> Unit,
+    viewModel: EventDetailViewModel = viewModel()
+) {
+
+    LaunchedEffect(eventId) {
+        viewModel.loadEvent(eventId)
+    }
+
+    val event = viewModel.event
+
+
+    Box(modifier = Modifier.fillMaxSize().background(InkBlack)) {
+        if (viewModel.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = PacificCyan
+            )
+        } else if (event != null) {
+            EventDetailBody(
+                event = event,
+                onBackClick = onBackClick,
+                onVenueClick = { onVenueClick(event.venueId) },
+                onBuyClick = { onBuyClick(event) },
+                onLocationClick = { onLocationClick(event) }
+            )
+        } else {
+            Text(
+                text = "Evento no encontrado",
+                color = Color.White,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+    }
+}
+@Composable
+fun EventDetailBody(
     event: Event,
     onBackClick: () -> Unit,
     onVenueClick: () -> Unit,
@@ -77,7 +118,7 @@ fun EventContent(
                     .offset(y = (-40).dp)
             ) {
                 Text(
-                    text = event.genre.uppercase(),
+                    text = event.genre.joinToString(", ").uppercase(),
                     color = PacificCyan,
                     style = MaterialTheme.typography.labelMedium,
                     letterSpacing = 2.sp
@@ -179,7 +220,7 @@ fun EventContent(
                 .padding(24.dp)
                 .navigationBarsPadding()
             ,
-            onClick = onBuyClick
+            onClick = onBuyClick,
         )
 
         IconButton(
@@ -198,7 +239,7 @@ fun EventContent(
 fun EventContentPreview(){
     AfterSunsetTheme {
         EventContent(
-            event = sampleEvents[0],
+            eventId = "1",
             onBackClick = {},
             onVenueClick = {},
             onBuyClick = {},

@@ -16,14 +16,15 @@ package com.example.aftersunset.domain.model
  * @property imageUrl URL de la imagen promocional o del local asociada al ticket.
  */
 data class Ticket(
-    val id: String,
-    val eventId: String,
-    val eventTitle: String,
-    val clubName: String,
-    val date: String,
-    val time: String,
-    val entryType: String,
-    val price: Double,
-    val qrCodeData: String,
-    val imageUrl: String
+    val id: String = "",
+    val userId: String = "",
+    val eventId: String = "",
+    val imageUrl: String = "",
+    val eventTitle: String = "",
+    val clubName: String = "",
+    val date: String = "",
+    val ticketType: String = "",
+    val price: Double = 0.0,
+    val qrCodeData: String = "",
+    val estado_entrada: String = ""
 )

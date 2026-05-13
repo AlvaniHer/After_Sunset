@@ -12,18 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.aftersunset.data.SampleData.sampleEvents
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.aftersunset.ui.components.home.EventCard
 import com.example.aftersunset.ui.components.home.HomeHeader
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 
-//TODO: Meter texto en strings.xml
+
 /**
  * Pantalla principal de exploración de eventos.
  * @param onEventClick Función para navegar al detalle del evento seleccionado.
  */
 @Composable
-fun HomeScreen(onEventClick: (String) -> Unit) {
+fun HomeScreen(onEventClick: (String) -> Unit,viewModel: HomeViewModel = viewModel()) {
+    val events = viewModel.events
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +45,7 @@ fun HomeScreen(onEventClick: (String) -> Unit) {
             )
         }
 
-        items(sampleEvents) { event ->
+        items(events) { event ->
             EventCard(
                 event = event,
                 onClick = { onEventClick(event.id) }

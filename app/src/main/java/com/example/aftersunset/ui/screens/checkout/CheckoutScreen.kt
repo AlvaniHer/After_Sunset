@@ -2,6 +2,7 @@ package com.example.aftersunset.ui.screens.checkout
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,10 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.domain.model.Event
-import com.example.aftersunset.domain.model.Ticket
-import com.example.aftersunset.domain.model.UserLevel
 import com.example.aftersunset.ui.components.checkout.PriceRow
 import com.example.aftersunset.ui.components.common.SuccessDialog
 import com.example.aftersunset.ui.components.common.SunsetActionButton
@@ -44,139 +42,152 @@ import com.example.aftersunset.ui.theme.PacificCyan
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckoutScreen(
-    event: Event,
+    eventId: String,
     ticketType: String,
     price: Double,
     onBackClick: () -> Unit,
-    onPaymentSuccess: () -> Unit
+    onPaymentSuccess: () -> Unit,
+    viewModel: CheckoutViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    var showSuccessDialog by remember { mutableStateOf(false) }
+    LaunchedEffect(eventId) {
+        viewModel.loadCheckoutData(eventId)
+    }
+    val event = viewModel.event
 
-    Scaffold(
-        topBar = {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 48.dp).padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                IconButton(
-                    onClick = onBackClick,
+    if (event == null && viewModel.errorMessage == null) {
+        Box(modifier = Modifier.fillMaxSize().background(InkBlack), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = PacificCyan)
+        }
+    } else if (viewModel.errorMessage != null) {
+        Box(
+            modifier = Modifier.fillMaxSize().background(InkBlack),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(viewModel.errorMessage!!, color = Color.White, textAlign = TextAlign.Center)
+        }
+    }else if (event != null) {
+        val currentEvent = event
+        Scaffold(
+            topBar = {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 48.dp)
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color.White)
+                    IconButton(
+                        onClick = onBackClick,
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+
+                    Text(
+                        text = "RESUMEN DE COMPRA",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = PacificCyan,
+                    )
+                }
+            },
+            containerColor = InkBlack
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+            ) {
+                Surface(
+                    color = Color.White.copy(alpha = 0.05f),
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AsyncImage(
+                            model = event.imageUrl,
+                            contentDescription = null,
+                            modifier = Modifier.size(80.dp).clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column {
+                            Text(event.title, color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text(event.clubName, color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
                 }
 
-                Text(
-                    text = "RESUMEN DE COMPRA",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = PacificCyan,
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Text("MÉTODO DE PAGO", color = PacificCyan, style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(bottom = 12.dp))
+
+                var cardNumber by remember { mutableStateOf("") }
+                var showCardError by remember { mutableStateOf(false) }
+                OutlinedTextField(
+                    value = cardNumber,
+                    onValueChange = {
+                        if (it.length <= 16) {
+                            cardNumber = it
+                            if (showCardError) showCardError = false
+                            }
+                        },
+                    label = { Text("Número de tarjeta", color = Color.Gray) },
+                    placeholder = { Text("0000 0000 0000 0000", color = Color.White.copy(0.3f)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = showCardError,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = Color.White.copy(0.1f),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        errorBorderColor = Color.Red,
+                        errorLabelColor = Color.Red
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                if (showCardError) {
+                    Text(
+                        text = "Introduce una tarjeta válida",
+                        color = Color.Red,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                PriceRow("Entrada $ticketType", "${price}€")
+                PriceRow("Gastos de gestión", "1.50€")
+                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp), color = Color.White.copy(0.1f))
+                PriceRow("TOTAL", "${price + 1.5}€", isTotal = true)
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                SunsetActionButton(
+                    text = if (viewModel.isProcessing) "PROCESANDO..." else "PAGAR AHORA",
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    onClick = {
+                        if (cardNumber.length < 16) {
+                            showCardError = true
+                        } else {
+                            showCardError = false
+                            viewModel.processPurchase(eventId, ticketType, price)
+                        }
+                    },
+                    enabled = !viewModel.isProcessing
                 )
             }
-        },
-        containerColor = InkBlack
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 16.dp)
-        ) {
-            Surface(
-                color = Color.White.copy(alpha = 0.05f),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    AsyncImage(
-                        model = event.imageUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column {
-                        Text(
-                            event.title, 
-                            color = Color.White, 
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            event.clubName, 
-                            color = Color.White.copy(alpha = 0.6f), 
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            PriceRow("Entrada $ticketType", "${price}€")
-            PriceRow("Gastos de gestión", "1.50€")
-            
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 24.dp),
-                thickness = 1.dp,
-                color = Color.White.copy(alpha = 0.1f)
-            )
-            
-            PriceRow("TOTAL", "${price + 1.5}€", isTotal = true)
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            SunsetActionButton(
-                text = "CONFIRMAR Y PAGAR",
-                onClick = {
-                    val user = SampleData.sampleUser
-
-                    val newTicket = Ticket(
-                        id = "TKT-${System.currentTimeMillis()}",
-                        eventId = event.id,
-                        eventTitle = event.title,
-                        clubName = event.clubName,
-                        date = event.date,
-                        time = "23:30",
-                        entryType = ticketType,
-                        price = price,
-                        qrCodeData = "AS-${event.clubName.uppercase()}-${event.id}-QR",
-                        imageUrl = event.imageUrl
-                    )
-
-                    val updatedPoints = user.points + 50
-                    val updatedEvents = user.eventsAttended + 1
-
-                    val newLevel = when {
-                        updatedPoints >= 1000 -> UserLevel.LEGENDARY
-                        updatedPoints >= 500 -> UserLevel.GOLD
-                        updatedPoints >= 200 -> UserLevel.VIP
-                        else -> UserLevel.STANDARD
-                    }
-
-                    SampleData.sampleTickets.add(newTicket)
-
-                    SampleData.sampleUser = user.copy(
-                        points = updatedPoints,
-                        eventsAttended = updatedEvents,
-                        level = newLevel,
-                        pendingLevelUp = newLevel != user.level
-                    )
-
-                    showSuccessDialog = true
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 
-    if (showSuccessDialog) {
+    if (viewModel.purchaseSuccess) {
         SuccessDialog(
             onDismiss = onPaymentSuccess,
             title = "¡PAGO COMPLETADO!",
@@ -184,3 +195,4 @@ fun CheckoutScreen(
         )
     }
 }
+

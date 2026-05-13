@@ -18,14 +18,14 @@ package com.example.aftersunset.domain.model
 
 
 data class Venue(
-    val id: Int,
-    val name: String,
-    val zone: String,
-    val address: String,
-    val latitude: Double,
-    val longitude: Double,
-    val capacity: Int,
-    val minAge: Int,
-    val mainPhoto: String,
-    val description: String
+    val id: String="",
+    val name: String="",
+    val zone: String="",
+    val address: String="",
+    val latitude: Double=0.0,
+    val longitude: Double=0.0,
+    val capacity: Int=0,
+    val minAge: Int=18,
+    val mainPhoto: String="",
+    val description: String=""
 )

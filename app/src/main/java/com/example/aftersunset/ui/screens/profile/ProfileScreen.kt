@@ -21,7 +21,6 @@ import com.example.aftersunset.ui.components.profile.ProfileMenuItem
 import com.example.aftersunset.ui.components.profile.StatItem
 import com.example.aftersunset.ui.components.common.SuccessDialog
 import com.example.aftersunset.R
-import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
 
@@ -36,86 +35,97 @@ import com.example.aftersunset.ui.theme.Dragonfruit
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
+    viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    val user = SampleData.sampleUser
-    var showLevelUpDialog by remember { mutableStateOf(user.pendingLevelUp) }
+    val user = viewModel.user
+    var showLevelUpDialog by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(InkBlack)
-            .verticalScroll(rememberScrollState())
-            .padding(top = 60.dp)
-    ) {
-        ProfileHeader(
-            name = user.name,
-            location = user.location,
-            userLevel = user.level
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            StatItem("Eventos", user.eventsAttended.toString())
-            StatItem("Puntos", user.points.toString())
-            StatItem("Siguiendo", user.followingCount.toString())
-        }
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Text(
-            text = "MI CUENTA",
-            color = Color.White.copy(alpha = 0.5f),
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-        )
-
-        ProfileMenuItem(
-            icon = Icons.Default.Favorite,
-            label = "Clubes Favoritos",
-            onClick = {}
-        )
-
-        ProfileMenuItem(
-            painter = R.drawable.ic_history,
-            label = "Historial de Noches",
-            onClick = {}
-        )
-
-        ProfileMenuItem(
-            icon = Icons.Default.Settings,
-            label = "Ajustes",
-            onClick = {}
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        TextButton(
-            onClick = onLogout,
-            modifier = Modifier.padding(horizontal = 12.dp).align(Alignment.CenterHorizontally)
-        ) {
-            Text(
-                "Cerrar Sesión",
-                color = Dragonfruit,
-                fontWeight = FontWeight.Bold
-            )
+    LaunchedEffect(user) {
+        if (user?.pendingLevelUp == true) {
+            showLevelUpDialog = true
         }
     }
 
-    if (showLevelUpDialog) {
-        SuccessDialog(
-            onDismiss = { 
-                showLevelUpDialog = false
-                SampleData.sampleUser = user.copy(pendingLevelUp = false)
-            },
-            title = "¡NUEVO RANGO DESBLOQUEADO!",
-            message = "Felicidades ${user.name}, has alcanzado el nivel ${user.level}. Tu estatus en After Sunset ha subido de categoría.",
-            isLevelUp = true
-        )
+    if (viewModel.isLoading) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = Dragonfruit)
+        }
+    } else if (user != null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(InkBlack)
+                .verticalScroll(rememberScrollState())
+                .padding(top = 60.dp)
+        ) {
+            ProfileHeader(
+                name = user.name,
+                location = user.location,
+                userLevel = user.level,
+                profileImageUrl = user.profileImageUrl
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                StatItem("Eventos", user.eventsAttended.toString())
+                StatItem("Puntos", user.points.toString())
+                StatItem("Siguiendo", user.followingCount.toString())
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Text(
+                text = "MI CUENTA",
+                color = Color.White.copy(alpha = 0.5f),
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+            )
+
+            ProfileMenuItem(
+                icon = Icons.Default.Favorite,
+                label = "Clubes Favoritos",
+                onClick = {}
+            )
+
+            ProfileMenuItem(
+                painter = R.drawable.ic_history,
+                label = "Historial de Noches",
+                onClick = {}
+            )
+
+            ProfileMenuItem(
+                icon = Icons.Default.Settings,
+                label = "Ajustes",
+                onClick = {}
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            TextButton(
+                onClick = onLogout,
+                modifier = Modifier.padding(horizontal = 12.dp).align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    "Cerrar Sesión",
+                    color = Dragonfruit,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        if (showLevelUpDialog) {
+            SuccessDialog(
+                onDismiss = { showLevelUpDialog = false },
+                title = "¡NUEVO RANGO DESBLOQUEADO!",
+                message = "Felicidades ${user.name}, has alcanzado el nivel ${user.level}.",
+                isLevelUp = true
+            )
+        }
     }
 }

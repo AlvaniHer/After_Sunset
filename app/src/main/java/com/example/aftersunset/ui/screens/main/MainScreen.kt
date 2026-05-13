@@ -13,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.navigation.*
 import com.example.aftersunset.ui.components.main.CustomBottomBar
 import com.example.aftersunset.ui.screens.home.HomeScreen
@@ -38,7 +37,8 @@ import com.example.aftersunset.ui.screens.venue.VenueProfileScreen
 fun MainScreen(
     rootNavController: NavHostController,
     initialLat: Double? = null,
-    initialLng: Double? = null
+    initialLng: Double? = null,
+    initialTab: Int = 0
 ) {
     val navController = rememberNavController()
 
@@ -49,6 +49,19 @@ fun MainScreen(
                     saveState = true
                 }
                 launchSingleTop = true
+            }
+        }
+    }
+
+    LaunchedEffect(initialTab) {
+        if (initialTab == 2) {
+            navController.navigate(Tickets) {
+                // Esto limpia el estado para que Tickets sea la pantalla actual
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
             }
         }
     }
@@ -76,7 +89,6 @@ fun MainScreen(
             composable<Maps> { backStackEntry ->
                 val route: Maps = backStackEntry.toRoute()
                 MapScreen(
-                    events = SampleData.sampleEvents,
                     onEventClick = { id ->
                         rootNavController.navigate(EventDetail(id))
                     },
@@ -86,34 +98,19 @@ fun MainScreen(
             }
             composable<Tickets> {
                 TicketsScreen(
-                    tickets = SampleData.sampleTickets,
                     navController = navController
                 )
             }
             composable<Profile> {
                 ProfileScreen(
                     onLogout = {
-                        rootNavController.navigate(AuthGraph)
-                    }
-                )
-            }
-            
-            composable<VenueProfile> { backStackEntry ->
-                val route: VenueProfile = backStackEntry.toRoute()
-                VenueProfileScreen(
-                    venueId = route.id,
-                    onBackClick = { navController.popBackStack() },
-                    onEventClick = { navController.popBackStack() },
-                    onLocationClick = { lat, lng ->
-                        navController.navigate(Maps(lat, lng)) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
+                        rootNavController.navigate(AuthGraph) {
+                            popUpTo(MainGraph) { inclusive = true }
                         }
                     }
                 )
             }
+
         }
     }
 }

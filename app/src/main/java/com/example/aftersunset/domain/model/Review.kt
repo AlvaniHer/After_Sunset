@@ -3,12 +3,19 @@ package com.example.aftersunset.domain.model
 /**
  * Representa una reseña u opinión de un usuario sobre un local.
  *
- * @property user Nombre del usuario que realiza la reseña.
- * @property rating Puntuación otorgada.
+ * @property id ID único de la reseña.
+ * @property venueId ID del local al que pertenece.
+ * @property user Nombre del usuario.
+ * @property rating Puntuación
  * @property comment Comentario o descripción de la experiencia.
+ * @property userImage Imagen de acompañamiento del comentario
  */
 data class Review(
-    val user: String,
-    val rating: Int,
-    val comment: String
+    val id: String = "",
+    val venueId: String = "",
+    val userId: String = "",
+    var user: String="",
+    val rating: Int = 5,
+    val comment: String = "",
+    val userImage: String = ""
 )

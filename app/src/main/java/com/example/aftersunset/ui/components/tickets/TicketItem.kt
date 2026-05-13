@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aftersunset.domain.model.Ticket
-import com.example.aftersunset.data.SampleData.sampleTickets
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 
@@ -31,6 +30,7 @@ fun TicketItem(
     onLocationClick: () -> Unit,
     onVenueClick: () -> Unit
 ) {
+
     var rotated by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
         targetValue = if (rotated) 180f else 0f,
@@ -77,7 +77,15 @@ fun TicketItemPreview() {
     AfterSunsetTheme {
         Box(modifier = Modifier.background(InkBlack).padding(16.dp)) {
             TicketItem(
-                ticket = sampleTickets[0],
+
+                ticket = Ticket(
+                    id = "TK-123",
+                    eventTitle = "After Sunset Party",
+                    clubName = "Sala Gold",
+                    date = "24 MAY 2024",
+                    price = 25.0,
+                    qrCodeData = "PruebaQR"
+                ),
                 onLocationClick = {},
                 onVenueClick = {}
             )

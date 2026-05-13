@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
@@ -69,7 +68,7 @@ fun EventMapCard(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = event.genre,
+                    text = event.genre.joinToString(", "),
                     color = PacificCyan,
                     style = MaterialTheme.typography.labelSmall
                 )
@@ -114,7 +113,25 @@ fun EventMapCard(
 fun EventMapCardPreview() {
     AfterSunsetTheme {
         EventMapCard(
-            event = sampleEvents[0],
+            event = Event(
+                id = "1",
+                venueId = "venue_01",
+                title = "Neon Ritual",
+                clubName = "Sala Gold",
+                dateTimestamp = com.google.firebase.Timestamp.now(),
+                price = 20.0,
+                imageUrl = "https://picsum.photos/200",
+                genre = listOf("TECHNO", "HOUSE"),
+                tags = emptyList(),
+                zone = "Centro",
+                fullAddress = "Calle Falsa 123",
+                latitude = 0.0,
+                longitude = 0.0,
+                description = "Descripción de prueba",
+                minAge = 18,
+                avgAge = 22,
+                capacity = 500
+            ),
             onDetailClick = {}
         )
     }

@@ -24,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 
@@ -76,7 +75,7 @@ fun EventCard(
                     shape = MaterialTheme.shapes.extraSmall
                 ) {
                     Text(
-                        text = event.genre.uppercase(),
+                        text = event.genre.firstOrNull()?.uppercase() ?: "EVENTO",
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = AfterSunsetTheme.colors.secondary
@@ -118,10 +117,32 @@ fun EventCard(
 
 @Preview
 @Composable
-fun EventCardPreview(){
+fun EventCardPreview() {
     AfterSunsetTheme {
+        val mockEvent = Event(
+            id = "1",
+            venueId = "local_1",
+            title = "AFTER SUNSET PARTY",
+            clubName = "Pachá Ibiza",
+            // IMPORTANTE: Cambiamos 'date' por 'dateTimestamp'
+            dateTimestamp = com.google.firebase.Timestamp.now(),
+            price = 25.0,
+            imageUrl = "",
+            genre = listOf("Techno", "House"),
+            tags = listOf("Open Air", "Premium"),
+            zone = "Ibiza Centro",
+            fullAddress = "Av. 8 de Agosto, Ibiza",
+            latitude = 38.918,
+            longitude = 1.442,
+            description = "La mejor fiesta del verano.",
+            minAge = 18,
+            avgAge = 24,
+            capacity = 1000
+
+        )
+
         EventCard(
-            event = sampleEvents[0],
+            event = mockEvent,
             onClick = { }
         )
     }

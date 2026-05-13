@@ -25,7 +25,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable data class Main(
     val lat: Double? = null,
-    val lng: Double? = null
+    val lng: Double? = null,
+    val initialTab: Int = 0
 )
 
 /**
@@ -88,3 +89,22 @@ import kotlinx.serialization.Serializable
     val ticketType: String,
     val price: Double
 )
+/**
+ * Representa la selección de una oferta específica para un evento.
+ * Se utiliza para navegar a la pantalla donde el usuario elige el tipo de entrada.
+ *
+ * @property eventId Identificador único del evento seleccionado.
+ */
+@Serializable data class OfferSelection(val eventId: String)
+
+@Serializable data class PaymentMethod(
+    val eventId: String,
+    val offerName: String,
+    val price: Double
+)
+
+/**
+ * Pantalla para las reseñas creadas por los usuarios
+ */
+@Serializable
+data class Reviews(val id: String, val name: String)

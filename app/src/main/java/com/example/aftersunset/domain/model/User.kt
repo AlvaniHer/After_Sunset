@@ -12,7 +12,9 @@ enum class UserLevel {
  * Contiene información de perfil, estadísticas de actividad y estado de fidelización.
  *
  * @property id Identificador único del usuario.
+ * @property username Alias del usuario.
  * @property name Nombre completo o alias del usuario.
+ * @property surname Apellido del usuario.
  * @property email Correo electrónico de contacto.
  * @property location Ciudad o zona de residencia.
  * @property level Rango actual.
@@ -23,14 +25,15 @@ enum class UserLevel {
  * @property pendingLevelUp Flag que indica si hay una subida de nivel pendiente de celebrar en la UI.
  */
 data class User(
-    val id: String,
-    val name: String,
-    val email: String,
-    val location: String,
-    val level: UserLevel,
-    val points: Int,
-    val eventsAttended: Int,
-    val followingCount: Int,
-    val profileImageUrl: String,
+    val id: String="",
+    val username: String="",
+    val name: String="",
+    val email: String="",
+    val location: String="",
+    val level: UserLevel= UserLevel.STANDARD,
+    val points: Int=0,
+    val eventsAttended: Int=0,
+    val followingCount: Int=0,
+    val profileImageUrl: String= "",
     val pendingLevelUp: Boolean = false
 )

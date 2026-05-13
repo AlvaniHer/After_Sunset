@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.aftersunset.R
 import com.example.aftersunset.ui.components.auth.CustomField
 import com.example.aftersunset.ui.components.auth.VideoBackground
@@ -38,7 +39,8 @@ import com.example.aftersunset.ui.theme.PumpkinSpice
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    viewModel: LoginViewModel = viewModel()
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         VideoBackground(videoResId = R.raw.auth_bg)
@@ -68,19 +70,36 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            CustomField(label = stringResource(R.string.email_label), icon = Icons.Default.Email)
+            CustomField(
+                label = stringResource(R.string.email_label),
+                icon = Icons.Default.Email,
+                value = viewModel.email,
+                onValueChange = { viewModel.email = it }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            CustomField(label = stringResource(R.string.password_label), icon = Icons.Default.Lock, isPassword = true)
+            CustomField(
+                label = stringResource(R.string.password_label),
+                icon = Icons.Default.Lock,
+                isPassword = true,
+                value = viewModel.password,
+                onValueChange = { viewModel.password = it }
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             SunsetActionButton(
                 text = stringResource(R.string.login_button_text),
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onLoginSuccess
+                onClick ={
+                    viewModel.onLoginClick(onLoginSuccess)
+                },
             )
+            viewModel.errorMessage?.let { error ->
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = error, color = Color.Red, style = MaterialTheme.typography.bodySmall)
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 

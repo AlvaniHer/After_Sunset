@@ -6,20 +6,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.example.aftersunset.data.SampleData
 import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.navigation.Maps
 import com.example.aftersunset.navigation.VenueProfile
 import com.example.aftersunset.ui.components.tickets.EmptyTicketsState
 import com.example.aftersunset.ui.components.tickets.TicketItem
 import com.example.aftersunset.ui.theme.InkBlack
+import com.example.aftersunset.ui.theme.PacificCyan
 
 /**
  * Pantalla de gestión de entradas adquiridas por el usuario.
@@ -31,9 +34,13 @@ import com.example.aftersunset.ui.theme.InkBlack
  */
 @Composable
 fun TicketsScreen(
-    tickets: List<Ticket>,
-    navController: NavController
+    navController: NavController,
+    viewModel: TicketsViewModel = viewModel()
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.loadUserTickets()
+    }
+    val ticketsUI = viewModel.ticketsWithDetails
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,35 +56,28 @@ fun TicketsScreen(
             letterSpacing = 2.sp
         )
 
-        if (tickets.isEmpty()) {
+        if (viewModel.isLoading) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = PacificCyan)
+            }
+        }else if (ticketsUI.isEmpty()) {
             EmptyTicketsState()
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 contentPadding = PaddingValues(bottom = 100.dp)
             ) {
-                items(tickets) { ticket ->
-                    val relatedEvent = SampleData.sampleEvents.find { it.id == ticket.eventId }
-                    
+                items(ticketsUI) { item ->
                     TicketItem(
-                        ticket = ticket,
+                        ticket = item.ticket,
                         onLocationClick = {
-                            navController.navigate(
-                                Maps(
-                                    lat = relatedEvent?.latitude, 
-                                    lng = relatedEvent?.longitude
-                                )
-                            ) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
+                            navController.navigate(Maps(lat = item.latitude, lng = item.longitude)) {
+                                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                 launchSingleTop = true
                             }
                         },
                         onVenueClick = {
-                            relatedEvent?.let { event ->
-                                navController.navigate(VenueProfile(event.venueId))
-                            }
+                            item.venueId?.let { id -> navController.navigate(VenueProfile(id)) }
                         }
                     )
                 }
