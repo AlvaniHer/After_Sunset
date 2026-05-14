@@ -1,5 +1,6 @@
 package com.example.aftersunset.ui.components.tickets
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
 import com.example.aftersunset.R
 import com.example.aftersunset.domain.model.Ticket
@@ -47,6 +53,9 @@ fun TicketFront(
     ticket: Ticket,
     onVenueClick: () -> Unit
 ) {
+    val qrImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticket.qrCodeData}"
+    var showQrDialog by remember { mutableStateOf(false) }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White.copy(alpha = 0.05f),
@@ -90,7 +99,7 @@ fun TicketFront(
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
-                        text = ticket.date,
+                        text = ticket.purchaseDate?.toDate()?.toLocaleString() ?: "Fecha no disponible",
                         color = Color.White.copy(alpha = 0.5f),
                         style = MaterialTheme.typography.labelSmall
                     )
@@ -149,16 +158,59 @@ fun TicketFront(
                 Surface(
                     color = Color.White,
                     shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.size(60.dp)
+                    modifier = Modifier
+                        .size(65.dp)
                 ) {
-                    Box(modifier = Modifier.padding(6.dp)) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_qr_code),
-                            contentDescription = "QR Code",
-                            tint = Color.Black,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
+                    AsyncImage(
+                        model = qrImageUrl,
+                        contentDescription = "QR Code",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .background(Color.White, RoundedCornerShape(8.dp))
+                            .padding(6.dp)
+                            .clickable { showQrDialog = true }
+                    )
+
+                }
+            }
+        }
+    }
+    if (showQrDialog) {
+        Dialog(onDismissRequest = { showQrDialog = false }) {
+            Surface(
+                shape = RoundedCornerShape(28.dp),
+                color = Color.White,
+                modifier = Modifier
+                    .size(320.dp)
+                    .padding(16.dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(
+                        text = ticket.eventTitle.uppercase(),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    )
+
+                    AsyncImage(
+                        model = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${ticket.qrCodeData}",
+                        contentDescription = "QR en grande",
+                        modifier = Modifier.size(240.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "ESCANEAME PARA ENTRAR",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.Gray,
+                        letterSpacing = 1.sp
+                    )
                 }
             }
         }

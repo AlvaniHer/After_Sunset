@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.aftersunset.data.repository.AuthRepository
 import com.example.aftersunset.domain.model.Ticket
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -36,7 +37,7 @@ class TicketsViewModel : ViewModel() {
                 val user = authRepository.getCurrentUserProfile()
                 if (user != null && user.id.isNotEmpty()) {
                     val ticketSnapshot = db.collection("entradas")
-                        .whereEqualTo("userId", user.id)
+                        .whereEqualTo("id_usuario", user.id)
                         .get().await()
 
                     val tempTickets = ticketSnapshot.documents.mapNotNull { doc ->
@@ -44,24 +45,27 @@ class TicketsViewModel : ViewModel() {
                     }
 
                     ticketsWithDetails = tempTickets.map { ticket ->
-                        try {
-                            val eventDoc = db.collection("eventos")
-                                .document(ticket.eventId)
-                                .get().await()
+                        async {
+                            try {
+                                val eventDoc = db.collection("eventos")
+                                    .document(ticket.eventId)
+                                    .get().await()
 
-                            if (eventDoc.exists()) {
-                                TicketWithDetails(
-                                    ticket = ticket,
-                                    latitude = eventDoc.getDouble("latitud") ?: 0.0,
-                                    longitude = eventDoc.getDouble("longitud") ?: 0.0,
-                                    venueId = eventDoc.getString("id_local")
-                                )
-                            } else {
+                                if (eventDoc.exists()) {
+                                    TicketWithDetails(
+                                        ticket = ticket,
+                                        latitude = eventDoc.getDouble("latitud") ?: 0.0,
+                                        longitude = eventDoc.getDouble("longitud") ?: 0.0,
+                                        venueId = eventDoc.getString("id_local")
+                                    )
+                                } else {
+                                    TicketWithDetails(ticket = ticket)
+                                }
+                            } catch (e: Exception) {
                                 TicketWithDetails(ticket = ticket)
                             }
-                        } catch (e: Exception) {
-                            TicketWithDetails(ticket = ticket)
-                        }
+                        }.await()
+
                     }
                 }
             } catch (e: Exception) {

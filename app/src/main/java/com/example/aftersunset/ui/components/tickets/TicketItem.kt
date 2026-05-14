@@ -82,7 +82,7 @@ fun TicketItemPreview() {
                     id = "TK-123",
                     eventTitle = "After Sunset Party",
                     clubName = "Sala Gold",
-                    date = "24 MAY 2024",
+                    purchaseDate = com.google.firebase.Timestamp.now(),
                     price = 25.0,
                     qrCodeData = "PruebaQR"
                 ),

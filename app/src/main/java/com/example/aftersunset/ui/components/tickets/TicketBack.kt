@@ -50,9 +50,6 @@ fun TicketBack(
     ticket: Ticket,
     onLocationClick: () -> Unit
 ) {
-    val qrImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticket.qrCodeData}"
-    var showQrDialog by remember { mutableStateOf(false) }
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White.copy(alpha = 0.08f),
@@ -89,27 +86,6 @@ fun TicketBack(
                 )
             }
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AsyncImage(
-                    model = qrImageUrl,
-                    contentDescription = "QR Code",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(Color.White, RoundedCornerShape(8.dp))
-                        .padding(6.dp)
-                        .clickable { showQrDialog = true }
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = ticket.qrCodeData,
-                    color = Color.White.copy(alpha = 0.4f),
-                    style = MaterialTheme.typography.labelSmall
-                )
-            }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -136,46 +112,6 @@ fun TicketBack(
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold
                 )
-            }
-        }
-    }
-    if (showQrDialog) {
-        Dialog(onDismissRequest = { showQrDialog = false }) {
-            Surface(
-                shape = RoundedCornerShape(28.dp),
-                color = Color.White,
-                modifier = Modifier
-                    .size(320.dp)
-                    .padding(16.dp)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text(
-                        text = ticket.eventTitle.uppercase(),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
-
-                    AsyncImage(
-                        model = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${ticket.qrCodeData}",
-                        contentDescription = "QR en grande",
-                        modifier = Modifier.size(240.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Text(
-                        text = "ESCANEAME PARA ENTRAR",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.Gray,
-                        letterSpacing = 1.sp
-                    )
-                }
             }
         }
     }
