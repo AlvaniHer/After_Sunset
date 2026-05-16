@@ -30,4 +30,17 @@ data class User(
     @field:PropertyName("foto_perfil")
     var profileImageUrl: String= "",
     val pendingLevelUp: Boolean = false
-)
+) {
+    /**
+     * Devuelve la URL de la imagen de perfil.
+     * Si no tiene una establecida, genera una aleatoria usando DiceBear.
+     */
+    fun getAvatarUrl(): String {
+        return if (profileImageUrl.isNotBlank()) {
+            profileImageUrl
+        } else {
+            val seed = username.split(" ").firstOrNull() ?: "Usuario"
+            "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=$seed"
+        }
+    }
+}

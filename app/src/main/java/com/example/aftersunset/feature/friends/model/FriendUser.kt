@@ -46,10 +46,12 @@ data class FriendUser(
     }
 
     fun displayAvatarUrl(): String {
-        return when {
+        val image = when {
             foto_perfil.isNotBlank() -> foto_perfil
             profileImageUrl.isNotBlank() -> profileImageUrl
-            else -> ""
+            else -> null
         }
+        val seed = displayName().split(" ").firstOrNull() ?: "Usuario"
+        return image ?: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=$seed"
     }
 }

@@ -36,7 +36,6 @@ import com.example.aftersunset.ui.theme.Dragonfruit
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
-    // Rescatamos los callbacks de navegación de tu compañera
     onFriendsClick: () -> Unit = {},
     onFavoriteClubsClick: () -> Unit = {},
     viewModel: ProfileViewModel = viewModel()
@@ -63,10 +62,10 @@ fun ProfileScreen(
                 .padding(top = 60.dp)
         ) {
             ProfileHeader(
-                name = user.name,
+                name = user.username,
                 location = user.location,
                 userLevel = user.level,
-                profileImageUrl = user.profileImageUrl
+                profileImageUrl = user.getAvatarUrl()
             )
 
             Spacer(modifier = Modifier.height(32.dp))
