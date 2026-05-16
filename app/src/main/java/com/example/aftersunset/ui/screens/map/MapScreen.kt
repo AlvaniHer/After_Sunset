@@ -35,11 +35,12 @@ import com.google.maps.android.compose.*
  */
 @Composable
 fun MapScreen(
-    events: List<Event>,
     onEventClick: (String) -> Unit,
     initialLat: Double? = null,
-    initialLng: Double? = null
+    initialLng: Double? = null,
+    viewModel: MapViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
+    val events = viewModel.events
     val malagaBounds = LatLngBounds(
         LatLng(36.60, -4.60),
         LatLng(36.80, -4.20)
@@ -60,7 +61,7 @@ fun MapScreen(
             if (currentSelectedZone == "Todos") {
                 events
             } else {
-                events.filter { it.zone.contains(currentSelectedZone, ignoreCase = true) }
+                events.filter { it.zone.equals(currentSelectedZone, ignoreCase = true) }
             }
         }
     }
@@ -94,9 +95,9 @@ fun MapScreen(
         ) {
             filteredEvents.forEach { event ->
                 val markerColor = when {
-                    event.genre.contains("Techno", true) -> BitmapDescriptorFactory.HUE_VIOLET
-                    event.genre.contains("Reggaeton", true) -> BitmapDescriptorFactory.HUE_MAGENTA
-                    event.genre.contains("House", true) -> BitmapDescriptorFactory.HUE_CYAN
+                    event.genre.any { it.equals("Techno", true) } -> BitmapDescriptorFactory.HUE_VIOLET
+                    event.genre.any { it.equals("Reggaeton", true) } -> BitmapDescriptorFactory.HUE_MAGENTA
+                    event.genre.any { it.equals("House", true) } -> BitmapDescriptorFactory.HUE_CYAN
                     else -> BitmapDescriptorFactory.HUE_GREEN
                 }
                 Marker(

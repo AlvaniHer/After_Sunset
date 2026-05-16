@@ -1,83 +1,67 @@
 package com.example.aftersunset.ui.screens.event
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import com.example.aftersunset.data.SampleData.sampleEvents
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.aftersunset.ui.components.event.EventContent
-import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.aftersunset.ui.theme.InkBlack
+import com.example.aftersunset.ui.theme.PacificCyan
 
+/**
+ * Pantalla de detalle de un evento.
+ * Recupera la información del evento seleccionado y la delega al componente visual [EventContent].
+ *
+ * @param eventId Identificador único del evento que se desea visualizar.
+ * @param onBackClick Callback para gestionar la navegación hacia atrás.
+ * @param onVenueClick Callback para navegar al perfil del local/empresa.
+ * @param onBuyClick Callback que inicia el flujo de compra de entradas.
+ * @param onLocationClick Callback para navegar al mapa centrado en el local del evento.
+ */
 @Composable
 fun EventDetailScreen(
     eventId: String,
     onBackClick: () -> Unit,
     onVenueClick: (String) -> Unit,
     onBuyClick: (String, String, Double) -> Unit,
-    onLocationClick: (Double, Double) -> Unit
+    onLocationClick: (Double, Double) -> Unit,
+    viewModel: EventDetailViewModel = viewModel()
 ) {
-    val event = sampleEvents.find { it.id == eventId }
-
-    if (event == null) {
-        Text(text = "Evento no encontrado")
-        return
+    LaunchedEffect(eventId) {
+        viewModel.loadEvent(eventId)
     }
 
-    val uid = FirebaseAuth.getInstance().currentUser?.uid
-    val db = FirebaseFirestore.getInstance()
+    val event = viewModel.event
 
-    var isFavorite by remember { mutableStateOf(false) }
-
-    val favoriteId = "${uid}_${event.venueId}"
-
-    LaunchedEffect(uid, event.venueId) {
-        if (uid != null) {
-            db.collection("favoritos_clubes")
-                .document(favoriteId)
-                .get()
-                .addOnSuccessListener { document ->
-                    isFavorite = document.exists()
-                }
+    Box(modifier = Modifier.fillMaxSize().background(InkBlack)) {
+        if (viewModel.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = PacificCyan
+            )
+        } else if (event != null) {
+            EventContent(
+                event = event,
+                isFavorite = viewModel.isFavorite,
+                onFavoriteClick = { viewModel.toggleFavorite() },
+                onBackClick = onBackClick,
+                onVenueClick = { onVenueClick(event.venueId) },
+                onBuyClick = { onBuyClick(event.id, "Entrada General", event.price) },
+                onLocationClick = { onLocationClick(event.latitude, event.longitude) }
+            )
+        } else {
+            Text(
+                text = "Evento no encontrado",
+                color = Color.White,
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
     }
-
-    EventContent(
-        event = event,
-        isFavorite = isFavorite,
-        onFavoriteClick = {
-            if (uid == null) return@EventContent
-
-            val favoriteRef = db.collection("favoritos_clubes")
-                .document(favoriteId)
-
-            if (isFavorite) {
-                favoriteRef.delete()
-                    .addOnSuccessListener {
-                        isFavorite = false
-                    }
-            } else {
-                val favoriteClub = hashMapOf(
-                    "id_usuario" to uid,
-                    "id_local" to event.venueId,
-                    "nombre_local" to event.clubName,
-                    "direccion" to event.fullAddress,
-                    "imagenUrl" to event.imageUrl,
-                    "fecha_agregado" to Timestamp.now()
-                )
-
-                favoriteRef.set(favoriteClub)
-                    .addOnSuccessListener {
-                        isFavorite = true
-                    }
-            }
-        },
-        onBackClick = onBackClick,
-        onVenueClick = { onVenueClick(event.venueId) },
-        onBuyClick = {
-            onBuyClick(event.id, "Entrada General", event.price)
-        },
-        onLocationClick = {
-            onLocationClick(event.latitude, event.longitude)
-        }
-    )
 }

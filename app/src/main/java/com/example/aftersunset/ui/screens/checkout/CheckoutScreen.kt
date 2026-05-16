@@ -2,6 +2,7 @@ package com.example.aftersunset.ui.screens.checkout
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,27 +19,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.example.aftersunset.data.SampleData
-import com.example.aftersunset.domain.model.Event
-import com.example.aftersunset.domain.model.Ticket
-import com.example.aftersunset.domain.model.UserLevel
 import com.example.aftersunset.ui.components.checkout.PriceRow
 import com.example.aftersunset.ui.components.common.SuccessDialog
 import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
-import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import java.util.UUID
 
 /**
  * Pantalla de pasarela de pago.
  * Muestra un resumen del evento seleccionado, el desglose de precios y permite confirmar la compra.
  * Gestiona la lógica de generación de tickets y actualización de puntos/nivel del usuario.
  *
- * @param event El objeto [Event] que el usuario desea adquirir.
+ * @param eventId Identificador del evento.
  * @param ticketType Tipo de entrada seleccionada.
  * @param price Precio base de la entrada.
  * @param onBackClick Callback para regresar a la pantalla anterior.
@@ -48,197 +42,151 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckoutScreen(
-    event: Event,
+    eventId: String,
     ticketType: String,
     price: Double,
     onBackClick: () -> Unit,
-    onPaymentSuccess: () -> Unit
+    onPaymentSuccess: () -> Unit,
+    viewModel: CheckoutViewModel = viewModel()
 ) {
-    var showSuccessDialog by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
+    LaunchedEffect(eventId) {
+        viewModel.loadCheckoutData(eventId)
+    }
+    val event = viewModel.event
 
-    Scaffold(
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 48.dp)
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                        tint = Color.White
-                    )
-                }
-
-                Text(
-                    text = "RESUMEN DE COMPRA",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = PacificCyan,
-                )
-            }
-        },
-        containerColor = InkBlack
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+    if (event == null && viewModel.errorMessage == null) {
+        Box(modifier = Modifier.fillMaxSize().background(InkBlack), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = PacificCyan)
+        }
+    } else if (viewModel.errorMessage != null) {
+        Box(
+            modifier = Modifier.fillMaxSize().background(InkBlack),
+            contentAlignment = Alignment.Center
         ) {
-            Surface(
-                color = Color.White.copy(alpha = 0.05f),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Text(viewModel.errorMessage!!, color = Color.White, textAlign = TextAlign.Center)
+        }
+    } else if (event != null) {
+        Scaffold(
+            topBar = {
                 Row(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = 48.dp)
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    AsyncImage(
-                        model = event.imageUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.Crop
+                    IconButton(
+                        onClick = onBackClick,
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+
+                    Text(
+                        text = "RESUMEN DE COMPRA",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = PacificCyan,
                     )
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Column {
-                        Text(
-                            event.title,
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
+                }
+            },
+            containerColor = InkBlack
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+            ) {
+                Surface(
+                    color = Color.White.copy(alpha = 0.05f),
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AsyncImage(
+                            model = event.imageUrl,
+                            contentDescription = null,
+                            modifier = Modifier.size(80.dp).clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.Crop
                         )
-
-                        Text(
-                            event.clubName,
-                            color = Color.White.copy(alpha = 0.6f),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column {
+                            Text(event.title, color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text(event.clubName, color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.bodyMedium)
+                        }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-            PriceRow("Entrada $ticketType", "${price}€")
-            PriceRow("Gastos de gestión", "1.50€")
+                Text("MÉTODO DE PAGO", color = PacificCyan, style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(bottom = 12.dp))
 
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 24.dp),
-                thickness = 1.dp,
-                color = Color.White.copy(alpha = 0.1f)
-            )
+                var cardNumber by remember { mutableStateOf("") }
+                var showCardError by remember { mutableStateOf(false) }
+                OutlinedTextField(
+                    value = cardNumber,
+                    onValueChange = {
+                        if (it.length <= 16) {
+                            cardNumber = it
+                            if (showCardError) showCardError = false
+                        }
+                    },
+                    label = { Text("Número de tarjeta", color = Color.Gray) },
+                    placeholder = { Text("0000 0000 0000 0000", color = Color.White.copy(0.3f)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = showCardError,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = Color.White.copy(0.1f),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        errorBorderColor = Color.Red,
+                        errorLabelColor = Color.Red
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                if (showCardError) {
+                    Text(
+                        text = "Introduce una tarjeta válida",
+                        color = Color.Red,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                    )
+                }
 
-            PriceRow("TOTAL", "${price + 1.5}€", isTotal = true)
+                Spacer(modifier = Modifier.height(24.dp))
 
-            if (errorMessage.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = errorMessage,
-                    color = Color.Red,
-                    style = MaterialTheme.typography.bodyMedium
+                PriceRow("Entrada $ticketType", "${price}€")
+                PriceRow("Gastos de gestión", "1.50€")
+                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp), color = Color.White.copy(0.1f))
+                PriceRow("TOTAL", "${price + 1.5}€", isTotal = true)
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                SunsetActionButton(
+                    text = if (viewModel.isProcessing) "PROCESANDO..." else "PAGAR AHORA",
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    onClick = {
+                        if (cardNumber.length < 16) {
+                            showCardError = true
+                        } else {
+                            showCardError = false
+                            viewModel.processPurchase(eventId, ticketType, price)
+                        }
+                    },
+                    enabled = !viewModel.isProcessing
                 )
             }
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            SunsetActionButton(
-                text = "CONFIRMAR Y PAGAR",
-                onClick = {
-                    val uid = FirebaseAuth.getInstance().currentUser?.uid
-
-                    if (uid == null) {
-                        errorMessage = "Debes iniciar sesión para comprar una entrada"
-                        return@SunsetActionButton
-                    }
-
-                    val user = SampleData.sampleUser
-                    val qrCode = UUID.randomUUID().toString()
-
-                    val newTicket = Ticket(
-                        id = "TKT-${System.currentTimeMillis()}",
-                        eventId = event.id,
-                        eventTitle = event.title,
-                        clubName = event.clubName,
-                        date = event.date,
-                        time = "23:30",
-                        entryType = ticketType,
-                        price = price,
-                        qrCodeData = qrCode,
-                        imageUrl = event.imageUrl
-                    )
-
-                    val entrada = hashMapOf(
-                        "id_usuario" to uid,
-                        "id_evento" to event.id,
-                        "tipo_entrada" to ticketType,
-                        "precio_pagado" to price,
-                        "fecha_compra" to Timestamp.now(),
-                        "codigo_qr" to qrCode,
-                        "estado_entrada" to "pagada",
-                        "fecha_uso" to null,
-
-
-                        "eventTitle" to event.title,
-                        "clubName" to event.clubName,
-                        "date" to event.date,
-                        "time" to "23:30",
-                        "imageUrl" to event.imageUrl,
-                        "latitud" to event.latitude,
-                        "longitud" to event.longitude
-                    )
-
-                    FirebaseFirestore.getInstance()
-                        .collection("entradas")
-                        .add(entrada)
-                        .addOnSuccessListener {
-                            val updatedPoints = user.points + 50
-                            val updatedEvents = user.eventsAttended + 1
-
-                            val newLevel = when {
-                                updatedPoints >= 1000 -> UserLevel.LEGENDARY
-                                updatedPoints >= 500 -> UserLevel.GOLD
-                                updatedPoints >= 200 -> UserLevel.VIP
-                                else -> UserLevel.STANDARD
-                            }
-
-                            SampleData.sampleTickets.add(newTicket)
-
-                            SampleData.sampleUser = user.copy(
-                                points = updatedPoints,
-                                eventsAttended = updatedEvents,
-                                level = newLevel,
-                                pendingLevelUp = newLevel != user.level
-                            )
-
-                            errorMessage = ""
-                            showSuccessDialog = true
-                        }
-                        .addOnFailureListener {
-                            errorMessage = "Error al guardar la entrada"
-                        }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 
-    if (showSuccessDialog) {
+    if (viewModel.purchaseSuccess) {
         SuccessDialog(
             onDismiss = onPaymentSuccess,
             title = "¡PAGO COMPLETADO!",

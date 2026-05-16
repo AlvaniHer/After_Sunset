@@ -27,10 +27,12 @@ import com.example.aftersunset.ui.theme.AfterSunsetTheme
 fun SunsetActionButton(
     text: String,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
+        enabled=enabled,
         modifier = modifier.height(56.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         contentPadding = PaddingValues(),
@@ -64,7 +66,7 @@ fun SunsetActionButtonPreview(){
     AfterSunsetTheme{
         SunsetActionButton(
             text = stringResource(R.string.login_button_text),
-            onClick = {}
+            onClick = {},
         )
     }
 }

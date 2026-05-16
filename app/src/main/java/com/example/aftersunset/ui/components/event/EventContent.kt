@@ -16,7 +16,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,14 +24,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.example.aftersunset.data.SampleData.sampleEvents
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.components.common.SunsetActionButton
-import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 
@@ -55,18 +52,13 @@ fun EventContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Box(
-                modifier = Modifier
-                    .height(450.dp)
-                    .fillMaxWidth()
-            ) {
+            Box(modifier = Modifier.height(450.dp).fillMaxWidth()) {
                 AsyncImage(
                     model = event.imageUrl,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
-
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -86,12 +78,11 @@ fun EventContent(
                     .offset(y = (-40).dp)
             ) {
                 Text(
-                    text = event.genre.uppercase(),
+                    text = event.genre[0].uppercase(),
                     color = PacificCyan,
                     style = MaterialTheme.typography.labelMedium,
                     letterSpacing = 2.sp
                 )
-
                 Text(
                     text = event.title,
                     color = Color.White,
@@ -101,15 +92,8 @@ fun EventContent(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                Text(
-                    text = "Información",
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-
+                Text("Información", color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(12.dp))
-
                 Text(
                     text = event.description,
                     color = Color.White.copy(alpha = 0.8f),
@@ -119,142 +103,69 @@ fun EventContent(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                InfoItem(
-                    Icons.Default.Info,
-                    "Para mayores de ${event.minAge} años (necesario traer DNI)."
-                )
-
+                InfoItem(Icons.Default.Info, "Para mayores de ${event.minAge} años (necesario traer DNI).")
                 Spacer(modifier = Modifier.height(16.dp))
-
-                InfoItem(
-                    Icons.Default.Notifications,
-                    "Organizado por ${event.clubName}"
-                )
-
+                InfoItem(Icons.Default.Notifications, "Organizado por ${event.clubName}")
                 Spacer(modifier = Modifier.height(16.dp))
+                InfoItem(Icons.Default.Refresh, "Puedes obtener un reembolso si es dentro de las 24 horas posteriores a la compra.")
 
-                InfoItem(
-                    Icons.Default.Refresh,
-                    "Puedes obtener un reembolso si es dentro de las 24 horas posteriores a la compra."
-                )
+                HorizontalDivider(modifier = Modifier.padding(vertical = 32.dp), color = Color.White.copy(alpha = 0.1f))
 
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 32.dp),
-                    color = Color.White.copy(alpha = 0.1f)
-                )
-
-                Text(
-                    text = "Sala",
-                    color = Color.White.copy(alpha = 0.6f),
-                    style = MaterialTheme.typography.labelLarge
-                )
-
-                Text(
-                    text = event.clubName,
-                    color = Color.White,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    text = event.fullAddress,
-                    color = Color.White.copy(alpha = 0.6f),
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Text("Sala", color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.labelLarge)
+                Text(event.clubName, color = Color.White, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Text(event.fullAddress, color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.bodyMedium)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
                     onClick = onLocationClick,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White.copy(alpha = 0.1f)
-                    ),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.1f)),
                     shape = RoundedCornerShape(12.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Icon(
-                        Icons.Default.LocationOn,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp)
-                    )
-
+                    Icon(Icons.Default.LocationOn, null, tint = Color.White, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-
-                    Text(
-                        text = "ABRIR EN EL MAPA",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("ABRIR EN EL MAPA", color = Color.White, fontWeight = FontWeight.Bold)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
+                InfoItem(Icons.Default.Info, "Apertura de puertas: 23:59")
 
-                InfoItem(
-                    Icons.Default.Info,
-                    "Apertura de puertas: 23:59"
-                )
+                HorizontalDivider(modifier = Modifier.padding(vertical = 32.dp), color = Color.White.copy(alpha = 0.1f))
 
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 32.dp),
-                    color = Color.White.copy(alpha = 0.1f)
-                )
-
-                Text(
-                    text = "Promotor",
-                    color = Color.White.copy(alpha = 0.6f),
-                    style = MaterialTheme.typography.labelLarge
-                )
-
+                Text("Promotor", color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.labelLarge)
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Surface(
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clickable { onVenueClick() },
+                        modifier = Modifier.size(56.dp).clickable { onVenueClick() },
                         shape = CircleShape,
                         color = Color.White.copy(alpha = 0.1f)
                     ) {
                         AsyncImage(
                             model = event.imageUrl,
                             contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape),
+                            modifier = Modifier.fillMaxSize().clip(CircleShape),
                             contentScale = ContentScale.Crop
                         )
                     }
-
                     Spacer(modifier = Modifier.width(16.dp))
-
                     Text(
                         text = event.clubName,
                         color = Color.White,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { onVenueClick() }
+                        modifier = Modifier.weight(1f).clickable { onVenueClick() }
                     )
-
                     Button(
-                        onClick = onFavoriteClick,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isFavorite) Color(0xFFFF2D75) else Color.White
-                        ),
+                        onClick = { /* Lógica de seguir */ },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.height(36.dp)
                     ) {
-                        Text(
-                            text = if (isFavorite) "FAVORITO" else "SEGUIR",
-                            color = if (isFavorite) Color.White else Color.Black,
-                            fontWeight = FontWeight.Black,
-                            fontSize = 12.sp
-                        )
+                        Text("SEGUIR", color = Color.Black, fontWeight = FontWeight.Black, fontSize = 12.sp)
                     }
                 }
 
@@ -278,11 +189,7 @@ fun EventContent(
                 .background(Color.Black.copy(alpha = 0.5f), CircleShape)
                 .align(Alignment.TopStart)
         ) {
-            Icon(
-                Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Volver",
-                tint = Color.White
-            )
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color.White)
         }
 
         IconButton(
@@ -298,21 +205,5 @@ fun EventContent(
                 tint = if (isFavorite) Color(0xFFFF2D75) else Color.White
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun EventContentPreview() {
-    AfterSunsetTheme {
-        EventContent(
-            event = sampleEvents[0],
-            isFavorite = false,
-            onFavoriteClick = {},
-            onBackClick = {},
-            onVenueClick = {},
-            onBuyClick = {},
-            onLocationClick = {}
-        )
     }
 }

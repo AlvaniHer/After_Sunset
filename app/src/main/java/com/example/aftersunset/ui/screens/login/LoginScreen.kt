@@ -15,10 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,23 +22,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.aftersunset.R
 import com.example.aftersunset.ui.components.auth.CustomField
 import com.example.aftersunset.ui.components.auth.VideoBackground
 import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PumpkinSpice
-import com.google.firebase.auth.FirebaseAuth
 
+/**
+ * Pantalla de inicio de sesión de la aplicación.
+ * Contiene los campos de credenciales y el acceso al registro.
+ * @param onLoginSuccess Función para navegar al feed tras un acceso exitoso.
+ * @param onNavigateToRegister Función para redirigir a la pantalla de registro.
+ */
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    viewModel: LoginViewModel = viewModel()
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }
-
     Box(modifier = Modifier.fillMaxSize()) {
         VideoBackground(videoResId = R.raw.auth_bg)
 
@@ -72,52 +71,36 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(48.dp))
 
             CustomField(
-                value = email,
-                onValueChange = { email = it },
                 label = stringResource(R.string.email_label),
-                icon = Icons.Default.Email
+                icon = Icons.Default.Email,
+                value = viewModel.email,
+                onValueChange = { viewModel.email = it }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             CustomField(
-                value = password,
-                onValueChange = { password = it },
                 label = stringResource(R.string.password_label),
                 icon = Icons.Default.Lock,
-                isPassword = true
+                isPassword = true,
+                value = viewModel.password,
+                onValueChange = { viewModel.password = it }
             )
-
-            if (errorMessage.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = errorMessage,
-                    color = Color.Red,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
 
             Spacer(modifier = Modifier.height(32.dp))
 
             SunsetActionButton(
                 text = stringResource(R.string.login_button_text),
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    if (email.isBlank() || password.isBlank()) {
-                        errorMessage = "Introduce email y contraseña"
-                    } else {
-                        FirebaseAuth.getInstance()
-                            .signInWithEmailAndPassword(email, password)
-                            .addOnSuccessListener {
-                                errorMessage = ""
-                                onLoginSuccess()
-                            }
-                            .addOnFailureListener {
-                                errorMessage = "Email o contraseña incorrectos"
-                            }
-                    }
+                onClick ={
+                    viewModel.onLoginClick(onLoginSuccess)
                 }
             )
+
+            viewModel.errorMessage?.let { error ->
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = error, color = Color.Red, style = MaterialTheme.typography.bodySmall)
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 

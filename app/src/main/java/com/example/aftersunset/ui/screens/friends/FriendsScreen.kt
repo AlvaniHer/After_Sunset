@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
 import com.example.aftersunset.feature.friends.model.FriendUser
 import com.example.aftersunset.feature.friends.viewmodel.FriendsViewModel
 import com.example.aftersunset.ui.theme.Dragonfruit
@@ -304,10 +305,10 @@ private fun UserInfo(user: FriendUser) {
                 .background(Color.White.copy(alpha = 0.06f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.Person,
+            AsyncImage(
+                model = user.displayAvatarUrl(),
                 contentDescription = null,
-                tint = PacificCyan
+                modifier = Modifier.fillMaxSize()
             )
         }
 
@@ -340,10 +341,11 @@ private fun UserFallbackInfo(fallbackUserId: String) {
                 .background(Color.White.copy(alpha = 0.06f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.Person,
+            val seed = fallbackUserId.take(8)
+            AsyncImage(
+                model = "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=$seed",
                 contentDescription = null,
-                tint = PacificCyan
+                modifier = Modifier.fillMaxSize()
             )
         }
 

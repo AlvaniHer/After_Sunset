@@ -13,17 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.aftersunset.data.SampleData
-import com.example.aftersunset.navigation.AuthGraph
-import com.example.aftersunset.navigation.EventDetail
-import com.example.aftersunset.navigation.FavoriteClubs
-import com.example.aftersunset.navigation.Friends
-import com.example.aftersunset.navigation.Home
-import com.example.aftersunset.navigation.MainGraph
-import com.example.aftersunset.navigation.Maps
-import com.example.aftersunset.navigation.Profile
-import com.example.aftersunset.navigation.Tickets
-import com.example.aftersunset.navigation.VenueProfile
+import com.example.aftersunset.navigation.*
 import com.example.aftersunset.ui.components.main.CustomBottomBar
 import com.example.aftersunset.ui.screens.home.HomeScreen
 import com.example.aftersunset.ui.screens.map.MapScreen
@@ -49,7 +39,8 @@ import com.google.firebase.auth.FirebaseAuth
 fun MainScreen(
     rootNavController: NavHostController,
     initialLat: Double? = null,
-    initialLng: Double? = null
+    initialLng: Double? = null,
+    initialTab: Int = 0
 ) {
     val navController = rememberNavController()
 
@@ -60,6 +51,18 @@ fun MainScreen(
                     saveState = true
                 }
                 launchSingleTop = true
+            }
+        }
+    }
+
+    LaunchedEffect(initialTab) {
+        if (initialTab == 2) {
+            navController.navigate(Tickets) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
             }
         }
     }
@@ -88,7 +91,6 @@ fun MainScreen(
             composable<Maps> { backStackEntry ->
                 val route: Maps = backStackEntry.toRoute()
                 MapScreen(
-                    events = SampleData.sampleEvents,
                     onEventClick = { id ->
                         rootNavController.navigate(EventDetail(id))
                     },
@@ -117,7 +119,7 @@ fun MainScreen(
                     }
                 )
             }
-            
+
             composable<VenueProfile> { backStackEntry ->
                 val route: VenueProfile = backStackEntry.toRoute()
                 VenueProfileScreen(
@@ -131,9 +133,13 @@ fun MainScreen(
                             }
                             launchSingleTop = true
                         }
+                    },
+                    onSeeAllReviewsClick = { id, name ->
+                        navController.navigate(Reviews(id, name))
                     }
                 )
             }
+
         }
     }
 }

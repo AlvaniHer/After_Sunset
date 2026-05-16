@@ -1,5 +1,7 @@
 package com.example.aftersunset.domain.model
 
+import com.google.firebase.firestore.PropertyName
+
 /**
  * Define los niveles de rango del sistema de fidelización.
  */
@@ -9,28 +11,36 @@ enum class UserLevel {
 
 /**
  * Representa al usuario dentro de la plataforma.
- * Contiene información de perfil, estadísticas de actividad y estado de fidelización.
- *
- * @property id Identificador único del usuario.
- * @property name Nombre completo o alias del usuario.
- * @property email Correo electrónico de contacto.
- * @property location Ciudad o zona de residencia.
- * @property level Rango actual.
- * @property points Puntos acumulados por la compra y validación de entradas.
- * @property eventsAttended Número total de eventos a los que ha asistido el usuario.
- * @property followingCount Número de locales o clubes que el usuario sigue.
- * @property profileImageUrl URL de la imagen de avatar del usuario.
- * @property pendingLevelUp Flag que indica si hay una subida de nivel pendiente de celebrar en la UI.
  */
 data class User(
-    val id: String,
-    val name: String,
-    val email: String,
-    val location: String,
-    val level: UserLevel,
-    val points: Int,
-    val eventsAttended: Int,
-    val followingCount: Int,
-    val profileImageUrl: String,
+    val id: String="",
+    val username: String="",
+    @get:PropertyName("nombre")
+    @set:PropertyName("nombre")
+    @field:PropertyName("nombre")
+    var name: String="",
+    val email: String="",
+    val location: String="",
+    val level: UserLevel= UserLevel.STANDARD,
+    val points: Int=0,
+    val eventsAttended: Int=0,
+    val followingCount: Int=0,
+    @get:PropertyName("foto_perfil")
+    @set:PropertyName("foto_perfil")
+    @field:PropertyName("foto_perfil")
+    var profileImageUrl: String= "",
     val pendingLevelUp: Boolean = false
-)
+) {
+    /**
+     * Devuelve la URL de la imagen de perfil.
+     * Si no tiene una establecida, genera una aleatoria usando DiceBear.
+     */
+    fun getAvatarUrl(): String {
+        return if (profileImageUrl.isNotBlank()) {
+            profileImageUrl
+        } else {
+            val seed = username.split(" ").firstOrNull() ?: "Usuario"
+            "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=$seed"
+        }
+    }
+}

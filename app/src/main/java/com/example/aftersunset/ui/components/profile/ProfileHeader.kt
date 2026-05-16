@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.example.aftersunset.data.SampleData.sampleUser
 import com.example.aftersunset.domain.model.UserLevel
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
@@ -32,15 +31,14 @@ import com.example.aftersunset.ui.theme.InkBlack
  * Cabecera del perfil de usuario con avatar garantizado.
  * Implementa un sistema de capas para mostrar iniciales si la imagen falla.
  *
- *
  * @param name Nombre del usuario a mostrar.
  * @param location Ubicación geográfica del usuario.
  * @param userLevel Rango actual del usuario que determina la estética del anillo y el badge.
  */
 @Composable
 fun ProfileHeader(
-    name: String, 
-    location: String, 
+    name: String,
+    location: String,
     userLevel: UserLevel,
     profileImageUrl: String? = null
 ) {
@@ -132,22 +130,22 @@ fun ProfileHeader(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = name, 
-            color = Color.White, 
-            style = MaterialTheme.typography.headlineMedium, 
+            text = name,
+            color = Color.White,
+            style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Black
         )
 
         Text(
-            text = location, 
-            color = Color.White.copy(alpha = 0.6f), 
+            text = location,
+            color = Color.White.copy(alpha = 0.6f),
             style = MaterialTheme.typography.bodyMedium
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         val badgeColor = if (userLevel == UserLevel.LEGENDARY) colors.accent1 else colors.secondary
-        
+
         Surface(
             color = badgeColor.copy(alpha = 0.1f),
             shape = RoundedCornerShape(8.dp),
@@ -181,11 +179,11 @@ fun ProfileHeaderPreview(){
     AfterSunsetTheme {
         Box(modifier = Modifier.background(InkBlack).padding(20.dp)) {
             ProfileHeader(
-                name = sampleUser.name,
-                location = sampleUser.location,
-                userLevel = sampleUser.level
+                name = "Alvaro AfterSunset",
+                location = "Málaga, ES",
+                userLevel = UserLevel.LEGENDARY,
+                profileImageUrl = "https://picsum.photos/200"
             )
         }
     }
 }
-

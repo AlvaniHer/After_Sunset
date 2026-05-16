@@ -1,5 +1,10 @@
 package com.example.aftersunset.domain.model
 
+import com.google.firebase.firestore.PropertyName
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 /**
  * Representa un evento de ocio nocturno en la plataforma.
  *
@@ -23,22 +28,65 @@ package com.example.aftersunset.domain.model
  * @property isSoldOut Indica si las entradas están agotadas.
  */
 data class Event(
-    val id: String,
-    val venueId: String,
-    val title: String,
-    val clubName: String,
-    val date: String,
-    val price: Double,
-    val imageUrl: String,
-    val genre: String,
-    val tags: List<String>,
-    val zone: String,
-    val fullAddress: String,
-    val latitude: Double,
-    val longitude: Double,
-    val description: String,
-    val minAge: Int,
-    val avgAge: Int,
-    val capacity: Int,
-    val isSoldOut: Boolean = false
-)
+    val id: String = "",
+
+    @get:PropertyName("id_local")
+    @field:PropertyName("id_local")
+    val venueId: String = "",
+
+    @get:PropertyName("nombre_evento")
+    @field:PropertyName("nombre_evento")
+    val title: String = "",
+
+    var clubName: String = "",
+    var zone: String = "",
+    var fullAddress: String = "",
+
+    @get:PropertyName("fecha")
+    @field:PropertyName("fecha")
+    val dateTimestamp: Timestamp? = null,
+
+    @get:PropertyName("precio_entrada")
+    @field:PropertyName("precio_entrada")
+    val price: Double = 0.0,
+
+    @get:PropertyName("imagen_evento")
+    @field:PropertyName("imagen_evento")
+    val imageUrl: String = "",
+
+    @get:PropertyName("generos")
+    @field:PropertyName("generos")
+    val genre: List<String> = emptyList(),
+
+    @get:PropertyName("tags")
+    @field:PropertyName("tags")
+    val tags: List<String> = emptyList(),
+
+    var latitude: Double = 0.0,
+    var longitude: Double = 0.0,
+
+    @get:PropertyName("descripcion")
+    @field:PropertyName("descripcion")
+    val description: String = "",
+
+    @get:PropertyName("edad_minima")
+    @field:PropertyName("edad_minima")
+    val minAge: Int = 0,
+
+    @get:PropertyName("edad_media_aprox")
+    @field:PropertyName("edad_media_aprox")
+    val avgAge: Int = 0,
+
+    @get:PropertyName("aforo_evento")
+    @field:PropertyName("aforo_evento")
+    val capacity: Int = 0,
+
+    ) {
+    val date: String
+        get() = dateTimestamp?.let {
+            val sdf = SimpleDateFormat("EEEE, d MMMM", Locale("es", "ES"))
+            sdf.format(it.toDate()).replaceFirstChar { it.uppercase() }
+        } ?: "Fecha no disponible"
+
+    constructor() : this(id = "")
+}
