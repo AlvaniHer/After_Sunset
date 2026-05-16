@@ -37,17 +37,6 @@ com.example.aftersunset/
 
 ```
 
-🛠️ Guía para Desarrolladores (Backend)
----------------------------------------
-
-Para los encargados de **Firebase**, aquí tenéis los puntos de "incrustación" de lógica:
-
-1.  **Autenticación:** La interfaz `AuthRepository` en `domain/repository/` define los métodos necesarios. Solo hay que crear la implementación en `data/` usando `FirebaseAuth`.
-
-2.  **Firestore:** Los eventos de la pantalla principal consumen el modelo `Event`. La colección en la base de datos debería seguir esa misma estructura de campos.
-
-3.  **Imágenes:** Usamos URLs directas. Asegurarse de subir los flyers a Firebase Storage y pasar el link HTTPS al campo `imageUrl`.
-
 🎨 Estilo
 -----------------
 
