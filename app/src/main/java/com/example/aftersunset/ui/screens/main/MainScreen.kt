@@ -58,7 +58,6 @@ fun MainScreen(
     LaunchedEffect(initialTab) {
         if (initialTab == 2) {
             navController.navigate(Tickets) {
-                // Esto limpia el estado para que Tickets sea la pantalla actual
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
                 }

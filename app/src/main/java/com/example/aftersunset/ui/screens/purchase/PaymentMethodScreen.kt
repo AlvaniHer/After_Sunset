@@ -46,7 +46,6 @@ fun PaymentMethodScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Campo Tarjeta
             OutlinedTextField(
                 value = cardNumber,
                 onValueChange = { if (it.length <= 16) cardNumber = it },

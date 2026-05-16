@@ -93,7 +93,7 @@ fun ProfileScreen(
             ProfileMenuItem(
                 icon = Icons.Default.Favorite,
                 label = "Clubes Favoritos",
-                onClick = onFavoriteClubsClick // Conectamos el click de tu compañera
+                onClick = onFavoriteClubsClick
             )
 
             ProfileMenuItem(
@@ -102,7 +102,6 @@ fun ProfileScreen(
                 onClick = {}
             )
 
-            // Añadimos el nuevo botón de Amigos de tu compañera
             ProfileMenuItem(
                 painter = R.drawable.ic_friends,
                 label = "Amigos",

@@ -182,7 +182,6 @@ fun EventContent(
             onClick = onBuyClick
         )
 
-        // Botón de atrás (Alineado arriba a la izquierda)
         IconButton(
             onClick = onBackClick,
             modifier = Modifier
@@ -193,7 +192,6 @@ fun EventContent(
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color.White)
         }
 
-        // Botón de Favorito (Alineado arriba a la derecha, rescatado de tu compañera)
         IconButton(
             onClick = onFavoriteClick,
             modifier = Modifier

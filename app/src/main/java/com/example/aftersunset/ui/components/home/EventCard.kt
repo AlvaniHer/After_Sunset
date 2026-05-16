@@ -124,7 +124,6 @@ fun EventCardPreview() {
             venueId = "local_1",
             title = "AFTER SUNSET PARTY",
             clubName = "Pachá Ibiza",
-            // IMPORTANTE: Cambiamos 'date' por 'dateTimestamp'
             dateTimestamp = com.google.firebase.Timestamp.now(),
             price = 25.0,
             imageUrl = "",

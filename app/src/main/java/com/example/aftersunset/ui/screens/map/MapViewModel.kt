@@ -8,8 +8,6 @@ import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.data.repository.EventRepository
 import kotlinx.coroutines.launch
 class MapViewModel : ViewModel() {
-
-    // 1. Instanciamos el repositorio en lugar de la DB directa
     private val repository = EventRepository()
 
     var events by mutableStateOf<List<Event>>(emptyList())
@@ -23,13 +21,11 @@ class MapViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             try {
-                // 2. Usamos el repositorio que ya trae los datos del local (lat/lng)
                 val fetchedEvents = repository.getAllEvents()
 
                 events = fetchedEvents
 
                 Log.d("MapVM", "Eventos cargados y enriquecidos: ${events.size}")
-                // Log extra para verificar que las coordenadas no son 0.0
                 events.forEach {
                     Log.d("MapVM", "Evento: ${it.title} -> Lat: ${it.latitude}, Lng: ${it.longitude}")
                 }

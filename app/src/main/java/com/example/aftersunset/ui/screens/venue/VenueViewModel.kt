@@ -19,8 +19,6 @@ class VenueViewModel : ViewModel() {
     var localEvents by mutableStateOf<List<Event>>(emptyList())
     var reviews by mutableStateOf<List<Review>>(emptyList())
     var isLoading by mutableStateOf(true)
-
-    // Rescatado del código de Alvani
     var isFavorite by mutableStateOf(false)
 
     fun loadVenueData(venueId: String) {
@@ -31,7 +29,6 @@ class VenueViewModel : ViewModel() {
                 val loadedVenue = venueDoc.toObject(Venue::class.java)?.copy(id = venueDoc.id)
                 venue = loadedVenue
 
-                // Comprobamos si el usuario ya lo tiene en favoritos
                 loadedVenue?.let {
                     checkIfFavorite(it.id)
                 }
@@ -79,7 +76,6 @@ class VenueViewModel : ViewModel() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val favoriteId = "${uid}_${venueId}"
 
-        // Usamos el SnapshotListener de Alvani para que se actualice en tiempo real
         db.collection("favoritos_clubes")
             .document(favoriteId)
             .addSnapshotListener { snapshot, _ ->
