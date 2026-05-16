@@ -54,7 +54,10 @@ class VenueViewModel : ViewModel() {
                         try {
                             val userDoc = db.collection("usuarios").document(review.userId).get().await()
                             if (userDoc.exists()) {
-                                review.user = userDoc.getString("nombre") ?: "Usuario Anónimo"
+                                val username = userDoc.getString("username")?.split(" ")
+                                    ?.firstOrNull()
+                                    ?: "Usuario"
+                                review.user = if (username != null) "$username" else "Usuario Anónimo"
                             }
                         } catch (e: Exception) {
                             android.util.Log.e("VenueVM", "Error buscando usuario ${review.userId}: ${e.message}")

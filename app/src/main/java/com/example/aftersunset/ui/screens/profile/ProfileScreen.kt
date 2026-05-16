@@ -96,11 +96,11 @@ fun ProfileScreen(
                 onClick = onFavoriteClubsClick
             )
 
-            ProfileMenuItem(
-                painter = R.drawable.ic_history,
-                label = "Historial de Noches",
-                onClick = {}
-            )
+//            ProfileMenuItem(
+//                painter = R.drawable.ic_history,
+//                label = "Historial de Noches",
+//                onClick = {}
+//            )
 
             ProfileMenuItem(
                 painter = R.drawable.ic_friends,

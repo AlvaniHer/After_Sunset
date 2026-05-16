@@ -42,7 +42,7 @@ fun ReviewItem(review: Review) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AsyncImage(
-                    model = "https://api.dicebear.com/7.x/avataaars/svg?seed=${review.user}",
+                    model = "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${review.user}",
                     contentDescription = null,
                     modifier = Modifier.size(32.dp).clip(CircleShape)
                 )
