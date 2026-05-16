@@ -67,6 +67,12 @@ import kotlinx.serialization.Serializable
 /**
  * Pantalla de clubes favoritos del usuario.
  */
+
+@Serializable object ProfileSettings
+/**
+ * Pantalla de ajustes del usuario.
+ */
+
 @Serializable object FavoriteClubs
 /**
  * Destino para la gestión de amistades.
