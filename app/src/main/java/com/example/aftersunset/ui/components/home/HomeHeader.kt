@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -64,8 +65,14 @@ fun HomeHeader() {
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo After Sunset",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier.fillMaxSize()
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(
+                        scaleX = 2.5f,
+                        scaleY = 2.5f,
+                        translationY = 40f
+                    )
             )
         }
     }
