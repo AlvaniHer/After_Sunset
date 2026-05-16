@@ -52,12 +52,21 @@ class TicketsViewModel : ViewModel() {
                                     .get().await()
 
                                 if (eventDoc.exists()) {
-                                    TicketWithDetails(
-                                        ticket = ticket,
-                                        latitude = eventDoc.getDouble("latitud") ?: 0.0,
-                                        longitude = eventDoc.getDouble("longitud") ?: 0.0,
-                                        venueId = eventDoc.getString("id_local")
-                                    )
+                                    val venueId = eventDoc.getString("id_local")
+                                    if (venueId != null) {
+                                        val venueDoc = db.collection("locales")
+                                            .document(venueId)
+                                            .get().await()
+
+                                        TicketWithDetails(
+                                            ticket = ticket,
+                                            latitude = venueDoc.getDouble("latitud") ?: 0.0,
+                                            longitude = venueDoc.getDouble("longitud") ?: 0.0,
+                                            venueId = venueId
+                                        )
+                                    } else {
+                                        TicketWithDetails(ticket = ticket)
+                                    }
                                 } else {
                                     TicketWithDetails(ticket = ticket)
                                 }
