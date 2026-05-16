@@ -14,15 +14,17 @@ import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.compose.*
 import com.example.aftersunset.R
 import com.example.aftersunset.navigation.AuthGraph
+import com.example.aftersunset.navigation.MainGraph
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PacificCyan
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 
 /**
  * Pantalla de presentación.
- * Muestra una animación personalizada con los colores corporativos neón
- * antes de redirigir al usuario al flujo de autenticación.
+ * Muestra una animación personalizada y decide si enviar al usuario
+ * al Login o a la pantalla principal según su estado de sesión en Firebase.
  *
  * @param navController Controlador de navegación para redirigir tras finalizar la animación.
  */
@@ -51,7 +53,12 @@ fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(progress) {
         if (progress == 1f) {
             delay(300)
-            navController.navigate(AuthGraph) {
+
+            val currentUser = FirebaseAuth.getInstance().currentUser
+
+            val destination = if (currentUser != null) MainGraph else AuthGraph
+            
+            navController.navigate(destination) {
                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
             }
         }

@@ -94,8 +94,9 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 onClick ={
                     viewModel.onLoginClick(onLoginSuccess)
-                },
+                }
             )
+
             viewModel.errorMessage?.let { error ->
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = error, color = Color.Red, style = MaterialTheme.typography.bodySmall)

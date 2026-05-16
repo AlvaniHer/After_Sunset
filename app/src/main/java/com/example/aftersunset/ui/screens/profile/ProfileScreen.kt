@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.aftersunset.ui.components.profile.ProfileHeader
 import com.example.aftersunset.ui.components.profile.ProfileMenuItem
 import com.example.aftersunset.ui.components.profile.StatItem
@@ -35,7 +36,10 @@ import com.example.aftersunset.ui.theme.Dragonfruit
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
-    viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    // Rescatamos los callbacks de navegación de tu compañera
+    onFriendsClick: () -> Unit = {},
+    onFavoriteClubsClick: () -> Unit = {},
+    viewModel: ProfileViewModel = viewModel()
 ) {
     val user = viewModel.user
     var showLevelUpDialog by remember { mutableStateOf(false) }
@@ -90,13 +94,20 @@ fun ProfileScreen(
             ProfileMenuItem(
                 icon = Icons.Default.Favorite,
                 label = "Clubes Favoritos",
-                onClick = {}
+                onClick = onFavoriteClubsClick // Conectamos el click de tu compañera
             )
 
             ProfileMenuItem(
                 painter = R.drawable.ic_history,
                 label = "Historial de Noches",
                 onClick = {}
+            )
+
+            // Añadimos el nuevo botón de Amigos de tu compañera
+            ProfileMenuItem(
+                painter = R.drawable.ic_friends,
+                label = "Amigos",
+                onClick = onFriendsClick
             )
 
             ProfileMenuItem(
@@ -112,7 +123,7 @@ fun ProfileScreen(
                 modifier = Modifier.padding(horizontal = 12.dp).align(Alignment.CenterHorizontally)
             ) {
                 Text(
-                    "Cerrar Sesión",
+                    text = "Cerrar Sesión",
                     color = Dragonfruit,
                     fontWeight = FontWeight.Bold
                 )

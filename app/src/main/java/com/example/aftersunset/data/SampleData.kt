@@ -16,7 +16,7 @@ object SampleData {
         eventsAttended = 12,
         followingCount = 8,
         profileImageUrl = "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Sawyer"
-    ))*/
+    ))
 
     val sampleVenues = listOf(
         Venue(

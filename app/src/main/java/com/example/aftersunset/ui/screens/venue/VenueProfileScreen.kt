@@ -12,20 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.aftersunset.ui.components.home.EventCard
 import com.example.aftersunset.ui.components.venue.*
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 
-/**
- * Pantalla de perfil detallado de un local (Venue).
- * Orquesta los diferentes componentes modulares para mostrar la ficha técnica, eventos y reseñas.
- *
- * @param venueId Identificador único del local.
- * @param onBackClick Callback para regresar a la pantalla anterior.
- * @param onEventClick Callback para navegar al detalle de un evento del local.
- * @param onLocationClick Callback para navegar al mapa centrado en este local.
- */
 @Composable
 fun VenueProfileScreen(
     venueId: String,
@@ -33,14 +25,13 @@ fun VenueProfileScreen(
     onEventClick: (String) -> Unit,
     onLocationClick: (Double, Double) -> Unit,
     onSeeAllReviewsClick: (String, String) -> Unit,
-    viewModel: VenueViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: VenueViewModel = viewModel()
 ) {
     LaunchedEffect(venueId) {
         viewModel.loadVenueData(venueId)
     }
 
     val venue = viewModel.venue
-    var isFavorite by remember { mutableStateOf(false) }
     var isFollowing by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -59,9 +50,9 @@ fun VenueProfileScreen(
                 item {
                     VenueHeader(
                         mainPhoto = venue.mainPhoto,
-                        isFavorite = isFavorite,
+                        isFavorite = viewModel.isFavorite,
                         onBackClick = onBackClick,
-                        onToggleFavorite = { isFavorite = !isFavorite }
+                        onToggleFavorite = { viewModel.toggleFavorite() }
                     )
                 }
 
@@ -151,7 +142,7 @@ fun VenueProfileScreen(
                             )
 
                             TextButton(onClick = {
-                                onSeeAllReviewsClick(venue!!.id, venue.name)
+                                onSeeAllReviewsClick(venue.id, venue.name)
                             }) {
                                 Text("VER TODAS", color = PacificCyan)
                             }

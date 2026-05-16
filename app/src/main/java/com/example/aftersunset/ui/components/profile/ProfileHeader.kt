@@ -28,16 +28,20 @@ import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 
 /**
- * Cabecera del perfil de usuario.
- * Muestra el avatar del usuario rodeado por un anillo de gradiente neón animado
- * que cambia de color y velocidad según el nivel alcanzado.
+ * Cabecera del perfil de usuario con avatar garantizado.
+ * Implementa un sistema de capas para mostrar iniciales si la imagen falla.
  *
  * @param name Nombre del usuario a mostrar.
  * @param location Ubicación geográfica del usuario.
  * @param userLevel Rango actual del usuario que determina la estética del anillo y el badge.
  */
 @Composable
-fun ProfileHeader(name: String, location: String, userLevel: UserLevel,profileImageUrl: String) {
+fun ProfileHeader(
+    name: String,
+    location: String,
+    userLevel: UserLevel,
+    profileImageUrl: String? = null
+) {
     val colors = AfterSunsetTheme.colors
 
     val ringColors = when (userLevel) {
@@ -73,48 +77,75 @@ fun ProfileHeader(name: String, location: String, userLevel: UserLevel,profileIm
                 modifier = Modifier
                     .size(110.dp)
                     .rotate(rotation)
-                    .background(
-                        brush = Brush.sweepGradient(colors = ringColors),
-                        shape = CircleShape
-                    )
+                    .background(brush = Brush.sweepGradient(colors = ringColors), shape = CircleShape)
             )
-            
+
             Box(
                 modifier = Modifier
                     .size(102.dp)
                     .background(colors.background, CircleShape)
             )
-            
-            AsyncImage(
-                model = profileImageUrl,
-                contentDescription = null,
+
+            Box(
                 modifier = Modifier
                     .size(96.dp)
                     .clip(CircleShape)
                     .border(2.dp, colors.background.copy(alpha = 0.5f), CircleShape),
-                contentScale = ContentScale.Crop
-            )
+                contentAlignment = Alignment.Center
+            ) {
+                val initials = name.split(" ")
+                    .filter { it.isNotBlank() }
+                    .mapNotNull { it.firstOrNull() }
+                    .take(2)
+                    .joinToString("")
+                    .uppercase()
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(colors.primary, colors.secondary)
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = initials,
+                        color = Color.White,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                AsyncImage(
+                    model = profileImageUrl,
+                    contentDescription = "Foto de perfil",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = name, 
-            color = Color.White, 
-            style = MaterialTheme.typography.headlineMedium, 
+            text = name,
+            color = Color.White,
+            style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Black
         )
 
         Text(
-            text = location, 
-            color = Color.White.copy(alpha = 0.6f), 
+            text = location,
+            color = Color.White.copy(alpha = 0.6f),
             style = MaterialTheme.typography.bodyMedium
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         val badgeColor = if (userLevel == UserLevel.LEGENDARY) colors.accent1 else colors.secondary
-        
+
         Surface(
             color = badgeColor.copy(alpha = 0.1f),
             shape = RoundedCornerShape(8.dp),

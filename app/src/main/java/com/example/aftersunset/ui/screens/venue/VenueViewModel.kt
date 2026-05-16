@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.domain.model.Venue
 import com.example.aftersunset.domain.model.Review
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -18,12 +20,21 @@ class VenueViewModel : ViewModel() {
     var reviews by mutableStateOf<List<Review>>(emptyList())
     var isLoading by mutableStateOf(true)
 
+    // Rescatado del código de Alvani
+    var isFavorite by mutableStateOf(false)
+
     fun loadVenueData(venueId: String) {
         viewModelScope.launch {
             isLoading = true
             try {
                 val venueDoc = db.collection("locales").document(venueId).get().await()
-                venue = venueDoc.toObject(Venue::class.java)?.copy(id = venueDoc.id)
+                val loadedVenue = venueDoc.toObject(Venue::class.java)?.copy(id = venueDoc.id)
+                venue = loadedVenue
+
+                // Comprobamos si el usuario ya lo tiene en favoritos
+                loadedVenue?.let {
+                    checkIfFavorite(it.id)
+                }
 
                 val eventsSnapshot = db.collection("eventos")
                     .whereEqualTo("venueId", venueId)
@@ -46,7 +57,6 @@ class VenueViewModel : ViewModel() {
                         try {
                             val userDoc = db.collection("usuarios").document(review.userId).get().await()
                             if (userDoc.exists()) {
-
                                 review.user = userDoc.getString("nombre") ?: "Usuario Anónimo"
                             }
                         } catch (e: Exception) {
@@ -62,6 +72,39 @@ class VenueViewModel : ViewModel() {
             } finally {
                 isLoading = false
             }
+        }
+    }
+
+    private fun checkIfFavorite(venueId: String) {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val favoriteId = "${uid}_${venueId}"
+
+        // Usamos el SnapshotListener de Alvani para que se actualice en tiempo real
+        db.collection("favoritos_clubes")
+            .document(favoriteId)
+            .addSnapshotListener { snapshot, _ ->
+                isFavorite = snapshot?.exists() == true
+            }
+    }
+
+    fun toggleFavorite() {
+        val currentVenue = venue ?: return
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val favoriteId = "${uid}_${currentVenue.id}"
+        val favoriteRef = db.collection("favoritos_clubes").document(favoriteId)
+
+        if (isFavorite) {
+            favoriteRef.delete()
+        } else {
+            val favoriteClub = hashMapOf(
+                "id_usuario" to uid,
+                "id_local" to currentVenue.id,
+                "nombre_local" to currentVenue.name,
+                "direccion" to currentVenue.address,
+                "imagenUrl" to currentVenue.mainPhoto,
+                "fecha_agregado" to Timestamp.now()
+            )
+            favoriteRef.set(favoriteClub)
         }
     }
 }

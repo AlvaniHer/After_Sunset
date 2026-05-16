@@ -1,14 +1,22 @@
 package com.example.aftersunset.ui.components.auth
 
-import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -20,6 +28,7 @@ import com.example.aftersunset.R
 import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PumpkinSpice
+import kotlin.Boolean
 
 /**
  * Componente de campo de entrada de texto personalizado con estética de "cristal".
@@ -30,11 +39,11 @@ import com.example.aftersunset.ui.theme.PumpkinSpice
  */
 @Composable
 fun CustomField(
+    value: String,
+    onValueChange: (String) -> Unit,
     label: String,
     icon: ImageVector,
     isPassword: Boolean = false,
-    value: String,
-    onValueChange: (String) -> Unit,
     isError: Boolean = false
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
@@ -48,7 +57,7 @@ fun CustomField(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = if (isError) Color.Red else Color.White
+                tint = if (isError) Color.Red else Color.White.copy(alpha = 0.5f)
             ) },
         trailingIcon = {
             if (isPassword) {
@@ -71,7 +80,7 @@ fun CustomField(
             unfocusedLabelColor = Color.White.copy(alpha = 0.5f),
             cursorColor = PumpkinSpice
         ),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(20.dp),
         singleLine = true
     )
 }

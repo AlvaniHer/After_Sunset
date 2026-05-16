@@ -19,8 +19,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.components.checkout.PriceRow
 import com.example.aftersunset.ui.components.common.SuccessDialog
 import com.example.aftersunset.ui.components.common.SunsetActionButton
@@ -32,7 +32,7 @@ import com.example.aftersunset.ui.theme.PacificCyan
  * Muestra un resumen del evento seleccionado, el desglose de precios y permite confirmar la compra.
  * Gestiona la lógica de generación de tickets y actualización de puntos/nivel del usuario.
  *
- * @param event El objeto [Event] que el usuario desea adquirir.
+ * @param eventId Identificador del evento.
  * @param ticketType Tipo de entrada seleccionada.
  * @param price Precio base de la entrada.
  * @param onBackClick Callback para regresar a la pantalla anterior.
@@ -47,7 +47,7 @@ fun CheckoutScreen(
     price: Double,
     onBackClick: () -> Unit,
     onPaymentSuccess: () -> Unit,
-    viewModel: CheckoutViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: CheckoutViewModel = viewModel()
 ) {
     LaunchedEffect(eventId) {
         viewModel.loadCheckoutData(eventId)
@@ -65,8 +65,7 @@ fun CheckoutScreen(
         ) {
             Text(viewModel.errorMessage!!, color = Color.White, textAlign = TextAlign.Center)
         }
-    }else if (event != null) {
-        val currentEvent = event
+    } else if (event != null) {
         Scaffold(
             topBar = {
                 Row(
@@ -137,8 +136,8 @@ fun CheckoutScreen(
                         if (it.length <= 16) {
                             cardNumber = it
                             if (showCardError) showCardError = false
-                            }
-                        },
+                        }
+                    },
                     label = { Text("Número de tarjeta", color = Color.Gray) },
                     placeholder = { Text("0000 0000 0000 0000", color = Color.White.copy(0.3f)) },
                     modifier = Modifier.fillMaxWidth(),
@@ -195,4 +194,3 @@ fun CheckoutScreen(
         )
     }
 }
-

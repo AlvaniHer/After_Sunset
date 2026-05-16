@@ -9,10 +9,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,61 +24,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.aftersunset.domain.model.Event
 import com.example.aftersunset.ui.components.common.SunsetActionButton
-import com.example.aftersunset.ui.theme.AfterSunsetTheme
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.aftersunset.ui.screens.event.EventDetailViewModel
 
 @Composable
 fun EventContent(
-    eventId: String,
-    onBackClick: () -> Unit,
-    onVenueClick: (String) -> Unit,
-    onBuyClick: (Event) -> Unit,
-    onLocationClick: (Event) -> Unit,
-    viewModel: EventDetailViewModel = viewModel()
-) {
-
-    LaunchedEffect(eventId) {
-        viewModel.loadEvent(eventId)
-    }
-
-    val event = viewModel.event
-
-
-    Box(modifier = Modifier.fillMaxSize().background(InkBlack)) {
-        if (viewModel.isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = PacificCyan
-            )
-        } else if (event != null) {
-            EventDetailBody(
-                event = event,
-                onBackClick = onBackClick,
-                onVenueClick = { onVenueClick(event.venueId) },
-                onBuyClick = { onBuyClick(event) },
-                onLocationClick = { onLocationClick(event) }
-            )
-        } else {
-            Text(
-                text = "Evento no encontrado",
-                color = Color.White,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-    }
-}
-@Composable
-fun EventDetailBody(
     event: Event,
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit,
     onBackClick: () -> Unit,
     onVenueClick: () -> Unit,
     onBuyClick: () -> Unit,
@@ -118,7 +78,7 @@ fun EventDetailBody(
                     .offset(y = (-40).dp)
             ) {
                 Text(
-                    text = event.genre.joinToString(", ").uppercase(),
+                    text = event.genre[0].uppercase(),
                     color = PacificCyan,
                     style = MaterialTheme.typography.labelMedium,
                     letterSpacing = 2.sp
@@ -140,9 +100,9 @@ fun EventDetailBody(
                     style = MaterialTheme.typography.bodyLarge,
                     lineHeight = 24.sp
                 )
-                
+
                 Spacer(modifier = Modifier.height(24.dp))
-                
+
                 InfoItem(Icons.Default.Info, "Para mayores de ${event.minAge} años (necesario traer DNI).")
                 Spacer(modifier = Modifier.height(16.dp))
                 InfoItem(Icons.Default.Notifications, "Organizado por ${event.clubName}")
@@ -154,9 +114,9 @@ fun EventDetailBody(
                 Text("Sala", color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.labelLarge)
                 Text(event.clubName, color = Color.White, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                 Text(event.fullAddress, color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.bodyMedium)
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 Button(
                     onClick = onLocationClick,
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.1f)),
@@ -167,7 +127,7 @@ fun EventDetailBody(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("ABRIR EN EL MAPA", color = Color.White, fontWeight = FontWeight.Bold)
                 }
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
                 InfoItem(Icons.Default.Info, "Apertura de puertas: 23:59")
 
@@ -218,32 +178,34 @@ fun EventDetailBody(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(24.dp)
-                .navigationBarsPadding()
-            ,
-            onClick = onBuyClick,
+                .navigationBarsPadding(),
+            onClick = onBuyClick
         )
 
+        // Botón de atrás (Alineado arriba a la izquierda)
         IconButton(
             onClick = onBackClick,
             modifier = Modifier
                 .padding(top = 48.dp, start = 16.dp)
                 .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+                .align(Alignment.TopStart)
         ) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color.White)
         }
-    }
-}
 
-@Preview
-@Composable
-fun EventContentPreview(){
-    AfterSunsetTheme {
-        EventContent(
-            eventId = "1",
-            onBackClick = {},
-            onVenueClick = {},
-            onBuyClick = {},
-            onLocationClick = {}
-        )
+        // Botón de Favorito (Alineado arriba a la derecha, rescatado de tu compañera)
+        IconButton(
+            onClick = onFavoriteClick,
+            modifier = Modifier
+                .padding(top = 48.dp, end = 16.dp)
+                .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+                .align(Alignment.TopEnd)
+        ) {
+            Icon(
+                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                contentDescription = "Club favorito",
+                tint = if (isFavorite) Color(0xFFFF2D75) else Color.White
+            )
+        }
     }
 }

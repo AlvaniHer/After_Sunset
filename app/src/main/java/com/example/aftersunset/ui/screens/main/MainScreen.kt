@@ -20,14 +20,16 @@ import com.example.aftersunset.ui.screens.map.MapScreen
 import com.example.aftersunset.ui.screens.profile.ProfileScreen
 import com.example.aftersunset.ui.screens.tickets.TicketsScreen
 import com.example.aftersunset.ui.screens.venue.VenueProfileScreen
+import com.google.firebase.auth.FirebaseAuth
+
 
 /**
  * Pantalla raíz para el flujo autenticado de la aplicación.
- * Este componente centraliza el [Scaffold] que contiene la barra de navegación 
+ * Este componente centraliza el [Scaffold] que contiene la barra de navegación
  * inferior y gestiona un [NavHost] interno para las secciones principales:
  * Home, Mapa, Tickets y Perfil, además de rutas secundarias como el perfil del local.
  *
- * @param rootNavController NavController del grafo principal para permitir 
+ * @param rootNavController NavController del grafo principal para permitir
  * la navegación hacia pantallas fuera del BottomBar.
  * @param initialLat Latitud inicial para forzar la navegación al mapa si no es nula.
  * @param initialLng Longitud inicial para forzar la navegación al mapa si no es nula.
@@ -86,6 +88,7 @@ fun MainScreen(
                     }
                 )
             }
+
             composable<Maps> { backStackEntry ->
                 val route: Maps = backStackEntry.toRoute()
                 MapScreen(
@@ -96,17 +99,44 @@ fun MainScreen(
                     initialLng = route.lng
                 )
             }
+
             composable<Tickets> {
-                TicketsScreen(
-                    navController = navController
-                )
+                TicketsScreen(navController = navController)
             }
+
             composable<Profile> {
                 ProfileScreen(
                     onLogout = {
+                        FirebaseAuth.getInstance().signOut()
                         rootNavController.navigate(AuthGraph) {
                             popUpTo(MainGraph) { inclusive = true }
                         }
+                    },
+                    onFriendsClick = {
+                        rootNavController.navigate(Friends)
+                    },
+                    onFavoriteClubsClick = {
+                        rootNavController.navigate(FavoriteClubs)
+                    }
+                )
+            }
+
+            composable<VenueProfile> { backStackEntry ->
+                val route: VenueProfile = backStackEntry.toRoute()
+                VenueProfileScreen(
+                    venueId = route.id,
+                    onBackClick = { navController.popBackStack() },
+                    onEventClick = { navController.popBackStack() },
+                    onLocationClick = { lat, lng ->
+                        navController.navigate(Maps(lat, lng)) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                        }
+                    },
+                    onSeeAllReviewsClick = { id, name ->
+                        navController.navigate(Reviews(id, name))
                     }
                 )
             }

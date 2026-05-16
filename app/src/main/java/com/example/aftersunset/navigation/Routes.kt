@@ -64,7 +64,14 @@ import kotlinx.serialization.Serializable
  * Destino para el perfil del usuario, favoritos y ajustes.
  */
 @Serializable object Profile
-
+/**
+ * Pantalla de clubes favoritos del usuario.
+ */
+@Serializable object FavoriteClubs
+/**
+ * Destino para la gestión de amistades.
+ */
+@Serializable object Friends
 /**
  * Destino para el detalle de un evento específico.
  * @param id Identificador único del evento.

@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.navigation.Maps
 import com.example.aftersunset.navigation.VenueProfile
 import com.example.aftersunset.ui.components.tickets.EmptyTicketsState
@@ -24,14 +23,6 @@ import com.example.aftersunset.ui.components.tickets.TicketItem
 import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 
-/**
- * Pantalla de gestión de entradas adquiridas por el usuario.
- * Muestra una lista de tickets interactivos (físico-digitales) o un estado vacío
- * si no hay planes próximos. Permite la navegación geolocalizada desde cada ticket.
- *
- * @param tickets Lista de objetos [Ticket] asociados a la cuenta del usuario.
- * @param navController Controlador de navegación para permitir saltar a la pestaña de Mapas o Perfil del Local.
- */
 @Composable
 fun TicketsScreen(
     navController: NavController,
@@ -41,6 +32,7 @@ fun TicketsScreen(
         viewModel.loadUserTickets()
     }
     val ticketsUI = viewModel.ticketsWithDetails
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +41,11 @@ fun TicketsScreen(
     ) {
         Text(
             text = "MIS ENTRADAS",
-            modifier = Modifier.padding(top = 64.dp, bottom = 24.dp, start = 8.dp),
+            modifier = Modifier.padding(
+                top = 64.dp,
+                bottom = 24.dp,
+                start = 8.dp
+            ),
             style = MaterialTheme.typography.headlineLarge,
             color = Color.White,
             fontWeight = FontWeight.Black,
@@ -60,7 +56,7 @@ fun TicketsScreen(
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = PacificCyan)
             }
-        }else if (ticketsUI.isEmpty()) {
+        } else if (ticketsUI.isEmpty()) {
             EmptyTicketsState()
         } else {
             LazyColumn(

@@ -31,10 +31,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.aftersunset.R
 import com.example.aftersunset.ui.components.auth.CustomField
-import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.components.auth.VideoBackground
+import com.example.aftersunset.ui.components.common.SunsetActionButton
 import com.example.aftersunset.ui.theme.Dragonfruit
-
 
 /**
  * Pantalla de registro de usuario de la aplicación.
@@ -92,6 +91,7 @@ fun RegisterScreen(
                 onValueChange = { viewModel.onUsernameChange(it) },
                 isError = !viewModel.isUsernameValid
             )
+
             if (!viewModel.isUsernameValid) {
                 Text(
                     text = "Este nombre de usuario ya existe",
@@ -100,6 +100,7 @@ fun RegisterScreen(
                     modifier = Modifier.align(Alignment.Start).padding(start = 8.dp)
                 )
             }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             CustomField(
@@ -127,7 +128,7 @@ fun RegisterScreen(
                 isPassword = true,
                 value=viewModel.confirmPassword,
                 onValueChange = { viewModel.onConfirmPasswordChange(it) },
-                        isError = viewModel.password != viewModel.confirmPassword && viewModel.confirmPassword.isNotEmpty()
+                isError = viewModel.password != viewModel.confirmPassword && viewModel.confirmPassword.isNotEmpty()
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -141,9 +142,6 @@ fun RegisterScreen(
                 enabled = viewModel.isFormValid()
             )
 
-            /**
-             * Mensaje de error
-             */
             viewModel.errorMessage?.let { error ->
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -153,6 +151,7 @@ fun RegisterScreen(
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+
             Spacer(modifier = Modifier.height(24.dp))
 
             TextButton(onClick = onNavigateToLogin) {

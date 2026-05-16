@@ -1,9 +1,10 @@
 package com.example.aftersunset.data.repository
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+
 import kotlinx.coroutines.tasks.await
 import android.util.Log
 import com.example.aftersunset.domain.model.Event
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 class EventRepository {
     private val db = Firebase.firestore
