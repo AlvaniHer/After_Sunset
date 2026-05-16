@@ -3,45 +3,74 @@ package com.example.aftersunset.ui.screens.profile
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.aftersunset.R
+import com.example.aftersunset.ui.components.common.SuccessDialog
 import com.example.aftersunset.ui.components.profile.ProfileHeader
 import com.example.aftersunset.ui.components.profile.ProfileMenuItem
 import com.example.aftersunset.ui.components.profile.StatItem
-import com.example.aftersunset.ui.components.common.SuccessDialog
-import com.example.aftersunset.R
-import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.Dragonfruit
+import com.example.aftersunset.ui.theme.InkBlack
 
-/**
- * Pantalla de perfil de usuario.
- * Visualiza la información del usuario, estadísticas de asistencia y menú de configuración.
- * Gestiona la aparición del diálogo de celebración de subida de nivel.
- *
- * @param onLogout Callback para gestionar el cierre de sesión y navegación al flujo de autenticación.
- */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
     onFriendsClick: () -> Unit = {},
     onFavoriteClubsClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {},
     viewModel: ProfileViewModel = viewModel()
 ) {
     val user = viewModel.user
     var showLevelUpDialog by remember { mutableStateOf(false) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadUserProfile()
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     LaunchedEffect(user) {
         if (user?.pendingLevelUp == true) {
@@ -50,8 +79,13 @@ fun ProfileScreen(
     }
 
     if (viewModel.isLoading) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = Dragonfruit)
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                color = Dragonfruit
+            )
         }
     } else if (user != null) {
         Column(
@@ -68,7 +102,9 @@ fun ProfileScreen(
                 profileImageUrl = user.getAvatarUrl()
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(
+                modifier = Modifier.height(32.dp)
+            )
 
             Row(
                 modifier = Modifier
@@ -76,12 +112,25 @@ fun ProfileScreen(
                     .padding(horizontal = 24.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                StatItem("Eventos", user.eventsAttended.toString())
-                StatItem("Puntos", user.points.toString())
-                StatItem("Siguiendo", user.followingCount.toString())
+                StatItem(
+                    label = "Eventos",
+                    value = user.eventsAttended.toString()
+                )
+
+                StatItem(
+                    label = "Puntos",
+                    value = user.points.toString()
+                )
+
+                StatItem(
+                    label = "Siguiendo",
+                    value = user.followingCount.toString()
+                )
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(
+                modifier = Modifier.height(40.dp)
+            )
 
             Text(
                 text = "MI CUENTA",
@@ -111,14 +160,18 @@ fun ProfileScreen(
             ProfileMenuItem(
                 icon = Icons.Default.Settings,
                 label = "Ajustes",
-                onClick = {}
+                onClick = onSettingsClick
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(
+                modifier = Modifier.height(24.dp)
+            )
 
             TextButton(
                 onClick = onLogout,
-                modifier = Modifier.padding(horizontal = 12.dp).align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .align(Alignment.CenterHorizontally)
             ) {
                 Text(
                     text = "Cerrar Sesión",
@@ -130,7 +183,9 @@ fun ProfileScreen(
 
         if (showLevelUpDialog) {
             SuccessDialog(
-                onDismiss = { showLevelUpDialog = false },
+                onDismiss = {
+                    showLevelUpDialog = false
+                },
                 title = "¡NUEVO RANGO DESBLOQUEADO!",
                 message = "Felicidades ${user.name}, has alcanzado el nivel ${user.level}.",
                 isLevelUp = true

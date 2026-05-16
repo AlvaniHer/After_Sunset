@@ -13,11 +13,12 @@ import com.example.aftersunset.ui.screens.event.EventDetailScreen
 import com.example.aftersunset.ui.screens.friends.FriendsScreen
 import com.example.aftersunset.ui.screens.login.LoginScreen
 import com.example.aftersunset.ui.screens.main.MainScreen
+import com.example.aftersunset.ui.screens.profile.FavoriteClubsScreen
 import com.example.aftersunset.ui.screens.register.RegisterScreen
 import com.example.aftersunset.ui.screens.reviews.ReviewsScreen
+import com.example.aftersunset.ui.screens.settings.ProfileSettingsScreen
 import com.example.aftersunset.ui.screens.splash.SplashScreen
 import com.example.aftersunset.ui.screens.venue.VenueProfileScreen
-import com.example.aftersunset.ui.screens.profile.FavoriteClubsScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -66,7 +67,8 @@ fun Navigation() {
                 MainScreen(
                     rootNavController = navController,
                     initialLat = route.lat,
-                    initialLng = route.lng
+                    initialLng = route.lng,
+                    initialTab = route.initialTab
                 )
             }
 
@@ -79,6 +81,12 @@ fun Navigation() {
             composable<FavoriteClubs> {
                 FavoriteClubsScreen(
                     navController = navController
+                )
+            }
+
+            composable<ProfileSettings> {
+                ProfileSettingsScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
 

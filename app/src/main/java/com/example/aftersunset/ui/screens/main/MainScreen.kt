@@ -22,7 +22,6 @@ import com.example.aftersunset.ui.screens.tickets.TicketsScreen
 import com.example.aftersunset.ui.screens.venue.VenueProfileScreen
 import com.google.firebase.auth.FirebaseAuth
 
-
 /**
  * Pantalla raíz para el flujo autenticado de la aplicación.
  * Este componente centraliza el [Scaffold] que contiene la barra de navegación
@@ -116,6 +115,9 @@ fun MainScreen(
                     },
                     onFavoriteClubsClick = {
                         rootNavController.navigate(FavoriteClubs)
+                    },
+                    onSettingsClick = {
+                        rootNavController.navigate(ProfileSettings)
                     }
                 )
             }
@@ -139,7 +141,6 @@ fun MainScreen(
                     }
                 )
             }
-
         }
     }
 }
