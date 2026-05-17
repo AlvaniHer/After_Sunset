@@ -34,7 +34,7 @@ class VenueViewModel : ViewModel() {
                 }
 
                 val eventsSnapshot = db.collection("eventos")
-                    .whereEqualTo("venueId", venueId)
+                    .whereEqualTo("id_local", venueId)
                     .get().await()
 
                 localEvents = eventsSnapshot.documents.mapNotNull { doc ->
