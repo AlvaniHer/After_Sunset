@@ -145,7 +145,7 @@ fun EventContent(
                         color = Color.White.copy(alpha = 0.1f)
                     ) {
                         AsyncImage(
-                            model = event.imageUrl,
+                            model = event.venueImageUrl,
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize().clip(CircleShape),
                             contentScale = ContentScale.Crop
@@ -160,7 +160,7 @@ fun EventContent(
                         modifier = Modifier.weight(1f).clickable { onVenueClick() }
                     )
                     Button(
-                        onClick = { /* Lógica de seguir */ },
+                        onClick = {},
                         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.height(36.dp)

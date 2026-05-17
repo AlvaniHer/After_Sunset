@@ -4,8 +4,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -43,19 +43,22 @@ fun MainScreen(
 ) {
     val navController = rememberNavController()
 
+    var initialNavProcessed by rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(initialLat, initialLng) {
-        if (initialLat != null && initialLng != null) {
+        if (!initialNavProcessed && initialLat != null && initialLng != null) {
             navController.navigate(Maps(initialLat, initialLng)) {
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
                 }
                 launchSingleTop = true
             }
+            initialNavProcessed = true
         }
     }
 
     LaunchedEffect(initialTab) {
-        if (initialTab == 2) {
+        if (!initialNavProcessed && initialTab == 2) {
             navController.navigate(Tickets) {
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
@@ -63,6 +66,7 @@ fun MainScreen(
                 launchSingleTop = true
                 restoreState = true
             }
+            initialNavProcessed = true
         }
     }
 

@@ -52,6 +52,7 @@ class EventRepository {
                     event.clubName = localDoc.getString("nombre") ?: ""
                     event.zone = localDoc.getString("zona") ?: ""
                     event.fullAddress = localDoc.getString("direccion") ?: ""
+                    event.venueImageUrl = localDoc.getString("foto_principal") ?: ""
 
                     event.latitude = localDoc.getDouble("latitud") ?: 0.0
                     event.longitude = localDoc.getDouble("longitud") ?: 0.0

@@ -30,6 +30,7 @@ import com.example.aftersunset.ui.theme.InkBlack
 import com.example.aftersunset.ui.theme.PacificCyan
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun FavoriteClubsScreen(
@@ -48,26 +49,40 @@ fun FavoriteClubsScreen(
             return@LaunchedEffect
         }
 
-        db.collection("favoritos_clubes")
-            .whereEqualTo("id_usuario", uid)
-            .get()
-            .addOnSuccessListener { result ->
-                favoriteClubs = result.documents.map { doc ->
-                    FavoriteClub(
-                        id = doc.id,
-                        userId = doc.getString("id_usuario") ?: "",
-                        venueId = doc.getString("id_local") ?: "",
-                        clubName = doc.getString("nombre_local") ?: "",
-                        address = doc.getString("direccion") ?: "",
-                        imageUrl = doc.getString("imagenUrl") ?: ""
-                    )
+        try {
+            val result = db.collection("favoritos_clubes")
+                .whereEqualTo("id_usuario", uid)
+                .get()
+                .await()
+
+            val fetchedClubs = result.documents.map { doc ->
+                val venueId = doc.getString("id_local") ?: ""
+                var imageUrl = ""
+
+                if (venueId.isNotEmpty()) {
+                    try {
+                        val venueDoc = db.collection("locales").document(venueId).get().await()
+                        if (venueDoc.exists()) {
+                            imageUrl = venueDoc.getString("foto_principal") ?: imageUrl
+                        }
+                    } catch (e: Exception) { }
                 }
-                isLoading = false
+
+                FavoriteClub(
+                    id = doc.id,
+                    userId = doc.getString("id_usuario") ?: "",
+                    venueId = venueId,
+                    clubName = doc.getString("nombre_local") ?: "",
+                    address = doc.getString("direccion") ?: "",
+                    imageUrl = imageUrl
+                )
             }
-            .addOnFailureListener {
-                favoriteClubs = emptyList()
-                isLoading = false
-            }
+            favoriteClubs = fetchedClubs
+        } catch (e: Exception) {
+            favoriteClubs = emptyList()
+        } finally {
+            isLoading = false
+        }
     }
 
     Box(

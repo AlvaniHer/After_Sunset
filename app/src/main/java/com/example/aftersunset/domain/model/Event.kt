@@ -41,6 +41,7 @@ data class Event(
     var clubName: String = "",
     var zone: String = "",
     var fullAddress: String = "",
+    var venueImageUrl: String = "",
 
     @get:PropertyName("fecha")
     @field:PropertyName("fecha")

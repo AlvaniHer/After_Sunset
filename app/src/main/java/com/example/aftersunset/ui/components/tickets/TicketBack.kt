@@ -1,10 +1,5 @@
 package com.example.aftersunset.ui.components.tickets
 
-import androidx.compose.foundation.background
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,11 +26,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.example.aftersunset.domain.model.Ticket
 import com.example.aftersunset.ui.theme.Dragonfruit
 import com.example.aftersunset.ui.theme.PacificCyan
-import androidx.compose.ui.window.Dialog
 
 /**
  * Representa el reverso del ticket físico digital.
@@ -75,10 +68,11 @@ fun TicketBack(
                     )
                 }
                 Spacer(modifier = Modifier.height(12.dp))
+
                 Text(
                     "• Presenta este código QR en la entrada del local.\n" +
-                    "• Prohibida la entrada a menores de 21 años.\n" +
-                    "• Dress Code: Elegante / Casual-Chic.\n" +
+                    "• Prohibida la entrada a menores de 18 años.\n" +
+                    "• Enseñar el DNI en la entrada.\n" +
                     "• Entrada válida para una persona.",
                     color = Color.White.copy(alpha = 0.7f),
                     style = MaterialTheme.typography.bodySmall,
